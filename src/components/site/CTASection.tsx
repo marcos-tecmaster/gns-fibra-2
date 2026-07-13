@@ -46,7 +46,7 @@ export function CTASection() {
                 href={whatsappLink(config.contact.whatsappUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground font-bold shadow-[0_0_40px_oklch(0.72_0.21_45/0.5)] hover:scale-[1.03] transition-transform"
+                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground font-bold shadow-brand hover:scale-[1.03] transition-transform"
               >
                 <MessageCircle className="w-5 h-5" />
                 Falar pelo WhatsApp

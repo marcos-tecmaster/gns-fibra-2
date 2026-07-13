@@ -22,10 +22,14 @@ config/database.local.php
 !.env.example
 
 # Credenciais e tokens locais
-*credential*
-*credentials*
-*token*
-*secret*
+*.credential
+*.credentials
+*.token
+*.tokens
+*.secret
+credentials.*
+tokens.*
+secrets.*
 
 .vscode/*
 !.vscode/extensions.json

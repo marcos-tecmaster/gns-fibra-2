@@ -20,6 +20,14 @@ Objetivo:
 
 - Preparar Dark/Light sem alterar visual final de forma ampla.
 
+Status em 13/07/2026:
+
+- Implementada a fundacao de tema e tokens.
+- Criado `ThemeProvider`, `useTheme`, script anti-flash e `ThemeToggle`.
+- Dark preserva a base Premium/Dark.
+- Light usa tokens inspirados na identidade Classic sem copiar componentes.
+- Nao houve alteracao de banco, API PHP ou painel administrativo.
+
 Arquivos provaveis:
 
 - `src/styles.css`
@@ -35,6 +43,13 @@ Entregas:
 - persistencia em `localStorage`;
 - classe/atributo aplicado antes do React hidratar;
 - botao futuro mapeado, mas nao necessariamente estilizado nesta fase.
+
+Entregas realizadas:
+
+- `data-theme` e `data-theme-mode` no elemento `html`.
+- Chave `localStorage`: `gns-theme`.
+- Botao de alternancia no Header.
+- Validacao responsiva nos breakpoints definidos.
 
 Complexidade: media.  
 Risco: medio, pois altera base visual global.

@@ -38,7 +38,7 @@ export function Hero() {
         className="absolute inset-0 opacity-[0.06]"
         style={{
           backgroundImage:
-            "linear-gradient(oklch(0.72 0.21 45) 1px, transparent 1px), linear-gradient(90deg, oklch(0.72 0.21 45) 1px, transparent 1px)",
+            "linear-gradient(var(--color-hero-grid) 1px, transparent 1px), linear-gradient(90deg, var(--color-hero-grid) 1px, transparent 1px)",
           backgroundSize: "64px 64px",
           maskImage: "radial-gradient(ellipse at center, black 25%, transparent 75%)",
         }}
@@ -91,7 +91,7 @@ export function Hero() {
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex max-w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-4 text-center text-sm font-bold text-primary-foreground shadow-[0_0_40px_oklch(0.72_0.21_45/0.42)] transition-all hover:-translate-y-0.5 hover:shadow-[0_0_55px_oklch(0.72_0.21_45/0.6)] sm:px-7 sm:text-base"
+              className="group inline-flex max-w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-4 text-center text-sm font-bold text-primary-foreground shadow-brand transition-all hover:-translate-y-0.5 hover:brightness-110 sm:px-7 sm:text-base"
             >
               Consultar disponibilidade
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

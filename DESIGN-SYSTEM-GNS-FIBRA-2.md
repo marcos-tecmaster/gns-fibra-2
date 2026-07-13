@@ -1,13 +1,13 @@
 # DESIGN SYSTEM - GNS FIBRA 2.0
 
 Data: 13/07/2026  
-Status: especificacao inicial, nao implementada
+Status: fundacao de tokens e tema implementada em 13/07/2026
 
 ## 1. Objetivo
 
 Definir a base visual da GNS Fibra 2.0 para aplicar em tema escuro e claro, preservando a forca Premium/Dark e incorporando a clareza do Classic e a organizacao da V3.
 
-Este documento nao altera o design atual. Ele orienta a proxima fase.
+Este documento registra a fundacao implementada. A grande transformacao visual das secoes ainda nao foi realizada.
 
 ## 2. Principios visuais
 
@@ -63,6 +63,35 @@ Direcao:
 - Laranja para acao, nao para todos os fundos.
 - Sombras mais discretas que a versao atual.
 - Gradientes usados em pontos de conversao.
+
+Implementacao atual:
+
+- `--color-bg`
+- `--color-bg-soft`
+- `--color-surface`
+- `--color-surface-elevated`
+- `--color-text`
+- `--color-text-muted`
+- `--color-border`
+- `--color-border-strong`
+- `--color-primary`
+- `--color-primary-hover`
+- `--color-primary-contrast`
+- `--color-focus`
+- `--color-success`
+- `--color-warning`
+- `--color-danger`
+- `--color-overlay`
+- `--color-hero-grid`
+- `--gradient-brand`
+- `--gradient-card`
+- `--gradient-page-glow`
+- `--shadow-card`
+- `--shadow-elevated`
+- `--shadow-brand`
+- `--shadow-whatsapp`
+
+Os aliases antigos (`--background`, `--foreground`, `--card`, `--primary`, `--border`, etc.) foram mantidos para compatibilidade com Tailwind e componentes existentes.
 
 ## 5. Tokens Light
 
@@ -301,26 +330,63 @@ Obrigatorio:
 - Sem overflow horizontal.
 - Sem texto sobre imagem sem overlay suficiente.
 
-## 16. Mascote oficial
+## 16. Uso do Mascote Oficial
 
-Uso recomendado:
+Origem catalogada nesta fase:
 
-- Hero, se houver pose oficial com boa leitura.
-- Planos, como apoio a oferta destacada.
-- Suporte/WhatsApp.
-- Cobertura.
-- FAQ.
-- Campanhas.
-- Sucesso de formulario.
-- 404.
+- Estrutura oficial: `docs/branding/mascote/`.
+- Arquivo de referencia catalogado: `docs/branding/mascote/referencias/guia-oficial-poses-mascote-gns.png`.
+- Arquivo encontrado: folha completa oficial de poses do mascote.
+- Dimensoes: 1536 x 1024 px.
+- Peso: aproximadamente 2,46 MB.
+- Formato: PNG com canal alpha.
+- Status: referencia oficial/matriz de poses, nao asset final para uso direto no site.
 
-Regras:
+Organizacao do acervo:
 
-- Usar apenas arquivos oficiais aprovados.
-- Nao distorcer proporcao.
-- Nao usar como padrao repetitivo em todas as secoes.
-- Garantir que nao cubra CTA ou texto.
-- Ter versoes otimizadas para web.
+- `docs/branding/mascote/originais/`: recebera futuramente poses individuais oficiais em alta qualidade.
+- `docs/branding/mascote/referencias/`: contem folhas de poses, prints e guias de uso.
+- `docs/branding/mascote/otimizados/`: contera somente arquivos aprovados e preparados para producao.
+
+Diretrizes:
+
+- Usar o mascote de maneira estrategica, sempre subordinado a mensagem principal e aos CTAs.
+- Preservar aparencia premium: evitar excesso de repeticao, uso decorativo gratuito ou competicao com titulos.
+- Usar somente poses oficiais aprovadas e derivadas dos arquivos originais em alta qualidade.
+- Nao redesenhar, recolorir, distorcer, espelhar sem aprovacao, alterar uniforme, logo ou proporcoes.
+- Nao utilizar a folha completa de poses diretamente no site.
+- Nao recortar automaticamente poses sem conferencia visual de qualidade e transparencias.
+- Manter os arquivos originais preservados e gerar derivados em pasta separada quando a fase de implementacao for aprovada.
+- Otimizar derivados para WebP ou AVIF somente a partir dos originais aprovados.
+- Prever dimensoes responsivas, `loading="lazy"` fora da primeira dobra e prioridade controlada no Hero.
+- Evitar imagens pesadas acima da dobra sem versao otimizada.
+- Definir `alt` informativo quando o mascote comunicar uma acao ou estado; usar `alt=""` apenas quando for puramente decorativo.
+
+Aplicacoes futuras planejadas:
+
+| Secao | Pose sugerida | Intencao | Prioridade | Observacoes |
+| --- | --- | --- | --- | --- |
+| Hero | Aceno ou pose principal com logo | Recepcao, confianca e presenca de marca | Alta | Usar somente se houver recorte limpo e peso otimizado |
+| Planos | Apresentando ou polegar para cima | Reforcar oferta e decisao | Media | Nao competir com preco e CTA |
+| Beneficios | Apontando ou celebrando | Destacar vantagens | Media | Usar com parcimonia em cards ou chamadas |
+| Suporte | Trabalhando, conectado ou protegido | Atendimento, suporte e estabilidade | Alta | Boa aplicacao para WhatsApp/suporte |
+| Cobertura | Apontando pra baixo ou espiando | Direcionar busca de endereco | Media | Evitar obstruir campo de busca |
+| FAQ | Pensando ou curioso | Apoiar duvidas frequentes | Baixa | Pode ser usado como detalhe lateral |
+| Indique e Ganhe | GNS ama voce ou campeao | Afeto, recompensa e campanha | Alta | Exigir comunicacao clara de regras |
+| Confirmacao de formulario | Feliz, animado ou polegar para cima | Feedback positivo | Alta | Pode aumentar percepcao de sucesso |
+| Pagina 404 | Surpreso, triste ou espiando | Estado de erro amigavel | Media | Manter tom profissional |
+
+Riscos a controlar:
+
+- A folha atual concentra muitas poses em um unico PNG; usar diretamente causaria peso excessivo e baixa precisao visual.
+- Recortes mal feitos podem deixar residuos, bordas ruins ou perda de detalhes do uniforme/logo.
+- Poses muito expressivas podem reduzir a percepcao premium se usadas em excesso.
+- Sem derivados otimizados, o uso no Hero pode prejudicar LCP e performance mobile.
+- Alt text generico ou redundante pode piorar acessibilidade.
+
+Documento complementar:
+
+- `MAPA-USO-MASCOTE-GNS-FIBRA-2.md`.
 
 ## 17. Arquitetura de tema
 
@@ -331,6 +397,16 @@ Fluxo:
 3. Se nao houver, usa `prefers-color-scheme`.
 4. React inicializa lendo o tema aplicado.
 5. Toggle altera atributo e persiste.
+
+Implementado:
+
+- `ThemeProvider` em `src/theme/theme.tsx`.
+- Hook `useTheme`.
+- Tipo `ThemeMode = "light" | "dark" | "system"`.
+- Chave `localStorage`: `gns-theme`.
+- Atributos no HTML: `data-theme` e `data-theme-mode`.
+- Script externo `public/theme-init.js` para evitar flash visual antes do React carregar.
+- `ThemeToggle` no Header existente, sem redesenhar o Header.
 
 Requisitos:
 
@@ -381,3 +457,14 @@ Categorias:
 - Gradientes decorativos que dificultem tema claro.
 - Separacao visual entre beneficios, diferenciais e tecnologias.
 - Aplicacao do mascote.
+
+## 21. Validacao inicial da fundacao
+
+Validado em navegador local:
+
+- Tema Dark: aplicado por `data-theme="dark"`.
+- Tema Light: aplicado por `data-theme="light"`.
+- Toggle acessivel no Header com `aria-label`, `title`, `aria-pressed` e area 44x44.
+- Persistencia observada apos reload pelo atributo mantido no HTML.
+- Breakpoints 360, 390, 414, 430, 768, 1024, 1280 e 1440 sem overflow horizontal nos dois temas.
+- Menu mobile abre em 390px com o toggle presente e sem overflow.

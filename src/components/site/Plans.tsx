@@ -36,7 +36,7 @@ export function Plans() {
               transition={{ duration: 0.5, delay: index * 0.08 }}
               className={`relative min-w-0 flex flex-col overflow-hidden rounded-3xl p-5 transition-all duration-500 min-[390px]:p-7 sm:p-8 ${
                 plan.highlight
-                  ? "border-2 border-primary bg-gradient-to-b from-primary/18 via-card to-card shadow-[0_0_55px_oklch(0.72_0.21_45/0.28)] xl:-translate-y-3"
+                  ? "border-2 border-primary bg-gradient-to-b from-primary/18 via-card to-card shadow-brand xl:-translate-y-3"
                   : "card-premium hover:-translate-y-1 hover:border-primary/50"
               }`}
             >
@@ -87,7 +87,7 @@ export function Plans() {
                 rel="noopener noreferrer"
                 className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold transition-all ${
                   plan.highlight
-                    ? "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-[0_0_30px_oklch(0.72_0.21_45/0.4)] hover:scale-[1.02]"
+                    ? "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-brand hover:scale-[1.02]"
                     : "border border-primary/55 text-primary hover:bg-primary hover:text-primary-foreground"
                 }`}
               >

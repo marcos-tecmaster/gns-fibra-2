@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ExternalLink, Menu, MessageCircle, UserRound, X } from "lucide-react";
 import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   const { config, navigation } = useSiteContent();
@@ -76,11 +77,12 @@ export function Header() {
             href={whatsappLink(config.contact.whatsappUrl)}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-[0_0_24px_oklch(0.72_0.21_45/0.32)] transition-transform hover:scale-[1.03] md:inline-flex"
+            className="hidden items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-brand transition-transform hover:scale-[1.03] md:inline-flex"
           >
             <MessageCircle className="h-4 w-4" />
             WhatsApp
           </a>
+          <ThemeToggle />
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}

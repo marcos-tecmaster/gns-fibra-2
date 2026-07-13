@@ -128,7 +128,7 @@ export function Coverage() {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary-glow px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[0_0_30px_oklch(0.72_0.21_45/0.35)]"
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary-glow px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-brand"
               >
                 Consultar meu endereço
               </a>
