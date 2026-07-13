@@ -1,0 +1,154 @@
+@import "tailwindcss" source(none);
+@source "../src";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================
+   GNS FIBRA — Premium Dark Design System
+   Paleta: Preto profundo, laranja vibrante, branco
+   ============================================ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-whatsapp: var(--whatsapp);
+
+  --font-display: "Orbitron", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Core */
+  --background: oklch(0.13 0.02 40);            /* deep black w/ warm tint */
+  --foreground: oklch(0.97 0.005 80);
+  --card: oklch(0.17 0.025 40);
+  --card-foreground: oklch(0.97 0.005 80);
+  --popover: oklch(0.17 0.025 40);
+  --popover-foreground: oklch(0.97 0.005 80);
+
+  /* Brand orange */
+  --primary: oklch(0.72 0.21 45);               /* vivid orange */
+  --primary-foreground: oklch(0.12 0.02 40);
+  --primary-glow: oklch(0.78 0.19 55);
+
+  --secondary: oklch(0.22 0.03 40);
+  --secondary-foreground: oklch(0.97 0.005 80);
+  --muted: oklch(0.20 0.025 40);
+  --muted-foreground: oklch(0.76 0.018 60);
+  --accent: oklch(0.72 0.21 45);
+  --accent-foreground: oklch(0.12 0.02 40);
+
+  --destructive: oklch(0.62 0.22 27);
+  --destructive-foreground: oklch(0.97 0.005 80);
+
+  --border: oklch(0.30 0.04 45 / 50%);
+  --input: oklch(0.25 0.03 40);
+  --ring: oklch(0.72 0.21 45);
+
+  --whatsapp: oklch(0.72 0.18 150);
+
+  /* Premium gradients */
+  --gradient-primary: linear-gradient(135deg, oklch(0.72 0.21 45), oklch(0.78 0.19 55));
+  --gradient-card: linear-gradient(145deg, oklch(0.18 0.03 40 / 0.9), oklch(0.13 0.02 40 / 0.6));
+
+  /* Shadows */
+  --shadow-card: 0 8px 30px -10px oklch(0 0 0 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.04);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    overflow-x: clip;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.72 0.21 45 / 0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, oklch(0.72 0.21 45 / 0.12), transparent 70%);
+    background-attachment: fixed;
+    min-width: 320px;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  a, button, input {
+    outline-color: var(--color-primary);
+  }
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: oklch(0.72 0.21 45 / 0.4);
+    color: white;
+  }
+}
+
+@utility text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility card-premium {
+  background: var(--gradient-card);
+  border: 1px solid oklch(0.30 0.04 45 / 0.4);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    background-attachment: scroll;
+  }
+}

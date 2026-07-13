@@ -1,0 +1,305 @@
+# MAPA DO PAINEL ADMIN - GNS FIBRA 2.0
+
+Data: 13/07/2026  
+Status: mapeamento e planejamento, sem alteracao de banco ou painel
+
+## 1. Estado atual
+
+O painel administrativo atual e PHP/MySQL, separado do React publico.
+
+Pastas principais:
+
+- `admin/`
+- `admin/includes/`
+- `admin/assets/admin.css`
+- `api/site-content.php`
+- `config/`
+- `database/`
+- `uploads/`
+
+## 2. Modulos atuais
+
+| Modulo | Arquivo | Tabela principal | Observacao |
+| --- | --- | --- | --- |
+| Login | `admin/login.php` | `users`, `login_attempts` | Autenticacao com rate limit |
+| Logout | `admin/logout.php` | sessao | Encerra sessao |
+| Dashboard | `admin/dashboard.php` | `plans`, `coverage`, `testimonials` | Indicadores simples |
+| Planos | `admin/planos.php` | `plans` | CRUD especifico com beneficios JSON |
+| Banners | `admin/banners.php` | `banners` | CRUD generico com upload |
+| Cobertura | `admin/cobertura.php` | `coverage` | CRUD generico com Google Maps |
+| Depoimentos | `admin/depoimentos.php` | `testimonials` | CRUD generico |
+| Configuracoes | `admin/configuracoes.php` | `settings` | Dados institucionais |
+| Usuarios | `admin/usuarios.php` | `users` | CRUD de admins |
+| Troca de senha | `admin/trocar-senha.php` | `users` | Exige senha forte |
+
+## 3. Infraestrutura atual
+
+Includes:
+
+- `admin/includes/bootstrap.php`: carrega banco, seguranca e auth.
+- `admin/includes/layout.php`: layout base do admin.
+- `admin/includes/simple-crud.php`: CRUD generico para banners, cobertura e depoimentos.
+
+Configuracao:
+
+- `config/database.php`: usa variaveis `GNS_DB_*` ou `config/database.local.php`.
+- `config/security.php`: headers de seguranca.
+- `config/auth.php`: sessao, CSRF, login, rate limit, upload e helpers.
+
+API:
+
+- `api/site-content.php`: publica conteudo para o React.
+
+## 4. Tabelas atuais
+
+- `users`
+- `login_attempts`
+- `settings`
+- `plans`
+- `coverage`
+- `testimonials`
+- `banners`
+
+Campos criticos:
+
+- `plans.benefits` e JSON.
+- `coverage.map_url` alimenta links clicaveis.
+- `settings` usa chave/valor.
+- `users.password_hash` nunca deve expor senha.
+- `login_attempts` suporta rate limit.
+
+## 5. Pontos fortes atuais
+
+- CSRF nos formularios.
+- Sessao com configuracao de cookie.
+- Timeout de sessao.
+- `password_hash`/`password_verify`.
+- Troca obrigatoria de senha inicial.
+- Validacao de senha forte.
+- Rate limit de login.
+- Upload com validacao MIME e limite de 5 MB.
+- Headers de seguranca.
+- Layout admin responsivo.
+- Botao sair visivel em mobile.
+
+## 6. Debitos e riscos
+
+Seguranca:
+
+- Sem perfis/permissoes por modulo.
+- Sem trilha de auditoria.
+- Sem CAPTCHA para login ou formularios futuros.
+- CSP do PHP permite `unsafe-inline`.
+- Uploads precisam de bloqueio de execucao PHP em producao.
+- Logs futuros precisam mascarar dados pessoais.
+
+UX/Admin:
+
+- Tabelas usam rolagem horizontal em mobile.
+- CRUD generico e eficiente, mas limitado para modulos complexos.
+- Sem busca, filtros ou paginacao.
+- Sem confirmacao avancada para exclusoes.
+- Sem preview real de como conteudo aparece no site.
+
+Arquitetura:
+
+- Frontend e API tem contrato implicito, nao versionado.
+- API retorna banners, mas o frontend Premium/Dark nao usa.
+- Configuracoes chave/valor podem crescer demais sem agrupamento.
+
+## 7. Modulos futuros recomendados
+
+| Prioridade | Modulo | Objetivo | Banco novo provavel |
+| --- | --- | --- | --- |
+| Alta | Beneficios | Separar beneficios dos planos | `benefits` |
+| Alta | Tecnologias | Gerenciar Wi-Fi 5/6/7, XGS-PON etc. | `technologies` |
+| Alta | FAQ | Perguntas frequentes e schema futuro | `faqs` |
+| Alta | Campanhas | Sazonais e comerciais | `campaigns` |
+| Alta | Indicacoes | Indique e Ganhe | `referrals` |
+| Media | Leads | Formularios de interesse | `leads` |
+| Media | Avaliacoes | Google/depoimentos/cases | `reviews` ou extensao de `testimonials` |
+| Media | Integracoes | Configurar provedores externos | `integrations` |
+| Media | Logs IXC | Auditoria de chamadas | `ixc_logs` |
+| Media | Pixels/Analytics | GTM, GA4, Meta Pixel | `tracking_settings` |
+| Baixa | Mascote e banners | Biblioteca de assets aprovados | `brand_assets` |
+| Baixa | Landing pages | Campanhas regionais | `landing_pages` |
+
+## 8. Evolucao de banco necessaria
+
+Nao executar nesta fase.
+
+Migrations futuras devem:
+
+- ser versionadas em `database/migration-YYYY-MM-DD-*.sql`;
+- ser idempotentes quando possivel;
+- nao apagar dados;
+- documentar rollback manual quando necessario;
+- rodar primeiro em ambiente local/homologacao;
+- exigir backup antes de producao.
+
+Sugestoes conceituais:
+
+- `benefits`: titulo, descricao, icone, categoria, ativo, ordem.
+- `technologies`: nome, descricao, selo, icone/imagem, ativo, ordem.
+- `faqs`: pergunta, resposta, categoria, ativo, ordem.
+- `campaigns`: nome, slug, periodo, status, headline, termos, CTA, imagem.
+- `referrals`: dados do indicador, dados do indicado, consentimento, status, origem, timestamps.
+- `leads`: origem, nome, telefone, cidade, bairro, plano, status.
+- `integration_logs`: provider, request_id, status, erro mascarado, timestamps.
+
+## 9. Ordem recomendada para o Admin 2.0
+
+1. Documentar contrato atual da API.
+2. Criar padrao de migration.
+3. Melhorar protecoes de producao para `config/`, `database/` e `uploads/`.
+4. Adicionar Beneficios.
+5. Adicionar Tecnologias.
+6. Adicionar FAQ.
+7. Expandir API para entregar novos blocos.
+8. Atualizar frontend para consumir novos blocos com fallback.
+9. Adicionar Campanhas.
+10. Adicionar Leads e Indicacoes.
+11. Adicionar logs e integracoes.
+12. Integrar IXC somente apos homologacao.
+
+## 10. Integracao futura IXC
+
+Arquitetura obrigatoria:
+
+`React -> API PHP propria -> API REST IXC`
+
+Regras:
+
+- Token nunca no frontend.
+- Token fora do Git.
+- Configuracao por variavel de ambiente ou arquivo local protegido.
+- Endpoint proprio no backend.
+- Timeout e tratamento de erro.
+- Logs sem token, CPF completo ou payload sensivel.
+- Rate limit.
+- CAPTCHA quando houver formulario publico.
+- Validacao de duplicidade.
+- Homologacao antes de producao.
+
+Dados que precisam ser solicitados antes:
+
+- URL base da API IXC.
+- Token exclusivo.
+- Usuario tecnico.
+- Permissoes minimas.
+- Ambiente de teste.
+- Endpoint correto.
+- Metodo HTTP.
+- Headers.
+- Payload JSON.
+- Campos obrigatorios.
+- Exemplos de sucesso e erro.
+- Contato tecnico.
+
+Nao inventar endpoints, credenciais ou payloads.
+
+## 11. Indique e Ganhe
+
+Formulario futuro:
+
+Dados de quem indica:
+
+- nome;
+- CPF ou codigo do cliente;
+- telefone;
+- contrato/login;
+- e-mail opcional.
+
+Dados da pessoa indicada:
+
+- nome;
+- telefone;
+- cidade;
+- bairro;
+- CEP;
+- endereco;
+- plano de interesse.
+
+Regras pendentes:
+
+- quando o beneficio e concedido;
+- se depende de instalacao;
+- se depende de pagamento da primeira mensalidade;
+- limite de indicacoes;
+- acumulacao;
+- duplicidade;
+- validade da campanha;
+- elegibilidade;
+- contrato que recebe desconto.
+
+LGPD:
+
+- finalidade clara;
+- coleta minima;
+- consentimento/ciencia;
+- link para politica de privacidade;
+- registro de aceite;
+- protecao dos dados;
+- logs mascarados.
+
+## 12. Arquivos provaveis por fase de admin
+
+Beneficios:
+
+- `admin/beneficios.php`
+- `api/site-content.php`
+- `src/content/types.ts`
+- `src/services/site-content-service.ts`
+- `database/migration-*.sql`
+
+Tecnologias:
+
+- `admin/tecnologias.php`
+- `api/site-content.php`
+- `src/components/site/Technologies.tsx`
+- `database/migration-*.sql`
+
+FAQ:
+
+- `admin/faq.php`
+- `api/site-content.php`
+- `src/components/site/Faq.tsx`
+- `index.html` ou geracao de schema futuro
+- `database/migration-*.sql`
+
+Campanhas:
+
+- `admin/campanhas.php`
+- `src/components/site/Campaigns.tsx`
+- possiveis landing pages
+- `database/migration-*.sql`
+
+Indicacoes:
+
+- `admin/indicacoes.php`
+- novo endpoint `api/referrals.php` ou equivalente
+- tabela `referrals`
+- protecoes LGPD
+
+IXC:
+
+- endpoint backend dedicado;
+- configuracao local protegida;
+- logs administrativos;
+- documentacao de homologacao.
+
+## 13. Recomendacoes de seguranca antes do painel 2.0
+
+- Confirmar bloqueio web para `config/` e `database/`.
+- Bloquear execucao de PHP em `uploads/`.
+- Evitar scripts temporarios em producao.
+- Adicionar log de auditoria antes de modulos sensiveis.
+- Criar perfil/permissao antes de permitir acesso amplo a integracoes.
+- Mascarar dados pessoais em listagens e logs.
+- Validar backup e restore antes de migrations.
+
+## 14. Conclusao
+
+O painel atual e uma boa base para a GNS Fibra 2.0. Ele ja cobre conteudo essencial, seguranca basica adequada e fluxo administrativo funcional.
+
+A evolucao deve ser incremental. O primeiro passo nao deve ser IXC nem Indicacoes; deve ser consolidar contrato de API, migrations e modulos simples como Beneficios, Tecnologias e FAQ. Depois disso, Campanhas, Leads, Indicacoes e IXC podem ser implementados com menor risco.
