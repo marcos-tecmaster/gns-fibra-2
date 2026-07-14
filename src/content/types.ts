@@ -1,4 +1,14 @@
-export type IconName = "wifi" | "zap" | "headset" | "shield" | "home";
+export type IconName =
+  | "wifi"
+  | "zap"
+  | "headset"
+  | "shield"
+  | "home"
+  | "tv"
+  | "camera"
+  | "credit-card"
+  | "router"
+  | "network";
 
 export type CoverageArea = {
   id: string;
@@ -56,6 +66,23 @@ export type SiteContent = {
     highlight: boolean;
     badge?: string;
     features: string[];
+  }>;
+  benefits: Array<{
+    id: string;
+    icon: IconName;
+    title: string;
+    description: string;
+    ctaLabel?: string;
+    ctaHref?: string;
+    active: boolean;
+  }>;
+  technologies: Array<{
+    id: string;
+    icon: IconName;
+    name: string;
+    description: string;
+    availability: string;
+    active: boolean;
   }>;
   coverageAreas: CoverageArea[];
   testimonials: Array<{

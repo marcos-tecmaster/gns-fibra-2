@@ -185,7 +185,7 @@ html[data-theme="light"] {
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
   ::selection {
     background: color-mix(in oklab, var(--color-primary) 38%, transparent);
@@ -301,6 +301,123 @@ html[data-theme="light"] {
     opacity: 0.9;
   }
 
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .plan-card,
+  .benefit-card,
+  .technology-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(8px);
+  }
+
+  .plan-card {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    padding: 1.25rem;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .plan-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(135deg, color-mix(in oklab, var(--color-primary) 10%, transparent), transparent 44%);
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .plan-card:hover {
+    border-color: color-mix(in oklab, var(--color-primary) 55%, var(--color-border));
+    transform: translateY(-0.25rem);
+  }
+
+  .plan-card:hover::before {
+    opacity: 1;
+  }
+
+  .plan-card-featured {
+    border-color: color-mix(in oklab, var(--color-primary) 72%, var(--color-border));
+    box-shadow: var(--shadow-brand), var(--shadow-card);
+  }
+
+  .benefit-card {
+    min-width: 0;
+    border-radius: 1.25rem;
+    padding: 1.25rem;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .benefit-card:hover {
+    border-color: color-mix(in oklab, var(--color-primary) 48%, var(--color-border));
+    transform: translateY(-0.2rem);
+  }
+
+  .technology-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    border: 1px solid var(--color-border);
+    background:
+      radial-gradient(circle at 18% 18%, color-mix(in oklab, var(--color-primary) 16%, transparent), transparent 30%),
+      var(--gradient-card);
+    box-shadow: var(--shadow-elevated);
+    padding: 1rem;
+  }
+
+  .technology-radar {
+    position: absolute;
+    right: -2.5rem;
+    top: -2.5rem;
+    display: grid;
+    height: 10rem;
+    width: 10rem;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--color-primary) 32%, transparent);
+    background:
+      radial-gradient(circle, color-mix(in oklab, var(--color-primary) 14%, transparent) 0 28%, transparent 29% 100%),
+      repeating-radial-gradient(circle, color-mix(in oklab, var(--color-primary) 20%, transparent) 0 1px, transparent 1px 24px);
+    opacity: 0.8;
+  }
+
+  .technology-card {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    gap: 1rem;
+    border-radius: 1.25rem;
+    padding: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .plans-grid {
+      gap: 1.25rem;
+    }
+
+    .plan-card,
+    .benefit-card,
+    .technology-card {
+      padding: 1.5rem;
+    }
+  }
+
   @media (max-width: 767px) {
     .hero-fiber-backdrop {
       object-position: 72% center;
@@ -311,6 +428,10 @@ html[data-theme="light"] {
       background:
         linear-gradient(90deg, color-mix(in oklab, var(--color-bg) 95%, transparent) 0%, color-mix(in oklab, var(--color-bg) 84%, transparent) 66%, color-mix(in oklab, var(--color-bg) 68%, transparent) 100%),
         linear-gradient(180deg, color-mix(in oklab, var(--color-bg) 78%, transparent) 0%, transparent 38%, var(--color-bg) 100%);
+    }
+
+    .technology-card {
+      flex-direction: column;
     }
   }
 }

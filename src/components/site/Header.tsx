@@ -5,11 +5,23 @@ import { whatsappLink } from "@/lib/site-content";
 import { ThemeToggle } from "./ThemeToggle";
 
 const mobileMenuId = "site-mobile-menu";
+const sectionNavigation = [
+  { id: "inicio", href: "#inicio" },
+  { id: "planos", href: "#planos" },
+  { id: "beneficios", href: "#planos" },
+  { id: "tecnologias", href: "#planos" },
+  { id: "empresarial", href: "#empresarial" },
+  { id: "cobertura", href: "#cobertura" },
+  { id: "quem-somos", href: "#quem-somos" },
+  { id: "depoimentos", href: "#quem-somos" },
+  { id: "contato", href: "#contato" },
+] as const;
 
 export function Header() {
   const { config, navigation } = useSiteContent();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState("#inicio");
   const logoUrl = `${import.meta.env.BASE_URL}logo-gns.png`;
 
   useEffect(() => {
@@ -17,6 +29,35 @@ export function Header() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = sectionNavigation
+      .map(({ id, href }) => {
+        const element = document.getElementById(id);
+        return element ? { element, href } : null;
+      })
+      .filter((section): section is NonNullable<typeof section> => section !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+
+        if (!visibleEntry) return;
+
+        const section = sections.find(({ element }) => element === visibleEntry.target);
+        if (section) setActiveHref(section.href);
+      },
+      {
+        rootMargin: "-20% 0px -65% 0px",
+        threshold: 0,
+      },
+    );
+
+    sections.forEach(({ element }) => observer.observe(element));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -78,7 +119,12 @@ export function Header() {
             <a
               key={item.href}
               href={item.href}
-              className="rounded-full px-3.5 py-2 text-xs font-semibold text-foreground/75 transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-offset-0"
+              aria-current={activeHref === item.href ? "location" : undefined}
+              className={`rounded-full px-3.5 py-2 text-xs font-semibold transition-colors focus-visible:outline-offset-0 ${
+                activeHref === item.href
+                  ? "bg-primary text-primary-foreground shadow-brand hover:bg-primary hover:text-primary-foreground"
+                  : "text-foreground/75 hover:bg-primary/10 hover:text-primary"
+              }`}
             >
               {item.label}
             </a>
@@ -129,7 +175,12 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground/90 transition-colors hover:bg-primary/10 hover:text-primary"
+                aria-current={activeHref === item.href ? "location" : undefined}
+                className={`rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
+                  activeHref === item.href
+                    ? "bg-primary text-primary-foreground shadow-brand hover:bg-primary hover:text-primary-foreground"
+                    : "text-foreground/90 hover:bg-primary/10 hover:text-primary"
+                }`}
               >
                 {item.label}
               </a>

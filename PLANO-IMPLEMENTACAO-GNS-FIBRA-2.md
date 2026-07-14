@@ -112,6 +112,15 @@ Objetivo:
 
 - Reorganizar a pagina para conversao e clareza.
 
+Status em 14/07/2026:
+
+- Implementada a reconstrucao visual dos planos.
+- Criadas secoes publicas de Beneficios e Tecnologias.
+- Contrato atual de planos preservado.
+- Sem alteracao em API PHP, painel, banco ou migrations.
+- Conteudo comercial novo da matriz interna nao foi publicado.
+- Criados `MAPA-CONTEUDO-COMERCIAL-GNS-FIBRA-2.md` e `IMPLEMENTACAO-PLANOS-BENEFICIOS-TECNOLOGIAS-GNS-FIBRA-2.md`.
+
 Arquivos provaveis:
 
 - `src/App.tsx`

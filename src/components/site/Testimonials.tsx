@@ -17,7 +17,8 @@ export function Testimonials() {
             <span className="text-gradient">cada conexão.</span>
           </h2>
           <p className="mt-5 text-muted-foreground">
-            Estrutura pronta para receber avaliações dinâmicas do futuro painel administrativo.
+            Veja como a conexão e o atendimento da GNS Fibra fazem parte da
+            rotina dos nossos clientes.
           </p>
         </div>
 

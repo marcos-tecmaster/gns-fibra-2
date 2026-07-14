@@ -468,3 +468,62 @@ Validado em navegador local:
 - Persistencia observada apos reload pelo atributo mantido no HTML.
 - Breakpoints 360, 390, 414, 430, 768, 1024, 1280 e 1440 sem overflow horizontal nos dois temas.
 - Menu mobile abre em 390px com o toggle presente e sem overflow.
+
+## 22. Planos, beneficios e tecnologias
+
+Atualizado em 14/07/2026.
+
+### Planos
+
+Direcao aplicada:
+
+- cards comerciais mais escaneaveis;
+- nome, velocidade, preco, beneficio principal, Wi-Fi e CTA como hierarquia principal;
+- lista curta de beneficios para evitar cards longos;
+- selo textual para plano em destaque;
+- grid responsivo com `auto-fit`, sem regra por indice ou quantidade fixa;
+- tratamento visual para preco ausente ou zero como estado sob consulta.
+
+Classes CSS adicionadas:
+
+- `.plans-grid`;
+- `.plan-card`;
+- `.plan-card-featured`.
+
+### Beneficios
+
+Foi criada uma secao propria para beneficios, separada dos planos.
+
+Direcao aplicada:
+
+- cards menores;
+- icones `lucide-react`;
+- texto curto;
+- estrutura com `active`, CTA opcional e dados preparados para painel futuro;
+- uso apenas de informacoes ja presentes no conteudo atual.
+
+Classe CSS adicionada:
+
+- `.benefit-card`.
+
+### Tecnologias
+
+Foi criada uma secao propria para tecnologias.
+
+Direcao aplicada:
+
+- aparencia tecnica sem estetica gamer excessiva;
+- composicao em painel com linhas e sinalizacao leve em CSS;
+- sem imagens novas;
+- sem publicar Wi-Fi 6, Wi-Fi 7, XGS-PON ou beneficios internos sem confirmacao;
+- disponibilidade exibida como campo textual administravel no futuro.
+
+Classes CSS adicionadas:
+
+- `.technology-panel`;
+- `.technology-radar`;
+- `.technology-card`.
+
+### Ajuste tipografico
+
+O `letter-spacing` global de headings foi ajustado para `0`, evitando compressao visual e seguindo a regra atual de legibilidade do projeto.

@@ -107,6 +107,78 @@ export const siteContent: SiteContent = {
       description: "Soluções adequadas para cada perfil de consumo.",
     },
   ],
+  benefits: [
+    {
+      id: "wifi-incluso",
+      icon: "wifi",
+      title: "Wi-Fi para conectar seus dispositivos",
+      description:
+        "Equipamentos e recursos definidos conforme o plano contratado e a viabilidade técnica.",
+      active: true,
+    },
+    {
+      id: "atendimento-humano",
+      icon: "headset",
+      title: "Atendimento próximo e humanizado",
+      description:
+        "Uma equipe preparada para orientar você na contratação, instalação e uso dos serviços.",
+      active: true,
+    },
+    {
+      id: "pagamento-flexivel",
+      icon: "credit-card",
+      title: "Pagamento com praticidade",
+      description:
+        "Consulte as formas de pagamento disponíveis para o plano escolhido.",
+      active: true,
+    },
+    {
+      id: "camera-seguranca",
+      icon: "camera",
+      title: "Mais segurança para sua rotina",
+      description:
+        "Alguns planos podem incluir recursos adicionais de segurança. Consulte as condições disponíveis.",
+      active: true,
+    },
+  ],
+  technologies: [
+    {
+      id: "fibra-optica",
+      icon: "network",
+      name: "Fibra óptica",
+      description:
+        "Conexão de alta capacidade para residências e empresas.",
+      availability: "Conforme cobertura",
+      active: true,
+    },
+    {
+      id: "wifi",
+      icon: "wifi",
+      name: "Wi-Fi",
+      description:
+        "Recursos definidos de acordo com o plano, equipamento e viabilidade técnica.",
+      availability: "Conforme o plano",
+      active: true,
+    },
+    {
+      id: "rede-monitorada",
+      icon: "shield",
+      name: "Rede monitorada",
+      description:
+        "Infraestrutura acompanhada para oferecer mais estabilidade e confiabilidade.",
+      availability: "Rede GNS Fibra",
+      active: true,
+    },
+    {
+      id: "casa-empresa",
+      icon: "home",
+      name: "Casa e empresa",
+      description:
+        "Soluções adaptadas para diferentes perfis de uso.",
+      availability: "Para cada rotina",
+      active: true,
+    },
+  ],
   plans: [
     {
       id: "start-95",
@@ -256,12 +328,12 @@ export const siteContent: SiteContent = {
     {
       id: "equipe",
       title: "Nossa equipe",
-      description: "Espaço preparado para fotos dos profissionais da GNS Fibra.",
+      description: "Profissionais próximos, preparados para orientar e atender você.",
     },
     {
       id: "frota",
       title: "Nossa frota",
-      description: "Espaço preparado para fotos dos veículos de atendimento.",
+      description: "Estrutura de atendimento para acompanhar nossa área de cobertura.",
     },
   ],
 };

@@ -303,3 +303,97 @@ IXC:
 O painel atual e uma boa base para a GNS Fibra 2.0. Ele ja cobre conteudo essencial, seguranca basica adequada e fluxo administrativo funcional.
 
 A evolucao deve ser incremental. O primeiro passo nao deve ser IXC nem Indicacoes; deve ser consolidar contrato de API, migrations e modulos simples como Beneficios, Tecnologias e FAQ. Depois disso, Campanhas, Leads, Indicacoes e IXC podem ser implementados com menor risco.
+
+## 15. Atualizacao da fase Planos, Beneficios e Tecnologias
+
+Data: 14/07/2026
+Status: somente frontend e documentacao; sem alteracao de painel, API, banco ou migration
+
+### Campos atuais de planos
+
+| Campo | Banco | API | Frontend |
+| --- | --- | --- | --- |
+| Nome | `plans.name` | `name` | `plan.name` |
+| Velocidade | `plans.speed` | `speed` | `plan.speed` |
+| Unidade | `plans.unit` | `unit` | `plan.unit` |
+| Preco | `plans.price` | `price` | `plan.price` formatado |
+| Descricao curta | `plans.audience` | `audience` | `plan.audience` |
+| Beneficios | `plans.benefits` | `benefits` | `plan.features` |
+| Forma de pagamento | `plans.payment_method` | `payment_method` | incorporado em `features` quando necessario |
+| Destaque | `plans.featured` | `featured` | `plan.highlight` |
+| Status | `plans.active` | filtrado na API | somente ativos |
+| Ordem | `plans.display_order` | ordem da query | ordem renderizada |
+
+### Campos novos recomendados para planos
+
+Nao criar migration nesta fase.
+
+- `wifi_technology`: texto curto como Wi-Fi 5, Wi-Fi 6 ou Wi-Fi 7, quando confirmado.
+- `subtitle`: subtitulo comercial editavel.
+- `main_benefit`: beneficio principal para card.
+- `badge`: selo editavel, independente de `featured`.
+- `quote_only`: plano somente sob consulta.
+- `category`: residencial, empresarial, combo, campanha ou outro.
+- `tier`: ordenacao semantica como essential, performance, advanced.
+- `display_order`: ja existe e deve ser mantido.
+- `featured`: ja existe e deve ser mantido.
+- `active`: ja existe e deve ser mantido.
+
+### Modulo futuro de beneficios
+
+Tabela sugerida: `benefits`.
+
+Campos:
+
+- `id`;
+- `title`;
+- `description`;
+- `icon`;
+- `image_path`;
+- `cta_label`;
+- `cta_url`;
+- `active`;
+- `display_order`;
+- `created_at`;
+- `updated_at`.
+
+Endpoint futuro:
+
+- incluir `benefits` em `api/site-content.php` ou criar contrato versionado.
+
+Fallback:
+
+- se a API nao enviar `benefits`, o frontend usa `src/lib/site-content.ts`.
+- beneficios inativos nao devem aparecer.
+
+### Modulo futuro de tecnologias
+
+Tabela sugerida: `technologies`.
+
+Campos:
+
+- `id`;
+- `name`;
+- `description`;
+- `icon`;
+- `availability`;
+- `active`;
+- `display_order`;
+- `created_at`;
+- `updated_at`.
+
+Endpoint futuro:
+
+- incluir `technologies` em `api/site-content.php` ou criar contrato versionado.
+
+Fallback:
+
+- se a API nao enviar `technologies`, o frontend usa `src/lib/site-content.ts`.
+- tecnologias inativas nao devem aparecer.
+
+### Riscos
+
+- A tela publica agora consegue exibir beneficios e tecnologias, mas o painel ainda nao administra esses blocos.
+- O frontend infere beneficio principal e Wi-Fi a partir de `plans.benefits`; isso deve ser substituido por campos proprios em fase de banco.
+- Publicar Wi-Fi 6, Wi-Fi 7, XGS-PON, GNS TV Plus, streaming, Mesh ou telefone fixo exige confirmacao comercial e tecnica.
+- `quote_only` deve ser campo semantico futuro; hoje o frontend apenas tolera preco vazio ou zero.
