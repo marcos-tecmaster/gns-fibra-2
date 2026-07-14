@@ -4,6 +4,8 @@ import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
 import { ThemeToggle } from "./ThemeToggle";
 
+const mobileMenuId = "site-mobile-menu";
+
 export function Header() {
   const { config, navigation } = useSiteContent();
   const [scrolled, setScrolled] = useState(false);
@@ -24,39 +26,59 @@ export function Header() {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
         scrolled || open
-          ? "border-border/60 bg-background/95 py-2.5 shadow-lg shadow-black/20 backdrop-blur-xl"
-          : "border-transparent bg-gradient-to-b from-background/85 to-transparent py-4"
+          ? "border-border/70 bg-background/92 py-2 shadow-elevated backdrop-blur-xl"
+          : "border-transparent bg-gradient-to-b from-background/88 to-background/20 py-3.5"
       }`}
     >
-      <div className="container mx-auto flex min-w-0 items-center justify-between gap-2 px-4 sm:gap-4 sm:px-5">
-        <a href="#inicio" className="group flex min-w-0 shrink items-center gap-2.5" aria-label="GNS Fibra">
+      <div className="container mx-auto flex min-h-14 min-w-0 items-center justify-between gap-2 px-4 sm:gap-4 sm:px-5">
+        <a
+          href="#inicio"
+          className="group flex min-w-0 shrink items-center gap-2.5 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+          aria-label="GNS Fibra - Início"
+        >
           <img
             src={logoUrl}
             alt="GNS Fibra"
             width={60}
             height={60}
-            className="h-12 w-12 shrink-0 object-contain lg:h-15 lg:w-15"
+            className="h-11 w-11 shrink-0 object-contain sm:h-12 sm:w-12 lg:h-14 lg:w-14"
           />
-          <div className="min-w-0 leading-tight">
-            <div className="truncate font-display text-xs font-black tracking-wider text-foreground min-[370px]:text-sm sm:text-base">
+          <div className="hidden min-w-0 leading-tight min-[360px]:block">
+            <div className="truncate font-display text-sm font-black tracking-normal text-foreground sm:text-base">
               {config.company.name.toUpperCase()}
             </div>
-            <div className="text-[9px] font-semibold uppercase tracking-[0.22em] text-primary sm:text-[10px]">
-              Fibra Óptica 
+            <div className="text-[10px] font-semibold uppercase tracking-normal text-primary sm:text-[11px]">
+              Fibra óptica
             </div>
           </div>
         </a>
 
-        <nav className="hidden items-center gap-5 xl:flex" aria-label="Navegação principal">
+        <nav
+          className="hidden items-center gap-1 rounded-full border border-border/70 bg-card/50 p-1 shadow-card backdrop-blur-xl xl:flex"
+          aria-label="Navegação principal"
+        >
           {navigation.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="relative py-2 text-xs font-semibold text-foreground/75 transition-colors hover:text-primary"
+              className="rounded-full px-3.5 py-2 text-xs font-semibold text-foreground/75 transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-offset-0"
             >
               {item.label}
             </a>
@@ -68,7 +90,7 @@ export function Header() {
             href={config.links.customerPortal}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2.5 text-xs font-bold text-foreground transition-colors hover:border-primary/60 hover:text-primary lg:inline-flex"
+            className="hidden min-h-11 items-center gap-2 rounded-full border border-border bg-card/65 px-4 py-2 text-xs font-bold text-foreground transition-colors hover:border-primary/60 hover:text-primary lg:inline-flex"
           >
             <UserRound className="h-4 w-4" />
             Central do Assinante
@@ -77,18 +99,19 @@ export function Header() {
             href={whatsappLink(config.contact.whatsappUrl)}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-brand transition-transform hover:scale-[1.03] md:inline-flex"
+            className="hidden min-h-11 items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-2 text-xs font-bold text-primary-foreground shadow-brand transition-transform hover:scale-[1.03] md:inline-flex"
           >
             <MessageCircle className="h-4 w-4" />
-            WhatsApp
+            Falar no WhatsApp
           </a>
           <ThemeToggle />
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="grid h-11 w-11 place-items-center rounded-xl border border-border bg-card/80 text-foreground xl:hidden"
+            className="grid h-11 w-11 place-items-center rounded-xl border border-border bg-card/80 text-foreground transition-colors hover:border-primary/60 hover:text-primary xl:hidden"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
+            aria-controls={mobileMenuId}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -96,14 +119,17 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="mx-4 mt-3 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-card p-4 shadow-2xl xl:hidden">
+        <div
+          id={mobileMenuId}
+          className="mx-4 mt-3 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-card/98 p-4 shadow-elevated backdrop-blur-xl xl:hidden"
+        >
           <nav className="grid gap-1" aria-label="Navegação mobile">
             {navigation.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground/90 hover:bg-primary/10 hover:text-primary"
+                className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground/90 transition-colors hover:bg-primary/10 hover:text-primary"
               >
                 {item.label}
               </a>
@@ -115,7 +141,7 @@ export function Header() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm font-bold"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm font-bold transition-colors hover:border-primary/60 hover:text-primary"
             >
               <UserRound className="h-4 w-4" />
               Central do Assinante
@@ -125,7 +151,8 @@ export function Header() {
               href={whatsappLink(config.contact.whatsappUrl)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-3 text-sm font-bold text-primary-foreground"
+              onClick={() => setOpen(false)}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-3 text-sm font-bold text-primary-foreground shadow-brand"
             >
               <MessageCircle className="h-4 w-4" />
               Falar no WhatsApp

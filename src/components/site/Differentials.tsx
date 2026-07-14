@@ -8,7 +8,7 @@ export function Differentials() {
   const { differentials } = useSiteContent();
 
   return (
-    <section id="diferenciais" className="relative py-24 md:py-28">
+    <section id="diferenciais" className="section-spacing-standard relative">
       <div className="container mx-auto px-5">
         <div className="max-w-2xl mx-auto text-center mb-16">
           <span className="text-xs font-bold tracking-[0.3em] text-primary uppercase">

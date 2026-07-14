@@ -19,7 +19,7 @@ export function Coverage() {
   }, [coverageAreas, query]);
 
   return (
-    <section id="cobertura" className="relative py-24 md:py-32">
+    <section id="cobertura" className="section-spacing-standard relative">
       <div className="container mx-auto min-w-0 px-4 sm:px-5">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <motion.div

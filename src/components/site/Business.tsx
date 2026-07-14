@@ -13,7 +13,7 @@ export function Business() {
   const { config } = useSiteContent();
 
   return (
-    <section id="empresarial" className="relative overflow-hidden py-20 md:py-28">
+    <section id="empresarial" className="section-spacing-standard relative overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-card/70 via-background to-primary/5" />
       <div className="container mx-auto px-5">
         <div className="grid items-center gap-10 rounded-[2rem] border border-border bg-card/55 p-6 shadow-2xl shadow-black/20 backdrop-blur md:p-10 lg:grid-cols-[1.1fr_0.9fr] lg:p-14">

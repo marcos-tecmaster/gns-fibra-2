@@ -45,6 +45,11 @@
 :root {
   --radius: 0.75rem;
 
+  /* Vertical rhythm shared by public content sections. */
+  --section-space-compact: 3.5rem;
+  --section-space-standard: 4rem;
+  --section-space-wide: 4.5rem;
+
   color-scheme: dark;
 
   /* Brand references */
@@ -206,8 +211,116 @@ html[data-theme="light"] {
   box-shadow: var(--shadow-brand);
 }
 
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+@utility shadow-elevated {
+  box-shadow: var(--shadow-elevated);
+}
+
 @utility shadow-whatsapp {
   box-shadow: var(--shadow-whatsapp);
+}
+
+@layer components {
+  .section-spacing-compact {
+    padding-block: var(--section-space-compact);
+  }
+
+  .section-spacing-standard {
+    padding-block: var(--section-space-standard);
+  }
+
+  .section-spacing-wide {
+    padding-block: var(--section-space-wide);
+  }
+
+  .hero-fiber-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 64% center;
+    opacity: 0.62;
+    transform: scale(1.02);
+  }
+
+  .hero-fiber-tone {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 82% 30%, color-mix(in oklab, var(--color-primary) 24%, transparent), transparent 30%),
+      radial-gradient(circle at 76% 68%, color-mix(in oklab, var(--color-primary-hover) 16%, transparent), transparent 34%),
+      linear-gradient(135deg, color-mix(in oklab, var(--color-bg) 84%, transparent) 0%, color-mix(in oklab, var(--color-bg-soft) 52%, transparent) 54%, color-mix(in oklab, var(--color-bg) 36%, transparent) 100%);
+    mix-blend-mode: normal;
+  }
+
+  .hero-fiber-readability {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, var(--color-bg) 0%, color-mix(in oklab, var(--color-bg) 90%, transparent) 36%, color-mix(in oklab, var(--color-bg) 50%, transparent) 64%, transparent 100%),
+      linear-gradient(180deg, color-mix(in oklab, var(--color-bg) 72%, transparent) 0%, transparent 30%, var(--color-bg) 100%);
+  }
+
+  html[data-theme="light"] .hero-fiber-backdrop {
+    opacity: 0.46;
+    filter: saturate(1.04) contrast(1.02) brightness(1.08);
+  }
+
+  html[data-theme="light"] .hero-fiber-tone {
+    background:
+      radial-gradient(circle at 82% 30%, color-mix(in oklab, var(--color-primary) 18%, transparent), transparent 32%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.78) 0%, rgba(245, 246, 248, 0.58) 55%, rgba(239, 125, 3, 0.12) 100%);
+  }
+
+  html[data-theme="light"] .hero-fiber-readability {
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.86) 38%, rgba(245, 246, 248, 0.58) 66%, rgba(245, 246, 248, 0.18) 100%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.74) 0%, rgba(255, 255, 255, 0.18) 34%, #ffffff 100%);
+  }
+
+  .hero-mascot-stage {
+    position: relative;
+    min-height: 320px;
+    height: 100%;
+    isolation: isolate;
+  }
+
+  .hero-mascot-stage::before {
+    content: "";
+    position: absolute;
+    inset: 8% 4% 2% 0;
+    border-radius: 999px;
+    background:
+      radial-gradient(ellipse at 52% 42%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 52%),
+      linear-gradient(140deg, transparent 0 44%, color-mix(in oklab, var(--color-primary) 10%, transparent) 52%, transparent 68% 100%);
+    filter: blur(1px);
+    opacity: 0.9;
+  }
+
+  @media (max-width: 767px) {
+    .hero-fiber-backdrop {
+      object-position: 72% center;
+      opacity: 0.34;
+    }
+
+    .hero-fiber-readability {
+      background:
+        linear-gradient(90deg, color-mix(in oklab, var(--color-bg) 95%, transparent) 0%, color-mix(in oklab, var(--color-bg) 84%, transparent) 66%, color-mix(in oklab, var(--color-bg) 68%, transparent) 100%),
+        linear-gradient(180deg, color-mix(in oklab, var(--color-bg) 78%, transparent) 0%, transparent 38%, var(--color-bg) 100%);
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-space-compact: 4rem;
+    --section-space-standard: 5rem;
+    --section-space-wide: 6rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

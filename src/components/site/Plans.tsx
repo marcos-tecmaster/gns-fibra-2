@@ -7,7 +7,7 @@ export function Plans() {
   const { config, plans } = useSiteContent();
 
   return (
-    <section id="planos" className="relative overflow-hidden py-24 md:py-32">
+    <section id="planos" className="section-spacing-wide relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-1/3 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]" />
       </div>

@@ -7,7 +7,7 @@ export function CTASection() {
   const { config } = useSiteContent();
 
   return (
-    <section id="contato" className="relative py-24 md:py-32">
+    <section id="contato" className="section-spacing-compact relative">
       <div className="container mx-auto px-5">
         <div className="relative overflow-hidden rounded-[2.5rem] border border-primary/40 bg-gradient-to-br from-card via-background to-card p-8 md:p-16">
           {/* Background image */}

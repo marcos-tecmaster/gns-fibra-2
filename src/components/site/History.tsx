@@ -6,7 +6,7 @@ export function History() {
   const { config, historyGallery } = useSiteContent();
 
   return (
-    <section id="quem-somos" className="relative py-24 md:py-32">
+    <section id="quem-somos" className="section-spacing-standard relative">
       <div className="container mx-auto px-5">
         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>

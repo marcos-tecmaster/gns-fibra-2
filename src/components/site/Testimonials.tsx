@@ -6,7 +6,7 @@ export function Testimonials() {
   const { testimonials } = useSiteContent();
 
   return (
-    <section id="depoimentos" className="relative overflow-hidden py-24 md:py-32">
+    <section id="depoimentos" className="section-spacing-standard relative overflow-hidden">
       <div className="container mx-auto px-5">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary">
