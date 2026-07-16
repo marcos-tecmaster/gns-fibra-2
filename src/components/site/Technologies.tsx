@@ -9,6 +9,7 @@ import {
   Wifi,
   Zap,
 } from "lucide-react";
+import wifiTurboMascot from "@/assets/mascote/v2/wifi-turbo.png";
 import { useSiteContent } from "@/content/SiteContentProvider";
 import type { IconName } from "@/content/types";
 
@@ -51,42 +52,63 @@ export function Technologies() {
           </p>
         </div>
 
-        <div className="technology-panel">
-          <div className="technology-radar" aria-hidden="true">
-            <Signal className="h-10 w-10 text-primary" />
-          </div>
+        <div className="technology-showcase">
+          <div className="technology-panel">
+            <div className="technology-radar" aria-hidden="true">
+              <Signal className="h-10 w-10 text-primary" />
+            </div>
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            {activeTechnologies.map((technology, index) => {
-              const Icon = ICONS[technology.icon] ?? Network;
+            <div className="grid gap-4 lg:grid-cols-2">
+              {activeTechnologies.map((technology, index) => {
+                const Icon = ICONS[technology.icon] ?? Network;
 
-              return (
-                <motion.article
-                  key={technology.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.42, delay: index * 0.05 }}
-                  className="technology-card"
-                >
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-brand">
-                    <Icon className="h-6 w-6" aria-hidden="true" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex min-w-0 flex-wrap items-center gap-2">
-                      <h3 className="text-lg font-black leading-snug">{technology.name}</h3>
-                      <span className="rounded-full border border-border/80 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-wide text-muted-foreground">
-                        {technology.availability}
-                      </span>
+                return (
+                  <motion.article
+                    key={technology.id}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.42, delay: index * 0.05 }}
+                    className="technology-card"
+                  >
+                    <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-brand">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
                     </div>
-                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                      {technology.description}
-                    </p>
-                  </div>
-                </motion.article>
-              );
-            })}
+                    <div className="min-w-0">
+                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <h3 className="text-lg font-black leading-snug">{technology.name}</h3>
+                        <span className="rounded-full border border-border/80 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-wide text-muted-foreground">
+                          {technology.availability}
+                        </span>
+                      </div>
+                      <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                        {technology.description}
+                      </p>
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </div>
           </div>
+
+          <motion.figure
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.5, delay: 0.08 }}
+            className="technology-mascot"
+            aria-hidden="true"
+          >
+            <img
+              src={wifiTurboMascot}
+              alt=""
+              width={596}
+              height={840}
+              loading="lazy"
+              decoding="async"
+              className="technology-mascot-image"
+            />
+          </motion.figure>
         </div>
 
         <p className="mx-auto mt-6 max-w-3xl text-center text-xs leading-6 text-muted-foreground sm:text-sm">

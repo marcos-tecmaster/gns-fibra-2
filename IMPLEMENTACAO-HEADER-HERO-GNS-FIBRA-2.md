@@ -71,7 +71,7 @@ Estrutura:
 - CTA principal para WhatsApp usando `whatsappLink`.
 - CTA secundario para `#planos`.
 - Indicadores curtos de confianca.
-- Composicao visual hibrida com imagem de fibra optica, overlays por tema e area futura para mascote.
+- Composicao visual hibrida com imagem de fibra optica, overlays por tema e mascote oficial no espaco preparado.
 
 Revisao visual antes do commit:
 
@@ -94,22 +94,22 @@ Nao foi gerada versao WebP/AVIF nesta etapa porque o JPEG existente ja tem peso 
 
 ## 5. Mascote oficial
 
-Nao foi usado o arquivo de referencia do mascote no site.
+Na entrega inicial do Header e Hero, o mascote ainda nao era carregado. A primeira integracao oficial passou a usar somente a pose individual `apresentando`, sem utilizar a folha de referencia.
 
-O ponto futuro de insercao esta preparado no componente `HeroVisual` por meio de:
+O ponto de insercao foi mantido no componente `HeroMascot` por meio de:
 
 ```tsx
 data-future-mascot-slot="hero"
 ```
 
-Quando houver pose individual oficial aprovada, ela podera substituir ou complementar o visual tecnologico sem publicar a folha completa e sem recorte improvisado.
+Na primeira integracao, o componente importava apenas `src/assets/mascote/mascote-apresentando.png`. Na atualizacao V2, esse derivado experimental foi substituido por `src/assets/mascote/v2/hero-apresentando-apontando.png`.
 
 Conceito preservado:
 
 - Fibra optica como cenario tecnologico.
 - Texto e CTAs no lado esquerdo.
-- Lateral direita preparada para receber o mascote oficial futuramente.
-- Sem placeholder visivel para o usuario.
+- Mascote oficial na lateral direita do desktop e em fluxo normal apos o conteudo no mobile.
+- Sem card, moldura ou fundo visivel ao redor do personagem.
 
 ## 6. Dark e Light
 
@@ -142,7 +142,8 @@ Implementado:
 - Navegacao mobile com `aria-label`.
 - Botao de menu com `aria-label`, `aria-expanded` e `aria-controls`.
 - Escape fecha o menu mobile.
-- Elemento visual do Hero com `aria-hidden="true"`.
+- Imagem de fibra decorativa com `alt=""`.
+- Mascote informativo com alt text especifico, sem foco e sem bloquear interacoes.
 - Foco visivel preservado.
 - CTAs como links reais.
 - Areas de toque adequadas.
@@ -154,7 +155,8 @@ Decisoes:
 - Imagem de fibra reutilizada como asset decorativo existente.
 - Nenhuma dependencia nova.
 - Nenhum video automatico.
-- Nenhum asset do mascote carregado.
+- Somente o derivado de producao da pose `apresentando` e carregado.
+- Outras poses oficiais permanecem fora do bundle.
 - O quadro abstrato com Wi-Fi foi removido como protagonista.
 - Hero reserva dimensoes para a imagem com `width` e `height`, reduzindo risco de layout shift.
 
@@ -205,7 +207,7 @@ Resultado da inspecao:
 - Um unico `h1` presente.
 - CTAs do Hero com altura acima de 44 px.
 - Fibra carregada como fundo decorativo no Dark e no Light.
-- Slot futuro do mascote sem espaco vazio no mobile.
+- Mascote contido no espaco reservado, sem corte ou overflow no mobile.
 - Menu mobile abre com `aria-expanded="true"` e bloqueia scroll.
 - `Escape` fecha o menu e libera scroll.
 - Console sem erro de aplicacao identificado; apareceu apenas a mensagem conhecida de extensao/navegador `A listener indicated an asynchronous response...`.
@@ -213,7 +215,7 @@ Resultado da inspecao:
 ## 12. Pendencias
 
 - Validar contraste com ferramenta WCAG dedicada em fase propria.
-- Inserir mascote somente quando houver pose individual oficial aprovada.
+- Gerar WebP/AVIF quando houver encoder confiavel que preserve transparencia e qualidade.
 - Confirmar futuramente se a microcopy do Hero deve continuar igual ou receber texto comercial aprovado pela equipe.
 
 ## 13. Revisao do ritmo vertical
@@ -280,3 +282,50 @@ O componente `Stats` manteve seus 56 px por lado por funcionar como faixa compac
 - Typecheck, build e `git diff --check` aprovados.
 - Build manteve apenas o aviso conhecido do Vite sobre `theme-init.js` como script classico vindo de `public`.
 - Console sem erro da aplicacao; foi registrada somente a mensagem conhecida do ambiente/extensao sobre fechamento de canal assincrono.
+
+## 14. Primeira integracao oficial do mascote
+
+A pose `apresentando` foi integrada ao Hero em 13/07/2026. O marcador anterior foi substituido pelo componente simples `HeroMascot.tsx`, mantendo `data-future-mascot-slot="hero"` como identificador do espaco preparado.
+
+Preservado integralmente:
+
+- `config.company.heroTitle` e o unico `h1`;
+- `config.company.description`;
+- CTA WhatsApp e CTA para planos;
+- indicadores de confianca;
+- `SiteContentProvider`;
+- `hero-fiber.jpg` e overlays Dark/Light;
+- Header, links, navegacao e conteudo comercial.
+
+Comportamento:
+
+- Desktop: mascote no lado direito, alinhado a base, sem sobrepor texto ou navegacao.
+- Mobile: mascote em fluxo normal depois dos indicadores, com altura reservada e sem bloquear os CTAs.
+- Dark: contorno e sombra discretos mantem contraste das partes pretas.
+- Light: sombra grafite suave evita aspecto desbotado e halo branco.
+- Acessibilidade: alt text informativo, dimensoes declaradas, sem foco e sem informacao comercial exclusiva.
+- Performance: PNG de 756 x 900 px e 584.002 bytes, `loading="eager"`, `decoding="async"` e prioridade automatica para nao competir com a fibra.
+
+Detalhes completos, hashes e validacoes estao em `IMPLEMENTACAO-MASCOTE-HERO-GNS-FIBRA-2.md`.
+
+## 15. Hero com pose oficial V2
+
+Atualizado em 15/07/2026.
+
+O Header e a estrutura do Hero permanecem preservados. A unica alteracao publica no Hero desta fase foi a troca do asset importado por `HeroMascot.tsx`:
+
+- antes: derivado experimental `src/assets/mascote/mascote-apresentando.png`;
+- agora: `src/assets/mascote/v2/hero-apresentando-apontando.png`.
+
+O novo derivado possui 687 x 900 px, 540.995 bytes e SHA-256 `583CC01A2B8A0F95AB7B827EFF9F812CA00E9A2CD82BCA4F59AEA1D5A26FD412`.
+
+Composicao preservada:
+
+- texto, CTAs e indicadores no lado esquerdo;
+- mascote no lado direito no desktop;
+- fluxo normal no mobile;
+- imagem `hero-fiber.jpg` preservada;
+- tema Dark e Light preservados;
+- sem espelhamento, sem overlay sobre conteudo e sem aumento excessivo da altura do Hero.
+
+A matriz responsiva da colecao V2 foi validada em 360, 390, 414, 430, 768, 1024, 1280 e 1440 px nos dois temas, incluindo Header, menu mobile, navegacao ativa, CTA e ausencia de overflow horizontal.

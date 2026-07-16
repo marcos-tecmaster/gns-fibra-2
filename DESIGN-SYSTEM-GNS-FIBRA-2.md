@@ -336,7 +336,9 @@ Origem catalogada nesta fase:
 
 - Estrutura oficial: `docs/branding/mascote/`.
 - Arquivo de referencia catalogado: `docs/branding/mascote/referencias/guia-oficial-poses-mascote-gns.png`.
-- Arquivo encontrado: folha completa oficial de poses do mascote.
+- Fontes individuais oficiais: `apresentando.png`, `wifi-turbo.png`, `trabalhando-notebook.png`, `pensando.png` e `comemorando.png` em `docs/branding/mascote/originais/`.
+- Todos os originais individuais usam PNG RGBA com transparencia e foram preservados sem alteracao.
+- A folha completa continua sendo apenas referencia e nao e carregada no site.
 - Dimensoes: 1536 x 1024 px.
 - Peso: aproximadamente 2,46 MB.
 - Formato: PNG com canal alpha.
@@ -344,7 +346,7 @@ Origem catalogada nesta fase:
 
 Organizacao do acervo:
 
-- `docs/branding/mascote/originais/`: recebera futuramente poses individuais oficiais em alta qualidade.
+- `docs/branding/mascote/originais/`: contem as poses individuais oficiais em alta qualidade e deve permanecer imutavel.
 - `docs/branding/mascote/referencias/`: contem folhas de poses, prints e guias de uso.
 - `docs/branding/mascote/otimizados/`: contera somente arquivos aprovados e preparados para producao.
 
@@ -362,11 +364,27 @@ Diretrizes:
 - Evitar imagens pesadas acima da dobra sem versao otimizada.
 - Definir `alt` informativo quando o mascote comunicar uma acao ou estado; usar `alt=""` apenas quando for puramente decorativo.
 
+Implementacao atual no Hero:
+
+- Pose: `hero-apresentando-apontando.png`.
+- Fonte de producao: `src/assets/mascote/v2/hero-apresentando-apontando.png`.
+- Dimensoes: 687 x 900 px.
+- Peso: 540.995 bytes.
+- Transparencia e proporcao preservadas, com margem segura ao redor do personagem.
+- Componente: `src/components/site/HeroMascot.tsx`.
+- Alt text: `Mascote da GNS Fibra apontando para a mensagem principal`.
+- Imagem sem foco e com `pointer-events: none` na composicao.
+- Carregamento `eager` por estar acima da dobra, `decoding="async"` e sem `fetchPriority="high"` para nao competir com `hero-fiber.jpg`, que ja possui prioridade alta.
+- Tamanhos reservados: 240 px no mobile, 280 px a partir de 640 px, 320 px a partir de 768 px e 520 px a partir de 1024 px.
+- Dark: sombra profunda e luz de contorno laranja discreta para separar as partes pretas do fundo.
+- Light: sombra grafite suave, sem halo branco e sem alterar as cores oficiais.
+- WebP/AVIF pendentes ate existir encoder confiavel com preservacao de alpha; nenhuma dependencia pesada foi instalada.
+
 Aplicacoes futuras planejadas:
 
 | Secao | Pose sugerida | Intencao | Prioridade | Observacoes |
 | --- | --- | --- | --- | --- |
-| Hero | Aceno ou pose principal com logo | Recepcao, confianca e presenca de marca | Alta | Usar somente se houver recorte limpo e peso otimizado |
+| Hero | Apresentando | Recepcao, confianca e presenca de marca | Implementado | Derivado transparente integrado sobre a fibra aprovada |
 | Planos | Apresentando ou polegar para cima | Reforcar oferta e decisao | Media | Nao competir com preco e CTA |
 | Beneficios | Apontando ou celebrando | Destacar vantagens | Media | Usar com parcimonia em cards ou chamadas |
 | Suporte | Trabalhando, conectado ou protegido | Atendimento, suporte e estabilidade | Alta | Boa aplicacao para WhatsApp/suporte |
@@ -527,3 +545,51 @@ Classes CSS adicionadas:
 ### Ajuste tipografico
 
 O `letter-spacing` global de headings foi ajustado para `0`, evitando compressao visual e seguindo a regra atual de legibilidade do projeto.
+
+## 23. Colecao oficial de mascotes V2
+
+Atualizado em 15/07/2026.
+
+Fonte oficial V2:
+
+- `docs/branding/mascote/originais/v2-oficiais/`.
+
+Regras da colecao V2:
+
+- Originais permanecem imutaveis e servem apenas como fonte de alta qualidade.
+- Derivados de producao ficam em `src/assets/mascote/v2/`.
+- Nao espelhar via CSS, nao recolorir, nao alterar logo, uniforme, antenas, maos, pes ou elementos complementares.
+- Registrar qualquer halo do original sem corrigir desenho ou aplicar IA.
+- Usar o mascote de forma estrategica, sem repetir o personagem em todos os cards.
+- Importar somente a pose publicada na secao correspondente; nao criar agregador com toda a colecao.
+
+Aplicacoes publicadas nesta fase:
+
+| Secao | Pose | Asset de producao | Comportamento |
+| --- | --- | --- | --- |
+| Hero | `hero-apresentando-apontando.png` | `src/assets/mascote/v2/hero-apresentando-apontando.png` | lado direito, gesto direcionado ao texto e CTAs, `loading="eager"` |
+| Tecnologias | `wifi-turbo.png` | `src/assets/mascote/v2/wifi-turbo.png` | apoio visual unico, coluna lateral no desktop e fluxo normal antes do painel no mobile |
+| Empresarial | `empresarial-notebook.png` | `src/assets/mascote/v2/empresarial-notebook.png` | apoio visual subordinado a proposta empresarial, sem substituir texto ou CTA |
+
+Acessibilidade:
+
+- Hero usa alt informativo: `Mascote da GNS Fibra apontando para a mensagem principal`.
+- Tecnologias e Empresarial usam `alt=""` e `aria-hidden="true"`, pois as imagens sao apoio visual redundante ao conteudo textual.
+- As imagens nao recebem foco, nao recebem eventos de ponteiro e nao carregam informacao comercial exclusiva.
+
+Performance:
+
+- Hero declara `width={687}` e `height={900}`.
+- Wi-Fi Turbo declara `width={596}` e `height={840}`, com `loading="lazy"`.
+- Empresarial declara `width={647}` e `height={840}`, com `loading="lazy"`.
+- Todos usam `decoding="async"` e CSS com `aspect-ratio`/dimensoes maximas para reduzir layout shift.
+
+Poses V2 reservadas para fases futuras:
+
+- `contato-whatsapp-acenando.png`: CTA final e contato/WhatsApp.
+- `suporte-tecnico.png`: atendimento humanizado.
+- `conversao-comemorando.png`: confirmacao de formulario e Indique e Ganhe.
+- `faq-pensando.png`: futura secao FAQ.
+- `apresentando-reserva.png`: campanhas, planos ou beneficios.
+
+Detalhes completos da auditoria V2 estao em `IMPLEMENTACAO-COLECAO-MASCOTES-V2-GNS-FIBRA.md`.

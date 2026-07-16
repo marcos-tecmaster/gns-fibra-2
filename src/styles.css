@@ -284,21 +284,57 @@ html[data-theme="light"] {
 
   .hero-mascot-stage {
     position: relative;
-    min-height: 320px;
     height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: end center;
     isolation: isolate;
+    pointer-events: none;
   }
 
-  .hero-mascot-stage::before {
-    content: "";
+  .hero-mascot-frame {
+    --hero-mascot-height: 240px;
+    height: var(--hero-mascot-height);
+    width: min(100%, 18rem);
+    justify-self: center;
+  }
+
+  .hero-mascot-glow {
     position: absolute;
-    inset: 8% 4% 2% 0;
-    border-radius: 999px;
-    background:
-      radial-gradient(ellipse at 52% 42%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 52%),
-      linear-gradient(140deg, transparent 0 44%, color-mix(in oklab, var(--color-primary) 10%, transparent) 52%, transparent 68% 100%);
-    filter: blur(1px);
-    opacity: 0.9;
+    inset: 22% 8% 3%;
+    z-index: -1;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in oklab, var(--color-primary) 24%, transparent),
+      transparent 68%
+    );
+    filter: blur(22px);
+    opacity: 0.72;
+  }
+
+  .hero-mascot-image {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    max-width: min(100%, 32rem);
+    height: var(--hero-mascot-height);
+    object-fit: contain;
+    object-position: center bottom;
+    filter:
+      drop-shadow(0 22px 24px color-mix(in oklab, var(--color-bg) 72%, transparent))
+      drop-shadow(0 0 1px color-mix(in oklab, var(--brand-orange-light) 48%, transparent));
+    user-select: none;
+  }
+
+  html[data-theme="light"] .hero-mascot-glow {
+    opacity: 0.52;
+  }
+
+  html[data-theme="light"] .hero-mascot-image {
+    filter:
+      drop-shadow(0 24px 28px rgba(31, 41, 55, 0.22))
+      drop-shadow(0 0 1px rgba(31, 41, 55, 0.24));
   }
 
   .plans-grid {
@@ -381,6 +417,13 @@ html[data-theme="light"] {
     padding: 1rem;
   }
 
+  .technology-showcase {
+    display: grid;
+    min-width: 0;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
   .technology-radar {
     position: absolute;
     right: -2.5rem;
@@ -406,6 +449,86 @@ html[data-theme="light"] {
     padding: 1.25rem;
   }
 
+  .technology-mascot,
+  .business-mascot-stage {
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .technology-mascot {
+    position: relative;
+    order: -1;
+    display: grid;
+    min-width: 0;
+    min-height: 14rem;
+    place-items: center;
+    isolation: isolate;
+  }
+
+  .technology-mascot::before,
+  .business-mascot-stage::before {
+    content: "";
+    position: absolute;
+    inset: 20% 14% 8%;
+    z-index: -1;
+    border-radius: 999px;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in oklab, var(--color-primary) 20%, transparent),
+      transparent 68%
+    );
+    filter: blur(24px);
+    opacity: 0.58;
+  }
+
+  .technology-mascot-image,
+  .business-mascot-image {
+    position: relative;
+    z-index: 1;
+    display: block;
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    filter:
+      drop-shadow(0 20px 26px color-mix(in oklab, var(--color-bg) 62%, transparent))
+      drop-shadow(0 0 1px color-mix(in oklab, var(--brand-orange-light) 42%, transparent));
+  }
+
+  .technology-mascot-image {
+    aspect-ratio: 596 / 840;
+    width: min(72vw, 15rem);
+    max-height: 18rem;
+  }
+
+  .business-mascot-column {
+    display: grid;
+    min-width: 0;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .business-mascot-stage {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    min-height: 14rem;
+    place-items: center;
+    isolation: isolate;
+  }
+
+  .business-mascot-image {
+    aspect-ratio: 647 / 840;
+    width: min(72vw, 16rem);
+    max-height: 18rem;
+  }
+
+  html[data-theme="light"] .technology-mascot-image,
+  html[data-theme="light"] .business-mascot-image {
+    filter:
+      drop-shadow(0 22px 28px rgba(31, 41, 55, 0.18))
+      drop-shadow(0 0 1px rgba(31, 41, 55, 0.22));
+  }
+
   @media (min-width: 640px) {
     .plans-grid {
       gap: 1.25rem;
@@ -415,6 +538,16 @@ html[data-theme="light"] {
     .benefit-card,
     .technology-card {
       padding: 1.5rem;
+    }
+
+    .technology-mascot-image {
+      width: min(60vw, 17rem);
+      max-height: 21rem;
+    }
+
+    .business-mascot-image {
+      width: min(58vw, 18rem);
+      max-height: 21rem;
     }
   }
 
@@ -432,6 +565,66 @@ html[data-theme="light"] {
 
     .technology-card {
       flex-direction: column;
+    }
+
+    .hero-mascot-glow {
+      inset: 24% 18% 2%;
+      filter: blur(16px);
+      opacity: 0.58;
+    }
+
+    .hero-mascot-image {
+      max-width: 100%;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .hero-mascot-frame {
+      --hero-mascot-height: 280px;
+      width: min(100%, 20rem);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-mascot-frame {
+      --hero-mascot-height: 320px;
+      width: min(100%, 24rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-mascot-frame {
+      --hero-mascot-height: 520px;
+      width: 100%;
+      justify-self: stretch;
+    }
+
+    .technology-showcase {
+      grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.36fr);
+      gap: 1.5rem;
+    }
+
+    .technology-mascot {
+      order: 0;
+      min-height: 24rem;
+    }
+
+    .technology-mascot-image {
+      width: min(100%, 19rem);
+      max-height: 27rem;
+    }
+
+    .business-mascot-column {
+      gap: 1.5rem;
+    }
+
+    .business-mascot-stage {
+      min-height: 18rem;
+    }
+
+    .business-mascot-image {
+      width: min(100%, 18rem);
+      max-height: 22rem;
     }
   }
 }

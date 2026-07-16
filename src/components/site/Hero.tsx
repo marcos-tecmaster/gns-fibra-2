@@ -10,6 +10,7 @@ import {
 import heroFiber from "@/assets/hero-fiber.jpg";
 import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
+import { HeroMascot } from "./HeroMascot";
 
 const heroBenefits = [
   { icon: CheckCircle2, label: "Fibra óptica" },
@@ -29,16 +30,6 @@ function splitHeroTitle(title: string) {
   };
 }
 
-function HeroVisual() {
-  return (
-    <div
-      className="hero-mascot-stage"
-      aria-hidden="true"
-      data-future-mascot-slot="hero"
-    />
-  );
-}
-
 export function Hero() {
   const { config } = useSiteContent();
   const { titleStart, highlightedTitle } = splitHeroTitle(config.company.heroTitle);
@@ -46,7 +37,7 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative min-w-0 overflow-hidden pb-16 pt-28 sm:pb-20 sm:pt-32 lg:min-h-[760px] lg:pt-36"
+      className="relative min-w-0 overflow-hidden pb-6 pt-28 sm:pb-8 sm:pt-32 lg:min-h-[760px] lg:pb-20 lg:pt-36"
     >
       <div className="absolute inset-0">
         <img
@@ -72,7 +63,7 @@ export function Hero() {
       />
 
       <div className="container relative mx-auto min-w-0 px-4 sm:px-5">
-        <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.82fr)] lg:gap-12">
+        <div className="grid min-w-0 items-center gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.82fr)] lg:gap-12">
           <div className="min-w-0 max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -157,9 +148,9 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.22 }}
-            className="relative hidden h-[320px] md:block lg:h-[520px]"
+            className="hero-mascot-frame relative min-w-0"
           >
-            <HeroVisual />
+            <HeroMascot />
           </motion.div>
         </div>
       </div>

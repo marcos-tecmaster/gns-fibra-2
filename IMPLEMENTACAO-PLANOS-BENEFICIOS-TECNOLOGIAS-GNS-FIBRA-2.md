@@ -317,3 +317,54 @@ Validacoes da revisao:
 - `Empresarial` fica ativo somente na propria secao;
 - console sem erros originados pela aplicacao. O navegador de teste registrou
   mensagens externas do ambiente sobre fechamento de canal assincrono.
+
+## 18. Mascotes V2 em Tecnologias e Empresarial
+
+Atualizado em 15/07/2026.
+
+Esta revisao integrou dois assets oficiais V2 sem alterar conteudo comercial, planos, precos, velocidades, API, painel, banco, links ou CTAs existentes.
+
+### Tecnologias
+
+Asset publicado:
+
+- `src/assets/mascote/v2/wifi-turbo.png`.
+- Origem preservada: `docs/branding/mascote/originais/v2-oficiais/wifi-turbo.png`.
+- Dimensoes: 596 x 840 px.
+- Peso: 528.774 bytes.
+- SHA-256: `75EE67B402B1E303B73D89245A3AEE6E987308B554B718C488A4C26F8413C24F`.
+
+Resultado:
+
+- mascote usado como apoio visual principal da secao, sem repeticao nos cards;
+- os quatro itens tecnologicos permanecem nos cards;
+- aviso de disponibilidade tecnica preservado;
+- desktop usa composicao entre painel tecnico e mascote lateral;
+- mobile usa fluxo normal, com o mascote antes do painel e tamanho reduzido;
+- `loading="lazy"`, `decoding="async"`, dimensoes declaradas e `alt=""` por ser apoio visual redundante.
+
+### Empresarial
+
+Asset publicado:
+
+- `src/assets/mascote/v2/empresarial-notebook.png`.
+- Origem preservada: `docs/branding/mascote/originais/v2-oficiais/empresarial-notebook.png`.
+- Dimensoes: 647 x 840 px.
+- Peso: 516.793 bytes.
+- SHA-256: `3D7CE8BFDBBB79E6CF745A31FC51C25A52C9717A8524700AA26E2B43AA7279E2`.
+
+Resultado:
+
+- texto empresarial aprovado, CTA e beneficios existentes preservados;
+- mascote usado como apoio visual para produtividade, suporte e home office;
+- sem informacao comercial exclusiva na imagem;
+- `loading="lazy"`, `decoding="async"`, dimensoes declaradas e `alt=""` por ser apoio visual redundante.
+
+### Validacao
+
+- `npm run typecheck`: aprovado.
+- `npm run build`: aprovado.
+- `npm audit`: executado; 1 vulnerabilidade baixa em `esbuild`; `audit fix` nao executado.
+- Matriz responsiva em 360, 390, 414, 430, 768, 1024, 1280 e 1440 px, Dark e Light: sem overflow horizontal, mascotes carregados nas secoes-alvo e sem corte horizontal.
+
+Detalhes completos estao em `IMPLEMENTACAO-COLECAO-MASCOTES-V2-GNS-FIBRA.md`.

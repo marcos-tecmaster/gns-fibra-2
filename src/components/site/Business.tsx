@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Building2, CheckCircle2, Headphones, Network, ShieldCheck } from "lucide-react";
+import businessMascot from "@/assets/mascote/v2/empresarial-notebook.png";
 import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
 
@@ -50,14 +51,27 @@ export function Business() {
             initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            className="relative overflow-hidden rounded-3xl border border-primary/25 bg-background/70 p-6 sm:p-8"
+            className="business-mascot-column"
           >
-            <Building2 className="absolute -right-8 -top-8 h-40 w-40 text-primary/5" />
-            <div className="relative">
-              <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl border border-primary/30 bg-primary/10">
-                <Building2 className="h-7 w-7 text-primary" />
+            <div className="business-mascot-stage" aria-hidden="true">
+              <img
+                src={businessMascot}
+                alt=""
+                width={647}
+                height={840}
+                loading="lazy"
+                decoding="async"
+                className="business-mascot-image"
+              />
+            </div>
+
+            <div className="relative min-w-0">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-primary/30 bg-primary/10">
+                  <Building2 className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-display text-xl font-bold">Internet empresarial</h3>
               </div>
-              <h3 className="font-display text-xl font-bold">Internet empresarial</h3>
               <div className="mt-6 space-y-4">
                 {benefits.map(({ icon: Icon, text }) => (
                   <div key={text} className="flex items-start gap-3">
