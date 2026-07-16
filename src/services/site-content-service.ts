@@ -44,11 +44,20 @@ type ApiTestimonial = {
   city: string;
 };
 
+type ApiFaq = {
+  id: number;
+  question: string;
+  answer: string;
+  active?: boolean;
+  display_order?: number;
+};
+
 type SiteContentApiResponse = {
   settings?: ApiSettings;
   plans?: ApiPlan[];
   coverage?: ApiCoverage[];
   testimonials?: ApiTestimonial[];
+  faqs?: ApiFaq[];
   error?: string;
 };
 
@@ -89,6 +98,17 @@ function normalizeCoverage(items: ApiCoverage[]): CoverageArea[] {
     }));
 }
 
+function normalizeFaqs(items: ApiFaq[]): SiteContent["faqs"] {
+  return items
+    .map((item) => ({
+      id: String(item.id),
+      question: String(item.question ?? "").trim(),
+      answer: String(item.answer ?? "").trim(),
+      active: true,
+    }))
+    .filter((item) => item.question !== "" && item.answer !== "");
+}
+
 function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const settings = response.settings ?? {};
   const coverage = Array.isArray(response.coverage) ? response.coverage : null;
@@ -98,6 +118,7 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const remoteTestimonials = Array.isArray(response.testimonials)
     ? response.testimonials
     : null;
+  const remoteFaqs = Array.isArray(response.faqs) ? response.faqs : null;
   const whatsappUrl = settings.whatsapp || siteContent.config.contact.whatsappUrl;
 
   return {
@@ -179,6 +200,7 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
             rating: 5,
           }))
         : siteContent.testimonials,
+    faqs: remoteFaqs !== null ? normalizeFaqs(remoteFaqs) : siteContent.faqs,
   };
 }
 

@@ -21,6 +21,7 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
 
 DELETE FROM banners;
+DELETE FROM faqs;
 DELETE FROM testimonials;
 DELETE FROM coverage;
 DELETE FROM plans;
@@ -48,3 +49,12 @@ INSERT INTO testimonials (customer_name, testimonial_text, city, active, display
 
 INSERT INTO banners (title, subtitle, image_path, button_text, button_url, active, display_order) VALUES
 ('Internet que acompanha o ritmo da sua vida.', 'Há mais de 14 anos conectando famílias e empresas.', NULL, 'Consultar disponibilidade', 'https://wa.me/5508008008080', 1, 1);
+
+INSERT INTO faqs (question, answer, active, display_order) VALUES
+('Como contratar um plano da GNS Fibra?', 'Entre em contato pelo WhatsApp. A equipe verifica a disponibilidade no endereço e orienta sobre os planos adequados para sua rotina.', 1, 10),
+('Como verifico a cobertura no meu endereço?', 'Use a área de cobertura do site ou envie seu endereço pelo WhatsApp para a equipe verificar a disponibilidade técnica.', 1, 20),
+('A GNS Fibra possui atendimento para empresas?', 'Sim. A GNS Fibra oferece soluções para residências e empresas. Entre em contato para avaliar a necessidade e a disponibilidade no local.', 1, 30),
+('Onde acesso a Central do Assinante?', 'A Central do Assinante pode ser acessada pelo botão disponível no menu e nas áreas de atendimento do site.', 1, 40),
+('Como solicito atendimento sendo cliente?', 'Use o WhatsApp, telefone ou Central do Assinante apresentados no site para entrar em contato com a equipe.', 1, 50),
+('A instalação depende de análise técnica?', 'Sim. A contratação e a instalação dependem da cobertura e da viabilidade técnica no endereço informado.', 1, 60),
+('Quais são as formas de pagamento?', 'As formas disponíveis podem variar conforme o plano e a condição comercial. Consulte a equipe antes da contratação.', 1, 70);

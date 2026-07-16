@@ -59,12 +59,27 @@ try {
          FROM banners WHERE active = 1 ORDER BY display_order, id'
     )->fetchAll();
 
+    $faqs = $pdo->query(
+        'SELECT id, question, answer, active, display_order
+         FROM faqs WHERE active = 1 ORDER BY display_order, id'
+    )->fetchAll();
+
+    foreach ($faqs as &$faq) {
+        $faq['id'] = (int) $faq['id'];
+        $faq['question'] = (string) $faq['question'];
+        $faq['answer'] = (string) $faq['answer'];
+        $faq['active'] = (bool) $faq['active'];
+        $faq['display_order'] = (int) $faq['display_order'];
+    }
+    unset($faq);
+
     echo json_encode([
         'settings' => $settings,
         'plans' => $plans,
         'coverage' => $coverage,
         'testimonials' => $testimonials,
         'banners' => $banners,
+        'faqs' => $faqs,
         'generated_at' => gmdate(DATE_ATOM),
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 } catch (Throwable) {

@@ -15,6 +15,8 @@ Status: planejamento, sem execucao
 
 Objetivo: preparar o primeiro modulo novo com menor risco.
 
+Status em 16/07/2026: implementado localmente. Criada a migration `database/migration-2026-07-16-create-faqs.sql`, atualizados `schema.sql` e `seed.sql`, criado `admin/faqs.php`, adicionado FAQ ao menu/dashboard, API publica passou a entregar `faqs` e o normalizador TypeScript preserva fallback local.
+
 Arquivos envolvidos:
 
 - `database/migration-YYYY-MM-DD-faqs.sql`
@@ -71,6 +73,8 @@ Commit sugerido:
 ## Etapa 2 - CRUD de FAQs + API + frontend
 
 Objetivo: concluir fluxo completo de FAQs.
+
+Status em 16/07/2026: implementado localmente junto com a Etapa 1, por ser o primeiro fluxo ponta a ponta do Painel Administrativo 2.0.
 
 Arquivos:
 

@@ -17,7 +17,12 @@ function run_simple_crud(array $config): void
             $deleteId = post_int('id');
             $currentStatement = $pdo->prepare("SELECT * FROM {$table} WHERE id = :id");
             $currentStatement->execute(['id' => $deleteId]);
-            $current = $currentStatement->fetch() ?: [];
+            $current = $currentStatement->fetch();
+
+            if (!$current) {
+                flash('error', $config['singular'] . ' não encontrado(a).');
+                redirect($page);
+            }
 
             $statement = $pdo->prepare("DELETE FROM {$table} WHERE id = :id");
             $statement->execute(['id' => $deleteId]);
@@ -47,6 +52,11 @@ function run_simple_crud(array $config): void
             $statement = $pdo->prepare("SELECT * FROM {$table} WHERE id = :id");
             $statement->execute(['id' => $recordId]);
             $current = $statement->fetch();
+
+            if (!$current) {
+                flash('error', $config['singular'] . ' não encontrado(a).');
+                redirect($page);
+            }
         }
 
         foreach ($fields as $name => $field) {
@@ -55,7 +65,19 @@ function run_simple_crud(array $config): void
             if ($type === 'checkbox') {
                 $values[$name] = post_bool($name);
             } elseif ($type === 'number') {
-                $values[$name] = max((int) ($field['min'] ?? PHP_INT_MIN), post_int($name));
+                $rawNumber = $_POST[$name] ?? '';
+                $number = filter_var($rawNumber, FILTER_VALIDATE_INT);
+                if ($number === false) {
+                    $errors[] = 'Informe um número válido em ' . $field['label'] . '.';
+                    $number = (int) ($field['default'] ?? 0);
+                }
+                if (isset($field['min']) && $number < (int) $field['min']) {
+                    $errors[] = 'O campo ' . $field['label'] . ' deve ser no mínimo ' . (int) $field['min'] . '.';
+                }
+                if (isset($field['max']) && $number > (int) $field['max']) {
+                    $errors[] = 'O campo ' . $field['label'] . ' deve ser no máximo ' . (int) $field['max'] . '.';
+                }
+                $values[$name] = $number;
             } elseif ($type === 'file') {
                 try {
                     $values[$name] = upload_image($name, $field['directory'], $current[$name] ?? null);
@@ -63,7 +85,13 @@ function run_simple_crud(array $config): void
                     $errors[] = $exception->getMessage();
                 }
             } else {
-                $values[$name] = post_string($name, (int) ($field['max'] ?? 65535));
+                $maxLength = (int) ($field['max'] ?? 65535);
+                $rawValue = trim((string) ($_POST[$name] ?? ''));
+                if (mb_strlen($rawValue) > $maxLength) {
+                    $errors[] = 'O campo ' . $field['label'] . ' deve ter no máximo ' . $maxLength . ' caracteres.';
+                }
+                $value = mb_substr($rawValue, 0, $maxLength);
+                $values[$name] = ($field['strip_tags'] ?? false) ? strip_tags($value) : $value;
             }
 
             if (($field['required'] ?? false) && ($values[$name] ?? '') === '') {
@@ -141,7 +169,9 @@ function render_simple_form(array $config, array $record): void
                     <div class="field <?= $full ? 'full' : '' ?>">
                         <label for="<?= h($name) ?>"><?= h($field['label']) ?></label>
                         <?php if ($type === 'textarea'): ?>
-                            <textarea id="<?= h($name) ?>" name="<?= h($name) ?>" <?= ($field['required'] ?? false) ? 'required' : '' ?>><?= h($record[$name] ?? '') ?></textarea>
+                            <textarea id="<?= h($name) ?>" name="<?= h($name) ?>"
+                                      <?= isset($field['max']) ? 'maxlength="' . (int) $field['max'] . '"' : '' ?>
+                                      <?= ($field['required'] ?? false) ? 'required' : '' ?>><?= h($record[$name] ?? '') ?></textarea>
                         <?php elseif ($type === 'file'): ?>
                             <?php if (!empty($record[$name])): ?><img class="image-preview" src="../<?= h($record[$name]) ?>" alt="Imagem atual"><?php endif; ?>
                             <input id="<?= h($name) ?>" name="<?= h($name) ?>" type="file" accept="image/jpeg,image/png,image/webp">
@@ -149,6 +179,7 @@ function render_simple_form(array $config, array $record): void
                             <input id="<?= h($name) ?>" name="<?= h($name) ?>" type="<?= h($type) ?>" value="<?= h((string) ($record[$name] ?? '')) ?>"
                                    <?= isset($field['max']) ? 'maxlength="' . (int) $field['max'] . '"' : '' ?>
                                    <?= isset($field['min']) ? 'min="' . (int) $field['min'] . '"' : '' ?>
+                                   <?= $type === 'number' && isset($field['max']) ? 'max="' . (int) $field['max'] . '"' : '' ?>
                                    <?= ($field['required'] ?? false) ? 'required' : '' ?>>
                         <?php endif; ?>
                     </div>
@@ -168,6 +199,9 @@ function render_simple_table(array $config, array $records): void
             <div><h2><?= h($config['title']) ?></h2><p class="muted"><?= h($config['description'] ?? '') ?></p></div>
             <a class="button" href="<?= h($config['page']) ?>?action=new">Adicionar</a>
         </div>
+        <?php if (!$records): ?>
+            <p class="muted"><?= h($config['empty_message'] ?? 'Nenhum registro encontrado.') ?></p>
+        <?php else: ?>
         <table>
             <thead><tr>
                 <?php foreach ($config['columns'] as $column): ?><th><?= h($column['label']) ?></th><?php endforeach; ?>
@@ -198,6 +232,7 @@ function render_simple_table(array $config, array $records): void
             <?php endforeach; ?>
             </tbody>
         </table>
+        <?php endif; ?>
     </section>
     <?php
 }

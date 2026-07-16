@@ -49,8 +49,8 @@ Status: diagnostico, sem alteracao funcional
 | Canais de suporte | componente + config | settings contato apenas | `settings` parcial | Configuracoes parcial | Sim | Dinamico parcial |
 | Depoimentos | `testimonials` | `testimonials` | `testimonials` | `depoimentos.php` | Sim | Dinamico parcial |
 | Rating depoimentos | local fixa 5 | Nao | Nao | Nao | Sim | Hardcoded no normalizador |
-| FAQs | `siteContent.faqs` | Nao | Nao | Nao | Sim | Somente fallback local |
-| FAQPage JSON-LD | `FAQ.tsx` | Nao | Nao | Nao | Sim | Preparado para futuro |
+| FAQs | `siteContent.faqs` | `faqs` | `faqs` | `faqs.php` | Sim | Dinamico completo |
+| FAQPage JSON-LD | `FAQ.tsx` | `faqs` | `faqs` | `faqs.php` | Sim | Dinamico completo |
 | CTA final textos | `CTASection.tsx` | Nao | Nao | Nao | Sim | Hardcoded no componente |
 | CTA final contatos | config local/API | settings contato | `settings` | Configuracoes | Sim | Dinamico parcial |
 | Banners | Nao usado no frontend | `banners` | `banners` | `banners.php` | Nao | Dinamico parcial sem consumo publico |
@@ -73,6 +73,7 @@ Campos reais retornados:
   "coverage": [],
   "testimonials": [],
   "banners": [],
+  "faqs": [],
   "generated_at": ""
 }
 ```
@@ -83,7 +84,6 @@ Campos nao retornados hoje:
 - `differentials`
 - `benefits`
 - `technologies`
-- `faqs`
 - `stats`
 - `historyGallery`
 - `support`
@@ -143,9 +143,9 @@ Painel/API: inexistentes.
 
 ### FAQs
 
-Arquivo: `src/lib/site-content.ts`
+Arquivos: `src/lib/site-content.ts`, `api/site-content.php`, `admin/faqs.php`
 
-Sete perguntas locais. Sem tabela, painel ou API.
+As sete perguntas permanecem no fallback local, mas agora tambem existem em `faqs`, sao administradas pelo painel e entregues pela API publica quando o banco esta disponivel.
 
 ### Suporte
 
@@ -180,7 +180,7 @@ O TypeScript ja possui:
 - `technologies`
 - `faqs`
 
-Mas `src/services/site-content-service.ts` ainda nao le esses campos da API. Eles ficam preservados do fallback por causa do spread `...siteContent`.
+`src/services/site-content-service.ts` agora le `faqs` da API. `benefits` e `technologies` continuam preparados apenas no fallback.
 
 ## Modulos atuais por fonte
 
@@ -194,7 +194,7 @@ Mas `src/services/site-content-service.ts` ainda nao le esses campos da API. Ele
 | Configuracoes | Sim | Sim | Sim | Sim parcial |
 | Usuarios | Sim | Sim | Nao | Nao |
 | Login/logout | Sim | `users`, `login_attempts` | Nao | Nao |
-| FAQ | Nao | Nao | Nao | Sim local |
+| FAQ | Sim | Sim | Sim | Sim |
 | Suporte | Nao | Nao | Nao | Sim local/com config |
 | Beneficios | Nao | Nao | Nao | Sim local |
 | Tecnologias | Nao | Nao | Nao | Sim local |
@@ -203,11 +203,10 @@ Mas `src/services/site-content-service.ts` ainda nao le esses campos da API. Ele
 
 Prioridade alta:
 
-1. `faqs` no banco, painel e API.
-2. `benefits` no banco, painel e API.
-3. `technologies` no banco, painel e API.
-4. suporte/atendimento administravel, provavelmente via settings no inicio.
-5. CTA/Contato administravel, provavelmente via settings no inicio.
+1. `benefits` no banco, painel e API.
+2. `technologies` no banco, painel e API.
+3. suporte/atendimento administravel, provavelmente via settings no inicio.
+4. CTA/Contato administravel, provavelmente via settings no inicio.
 
 Prioridade posterior:
 
@@ -225,7 +224,7 @@ Prioridade posterior:
 
 Nao tentar tornar todo o conteudo dinamico de uma vez. A ordem mais segura e:
 
-1. FAQs, por serem isoladas e ja terem estrutura clara.
+1. Revisar o FAQ administravel em ambiente local/homologacao.
 2. Beneficios, com allowlist de icones e seed do conteudo atual.
 3. Tecnologias, com aprovacao de termos tecnicos.
 4. Suporte/CTA via settings.

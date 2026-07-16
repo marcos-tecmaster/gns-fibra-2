@@ -28,6 +28,7 @@ Pastas principais:
 | Banners | `admin/banners.php` | `banners` | CRUD generico com upload |
 | Cobertura | `admin/cobertura.php` | `coverage` | CRUD generico com Google Maps |
 | Depoimentos | `admin/depoimentos.php` | `testimonials` | CRUD generico |
+| FAQ | `admin/faqs.php` | `faqs` | CRUD generico com perguntas ativas e ordenacao |
 | Configuracoes | `admin/configuracoes.php` | `settings` | Dados institucionais |
 | Usuarios | `admin/usuarios.php` | `users` | CRUD de admins |
 | Troca de senha | `admin/trocar-senha.php` | `users` | Exige senha forte |
@@ -59,6 +60,7 @@ API:
 - `coverage`
 - `testimonials`
 - `banners`
+- `faqs`
 
 Campos criticos:
 
@@ -113,7 +115,7 @@ Arquitetura:
 | --- | --- | --- | --- |
 | Alta | Beneficios | Separar beneficios dos planos | `benefits` |
 | Alta | Tecnologias | Gerenciar Wi-Fi 5/6/7, XGS-PON etc. | `technologies` |
-| Alta | FAQ | Perguntas frequentes e schema futuro | `faqs` |
+| Concluido localmente | FAQ | Perguntas frequentes e schema futuro | `faqs` |
 | Alta | Campanhas | Sazonais e comerciais | `campaigns` |
 | Alta | Indicacoes | Indique e Ganhe | `referrals` |
 | Media | Leads | Formularios de interesse | `leads` |
@@ -154,7 +156,7 @@ Sugestoes conceituais:
 3. Melhorar protecoes de producao para `config/`, `database/` e `uploads/`.
 4. Adicionar Beneficios.
 5. Adicionar Tecnologias.
-6. Adicionar FAQ.
+6. Revisar FAQ administravel ja implementado localmente.
 7. Expandir API para entregar novos blocos.
 8. Atualizar frontend para consumir novos blocos com fallback.
 9. Adicionar Campanhas.

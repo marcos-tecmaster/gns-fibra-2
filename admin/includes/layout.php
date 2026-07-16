@@ -10,6 +10,7 @@ function admin_header(string $title): void
         'banners.php' => 'Banners',
         'cobertura.php' => 'Cobertura',
         'depoimentos.php' => 'Depoimentos',
+        'faqs.php' => 'FAQ',
         'configuracoes.php' => 'Configurações',
         'usuarios.php' => 'Usuários',
         'trocar-senha.php' => 'Trocar senha',

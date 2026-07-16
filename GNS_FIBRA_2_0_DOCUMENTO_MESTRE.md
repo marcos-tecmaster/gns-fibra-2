@@ -813,6 +813,8 @@ Ordem publica atual:
 
 O FAQ usa conteudo local no `SiteContentProvider` e gera `FAQPage` a partir das perguntas visiveis. A estrutura de conteúdo está preparada no frontend, mas o gerenciamento de FAQs pelo painel será desenvolvido em fase futura.
 
+Atualizacao em 16/07/2026: o FAQ passou a ter fluxo administravel local de ponta a ponta no Painel Administrativo 2.0, com tabela `faqs`, CRUD PHP em `admin/faqs.php`, entrega por `api/site-content.php` e normalizacao em `src/services/site-content-service.ts`. O fallback local permanece preservado para API antiga ou indisponivel.
+
 As poses V2 publicadas no site sao: Hero, Tecnologias, Empresarial, Suporte, FAQ e Contato/WhatsApp. As poses restantes continuam reservadas para campanhas, confirmacoes e futuras telas aprovadas.
 
 ---
