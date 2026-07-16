@@ -59,6 +59,24 @@ try {
          FROM banners WHERE active = 1 ORDER BY display_order, id'
     )->fetchAll();
 
+    $benefits = $pdo->query(
+        'SELECT id, slug, icon, title, description, cta_label, cta_href, active, display_order
+         FROM benefits WHERE active = 1 ORDER BY display_order, id'
+    )->fetchAll();
+
+    foreach ($benefits as &$benefit) {
+        $benefit['id'] = (int) $benefit['id'];
+        $benefit['slug'] = (string) $benefit['slug'];
+        $benefit['icon'] = (string) $benefit['icon'];
+        $benefit['title'] = (string) $benefit['title'];
+        $benefit['description'] = (string) $benefit['description'];
+        $benefit['cta_label'] = $benefit['cta_label'] !== null ? (string) $benefit['cta_label'] : null;
+        $benefit['cta_href'] = $benefit['cta_href'] !== null ? (string) $benefit['cta_href'] : null;
+        $benefit['active'] = (bool) $benefit['active'];
+        $benefit['display_order'] = (int) $benefit['display_order'];
+    }
+    unset($benefit);
+
     $faqs = $pdo->query(
         'SELECT id, question, answer, active, display_order
          FROM faqs WHERE active = 1 ORDER BY display_order, id'
@@ -79,6 +97,7 @@ try {
         'coverage' => $coverage,
         'testimonials' => $testimonials,
         'banners' => $banners,
+        'benefits' => $benefits,
         'faqs' => $faqs,
         'generated_at' => gmdate(DATE_ATOM),
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);

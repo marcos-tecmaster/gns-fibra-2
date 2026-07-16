@@ -52,6 +52,22 @@ CREATE TABLE IF NOT EXISTS plans (
   INDEX idx_plans_public (active, display_order)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS benefits (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(100) NOT NULL,
+  icon VARCHAR(50) NOT NULL,
+  title VARCHAR(180) NOT NULL,
+  description TEXT NOT NULL,
+  cta_label VARCHAR(120) NULL,
+  cta_href VARCHAR(500) NULL,
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  display_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_benefits_slug (slug),
+  INDEX idx_benefits_active_order (active, display_order, id)
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS coverage (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   region VARCHAR(150) NOT NULL,

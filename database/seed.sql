@@ -35,6 +35,51 @@ INSERT INTO plans (name, speed, unit, price, audience, benefits, payment_method,
 ('EXTREME', '1000', 'MEGA', 149.90, 'Velocidade máxima para sua conexão', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'), 'Cartão de crédito ou débito em conta', 0, 1, 6),
 ('EXTREME COMBO', '1000', 'MEGA', 199.90, 'O combo completo da GNS Fibra', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'), 'Cartão de crédito ou débito em conta', 0, 1, 7);
 
+INSERT INTO benefits (slug, icon, title, description, cta_label, cta_href, active, display_order)
+SELECT seed.slug, seed.icon, seed.title, seed.description, seed.cta_label, seed.cta_href, seed.active, seed.display_order
+FROM (
+  SELECT
+    'wifi-incluso' AS slug,
+    'wifi' AS icon,
+    'Wi-Fi para conectar seus dispositivos' AS title,
+    'Equipamentos e recursos definidos conforme o plano contratado e a viabilidade técnica.' AS description,
+    NULL AS cta_label,
+    NULL AS cta_href,
+    1 AS active,
+    10 AS display_order
+  UNION ALL
+  SELECT
+    'atendimento-humano',
+    'headset',
+    'Atendimento próximo e humanizado',
+    'Uma equipe preparada para orientar você na contratação, instalação e uso dos serviços.',
+    NULL,
+    NULL,
+    1,
+    20
+  UNION ALL
+  SELECT
+    'pagamento-flexivel',
+    'credit-card',
+    'Pagamento com praticidade',
+    'Consulte as formas de pagamento disponíveis para o plano escolhido.',
+    NULL,
+    NULL,
+    1,
+    30
+  UNION ALL
+  SELECT
+    'camera-seguranca',
+    'camera',
+    'Mais segurança para sua rotina',
+    'Alguns planos podem incluir recursos adicionais de segurança. Consulte as condições disponíveis.',
+    NULL,
+    NULL,
+    1,
+    40
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM benefits);
+
 INSERT INTO coverage (region, description, map_url, active, display_order) VALUES
 ('Alvorada/Viamão', 'Ponto de atendimento e cobertura regional.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 1),
 ('Canoas/Cachoeirinha', 'Ponto de atendimento e cobertura regional.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 2),

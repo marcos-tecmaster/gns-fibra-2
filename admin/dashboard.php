@@ -5,13 +5,23 @@ require_once __DIR__ . '/includes/bootstrap.php';
 require_once __DIR__ . '/includes/layout.php';
 require_auth();
 
-$counts = ['plans' => 0, 'coverage' => 0, 'testimonials' => 0, 'faqs' => 0, 'active_faqs' => 0];
+$counts = [
+    'plans' => 0,
+    'coverage' => 0,
+    'testimonials' => 0,
+    'benefits' => 0,
+    'active_benefits' => 0,
+    'faqs' => 0,
+    'active_faqs' => 0,
+];
 $databaseError = null;
 
 try {
     $counts['plans'] = (int) db()->query('SELECT COUNT(*) FROM plans')->fetchColumn();
     $counts['coverage'] = (int) db()->query('SELECT COUNT(*) FROM coverage')->fetchColumn();
     $counts['testimonials'] = (int) db()->query('SELECT COUNT(*) FROM testimonials')->fetchColumn();
+    $counts['benefits'] = (int) db()->query('SELECT COUNT(*) FROM benefits')->fetchColumn();
+    $counts['active_benefits'] = (int) db()->query('SELECT COUNT(*) FROM benefits WHERE active = 1')->fetchColumn();
     $counts['faqs'] = (int) db()->query('SELECT COUNT(*) FROM faqs')->fetchColumn();
     $counts['active_faqs'] = (int) db()->query('SELECT COUNT(*) FROM faqs WHERE active = 1')->fetchColumn();
 } catch (PDOException) {
@@ -41,6 +51,11 @@ admin_header('Dashboard');
         <a class="muted" href="depoimentos.php">Gerenciar depoimentos →</a>
     </article>
     <article class="card">
+        <span>Benefícios ativos / total</span>
+        <strong><?= $counts['active_benefits'] ?>/<?= $counts['benefits'] ?></strong>
+        <a class="muted" href="beneficios.php">Gerenciar benefícios →</a>
+    </article>
+    <article class="card">
         <span>FAQs ativas / total</span>
         <strong><?= $counts['active_faqs'] ?>/<?= $counts['faqs'] ?></strong>
         <a class="muted" href="faqs.php">Gerenciar FAQ →</a>
@@ -56,6 +71,7 @@ admin_header('Dashboard');
     </div>
     <div class="actions">
         <a class="button" href="planos.php?action=new">Novo plano</a>
+        <a class="button secondary" href="beneficios.php?action=new">Novo benefício</a>
         <a class="button secondary" href="banners.php?action=new">Novo banner</a>
         <a class="button secondary" href="cobertura.php?action=new">Nova cobertura</a>
         <a class="button secondary" href="faqs.php?action=new">Nova FAQ</a>

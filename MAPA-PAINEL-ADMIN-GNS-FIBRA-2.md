@@ -1,7 +1,8 @@
 # MAPA DO PAINEL ADMIN - GNS FIBRA 2.0
 
 Data: 13/07/2026  
-Status: mapeamento e planejamento, sem alteracao de banco ou painel
+Atualizado em: 16/07/2026
+Status: mapa vivo do painel administrativo
 
 ## 1. Estado atual
 
@@ -23,8 +24,9 @@ Pastas principais:
 | --- | --- | --- | --- |
 | Login | `admin/login.php` | `users`, `login_attempts` | Autenticacao com rate limit |
 | Logout | `admin/logout.php` | sessao | Encerra sessao |
-| Dashboard | `admin/dashboard.php` | `plans`, `coverage`, `testimonials` | Indicadores simples |
+| Dashboard | `admin/dashboard.php` | `plans`, `coverage`, `testimonials`, `benefits`, `faqs` | Indicadores simples |
 | Planos | `admin/planos.php` | `plans` | CRUD especifico com beneficios JSON |
+| Beneficios | `admin/beneficios.php` | `benefits` | CRUD generico com slug, icone em whitelist, CTA seguro e ordenacao |
 | Banners | `admin/banners.php` | `banners` | CRUD generico com upload |
 | Cobertura | `admin/cobertura.php` | `coverage` | CRUD generico com Google Maps |
 | Depoimentos | `admin/depoimentos.php` | `testimonials` | CRUD generico |
@@ -60,11 +62,15 @@ API:
 - `coverage`
 - `testimonials`
 - `banners`
+- `benefits`
 - `faqs`
 
 Campos criticos:
 
 - `plans.benefits` e JSON.
+- `benefits.slug` e unico; `camera-seguranca` possui regra especial no site.
+- `benefits.icon` usa whitelist do painel e fallback visual no frontend.
+- `benefits.cta_href` aceita apenas protocolos seguros.
 - `coverage.map_url` alimenta links clicaveis.
 - `settings` usa chave/valor.
 - `users.password_hash` nunca deve expor senha.
@@ -113,7 +119,7 @@ Arquitetura:
 
 | Prioridade | Modulo | Objetivo | Banco novo provavel |
 | --- | --- | --- | --- |
-| Alta | Beneficios | Separar beneficios dos planos | `benefits` |
+| Concluido localmente | Beneficios | Separar beneficios dos planos | `benefits` |
 | Alta | Tecnologias | Gerenciar Wi-Fi 5/6/7, XGS-PON etc. | `technologies` |
 | Concluido localmente | FAQ | Perguntas frequentes e schema futuro | `faqs` |
 | Alta | Campanhas | Sazonais e comerciais | `campaigns` |
@@ -141,7 +147,7 @@ Migrations futuras devem:
 
 Sugestoes conceituais:
 
-- `benefits`: titulo, descricao, icone, categoria, ativo, ordem.
+- `benefits`: implementada com slug, titulo, descricao, icone em whitelist, CTA opcional, ativo e ordem.
 - `technologies`: nome, descricao, selo, icone/imagem, ativo, ordem.
 - `faqs`: pergunta, resposta, categoria, ativo, ordem.
 - `campaigns`: nome, slug, periodo, status, headline, termos, CTA, imagem.
@@ -154,7 +160,7 @@ Sugestoes conceituais:
 1. Documentar contrato atual da API.
 2. Criar padrao de migration.
 3. Melhorar protecoes de producao para `config/`, `database/` e `uploads/`.
-4. Adicionar Beneficios.
+4. Revisar Beneficios administraveis implementados localmente.
 5. Adicionar Tecnologias.
 6. Revisar FAQ administravel ja implementado localmente.
 7. Expandir API para entregar novos blocos.
@@ -348,25 +354,27 @@ Tabela sugerida: `benefits`.
 Campos:
 
 - `id`;
+- `slug`;
 - `title`;
 - `description`;
 - `icon`;
-- `image_path`;
 - `cta_label`;
-- `cta_url`;
+- `cta_href`;
 - `active`;
 - `display_order`;
 - `created_at`;
 - `updated_at`.
 
-Endpoint futuro:
+Endpoint atual:
 
-- incluir `benefits` em `api/site-content.php` ou criar contrato versionado.
+- `api/site-content.php` retorna `benefits` ativos ordenados por `display_order, id`.
 
 Fallback:
 
 - se a API nao enviar `benefits`, o frontend usa `src/lib/site-content.ts`.
+- se a API enviar `benefits: []`, a secao e ocultada.
 - beneficios inativos nao devem aparecer.
+- `camera-seguranca` so aparece quando algum plano publico menciona camera.
 
 ### Modulo futuro de tecnologias
 
@@ -395,7 +403,7 @@ Fallback:
 
 ### Riscos
 
-- A tela publica agora consegue exibir beneficios e tecnologias, mas o painel ainda nao administra esses blocos.
+- A tela publica agora consegue exibir beneficios e tecnologias; beneficios ja sao administraveis, tecnologias continuam locais.
 - O frontend infere beneficio principal e Wi-Fi a partir de `plans.benefits`; isso deve ser substituido por campos proprios em fase de banco.
 - Publicar Wi-Fi 6, Wi-Fi 7, XGS-PON, GNS TV Plus, streaming, Mesh ou telefone fixo exige confirmacao comercial e tecnica.
 - `quote_only` deve ser campo semantico futuro; hoje o frontend apenas tolera preco vazio ou zero.

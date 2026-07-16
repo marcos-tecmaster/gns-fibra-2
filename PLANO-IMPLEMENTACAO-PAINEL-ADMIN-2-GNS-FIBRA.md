@@ -1,14 +1,12 @@
 # PLANO IMPLEMENTACAO PAINEL ADMIN 2 - GNS FIBRA
 
 Data: 16/07/2026
-Status: planejamento, sem execucao
+Status: planejamento com FAQ e Beneficios implementados localmente
 
 ## Avisos
 
-- Nenhuma etapa abaixo foi executada nesta auditoria.
-- Nenhuma migration foi criada.
-- Nenhum banco foi alterado.
-- Nenhum codigo funcional foi alterado.
+- FAQ e Beneficios ja foram implementados localmente em fases separadas.
+- Tecnologias segue como proxima etapa recomendada.
 - As mensagens de commit sao sugestoes.
 
 ## Etapa 1 - Fundacao reutilizavel e migration de FAQs
@@ -115,13 +113,16 @@ Commit sugerido:
 
 Objetivo: administrar a secao de beneficios sem alterar regras comerciais.
 
+Status em 16/07/2026: implementado localmente. Criada a migration `database/migration-2026-07-16-create-benefits.sql`, atualizados `schema.sql` e `seed.sql`, criado `admin/beneficios.php`, adicionado Beneficios ao menu/dashboard, API publica passou a entregar `benefits` e o normalizador TypeScript preserva fallback local, `benefits: []` e a regra especial de `camera-seguranca`.
+
 Arquivos:
 
-- `database/migration-YYYY-MM-DD-benefits.sql`
+- `database/migration-2026-07-16-create-benefits.sql`
 - `admin/beneficios.php`
+- `admin/includes/simple-crud.php`
 - `admin/includes/layout.php`
+- `admin/dashboard.php`
 - `api/site-content.php`
-- `src/content/types.ts`
 - `src/services/site-content-service.ts`
 - `src/lib/site-content.ts`
 - `src/components/site/Benefits.tsx`
@@ -129,6 +130,7 @@ Arquivos:
 Tabela:
 
 - id;
+- slug;
 - icon;
 - title;
 - description;
@@ -141,11 +143,13 @@ Tabela:
 
 Validacoes:
 
+- slug unico, minusculo, numerico/hifen;
 - icon por allowlist do `IconName`;
 - title obrigatorio;
 - description obrigatoria;
-- URL valida quando `cta_href` for preenchido;
-- display_order >= 0.
+- CTA label/href em par;
+- URL com protocolos seguros;
+- display_order entre 0 e 10000.
 
 Seed:
 
@@ -172,6 +176,8 @@ Criterio de aprovacao:
 - beneficios ativos aparecem em ordem;
 - inativos nao aparecem;
 - fallback preservado.
+- `benefits: []` oculta a secao.
+- `camera-seguranca` so aparece quando plano publico menciona camera.
 
 Commit sugerido:
 

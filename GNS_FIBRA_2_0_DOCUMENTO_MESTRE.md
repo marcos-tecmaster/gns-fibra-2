@@ -463,18 +463,18 @@ O painel faz parte do produto e deve evoluir junto com o site.
 
 - Dashboard
 - Planos
+- Benefícios
 - Banners
 - Cobertura
 - Depoimentos
+- FAQ
 - Configurações
 - Usuários
 - Troca de senha
 
 ### 10.2 Módulos futuros
 
-- Benefícios
 - Tecnologias
-- FAQ
 - Campanhas
 - Indicações
 - Leads
@@ -811,9 +811,11 @@ Ordem publica atual:
 13. Contato
 14. Footer
 
-O FAQ usa conteudo local no `SiteContentProvider` e gera `FAQPage` a partir das perguntas visiveis. A estrutura de conteúdo está preparada no frontend, mas o gerenciamento de FAQs pelo painel será desenvolvido em fase futura.
+O FAQ usa conteudo administravel quando a API esta disponivel, preserva fallback local no `SiteContentProvider` e gera `FAQPage` a partir das perguntas visiveis.
 
 Atualizacao em 16/07/2026: o FAQ passou a ter fluxo administravel local de ponta a ponta no Painel Administrativo 2.0, com tabela `faqs`, CRUD PHP em `admin/faqs.php`, entrega por `api/site-content.php` e normalizacao em `src/services/site-content-service.ts`. O fallback local permanece preservado para API antiga ou indisponivel.
+
+Atualizacao em 16/07/2026: os Beneficios passaram a ter fluxo administravel local de ponta a ponta no Painel Administrativo 2.0, com tabela `benefits`, CRUD PHP em `admin/beneficios.php`, entrega por `api/site-content.php` e normalizacao em `src/services/site-content-service.ts`. O fallback local permanece preservado para API antiga ou indisponivel, `benefits: []` oculta a secao e o slug `camera-seguranca` continua protegido pela regra comercial que exige plano publico com feature de camera.
 
 As poses V2 publicadas no site sao: Hero, Tecnologias, Empresarial, Suporte, FAQ e Contato/WhatsApp. As poses restantes continuam reservadas para campanhas, confirmacoes e futuras telas aprovadas.
 

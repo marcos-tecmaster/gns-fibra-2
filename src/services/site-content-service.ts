@@ -1,5 +1,10 @@
 import { siteContent } from "@/lib/site-content";
-import type { ContentProvider, CoverageArea, SiteContent } from "@/content/types";
+import type {
+  ContentProvider,
+  CoverageArea,
+  IconName,
+  SiteContent,
+} from "@/content/types";
 
 type ApiSettings = Partial<Record<
   | "company_name"
@@ -52,11 +57,24 @@ type ApiFaq = {
   display_order?: number;
 };
 
+type ApiBenefit = {
+  id: number;
+  slug: string;
+  icon: string;
+  title: string;
+  description: string;
+  cta_label?: string | null;
+  cta_href?: string | null;
+  active?: boolean;
+  display_order?: number;
+};
+
 type SiteContentApiResponse = {
   settings?: ApiSettings;
   plans?: ApiPlan[];
   coverage?: ApiCoverage[];
   testimonials?: ApiTestimonial[];
+  benefits?: ApiBenefit[];
   faqs?: ApiFaq[];
   error?: string;
 };
@@ -109,6 +127,76 @@ function normalizeFaqs(items: ApiFaq[]): SiteContent["faqs"] {
     .filter((item) => item.question !== "" && item.answer !== "");
 }
 
+const BENEFIT_ICONS = new Set<IconName>([
+  "wifi",
+  "headset",
+  "credit-card",
+  "camera",
+  "tv",
+]);
+const BENEFIT_ICON_FALLBACK: IconName = "wifi";
+
+function normalizeBenefitIcon(icon: string): IconName {
+  const normalizedIcon = String(icon ?? "").trim() as IconName;
+  return BENEFIT_ICONS.has(normalizedIcon)
+    ? normalizedIcon
+    : BENEFIT_ICON_FALLBACK;
+}
+
+function isLocalHttpUrl(url: URL): boolean {
+  return (
+    url.hostname === "localhost" ||
+    url.hostname === "127.0.0.1" ||
+    url.hostname === "::1" ||
+    url.hostname.endsWith(".localhost") ||
+    url.hostname.endsWith(".test")
+  );
+}
+
+function isSafeBenefitHref(href: string): boolean {
+  if (/^#[A-Za-z0-9_-]+$/.test(href)) {
+    return true;
+  }
+
+  try {
+    const url = new URL(href, window.location.origin);
+    if (url.protocol === "https:" || url.protocol === "mailto:" || url.protocol === "tel:") {
+      return true;
+    }
+    return url.protocol === "http:" && isLocalHttpUrl(url);
+  } catch {
+    return false;
+  }
+}
+
+function normalizeBenefits(items: ApiBenefit[]): SiteContent["benefits"] {
+  return items
+    .map((item) => {
+      const slug = String(item.slug ?? "").trim();
+      const title = String(item.title ?? "").trim();
+      const description = String(item.description ?? "").trim();
+      const ctaLabel = String(item.cta_label ?? "").trim();
+      const ctaHref = String(item.cta_href ?? "").trim();
+      const hasSafeCta = ctaLabel !== "" && ctaHref !== "" && isSafeBenefitHref(ctaHref);
+
+      return {
+        id: slug,
+        icon: normalizeBenefitIcon(item.icon),
+        title,
+        description,
+        ctaLabel: hasSafeCta ? ctaLabel : undefined,
+        ctaHref: hasSafeCta ? ctaHref : undefined,
+        active: true,
+      };
+    })
+    .filter(
+      (benefit) =>
+        benefit.id !== "" &&
+        benefit.title !== "" &&
+        benefit.description !== "",
+    );
+}
+
 function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const settings = response.settings ?? {};
   const coverage = Array.isArray(response.coverage) ? response.coverage : null;
@@ -117,6 +205,9 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const remotePlans = Array.isArray(response.plans) ? response.plans : null;
   const remoteTestimonials = Array.isArray(response.testimonials)
     ? response.testimonials
+    : null;
+  const remoteBenefits = Array.isArray(response.benefits)
+    ? response.benefits
     : null;
   const remoteFaqs = Array.isArray(response.faqs) ? response.faqs : null;
   const whatsappUrl = settings.whatsapp || siteContent.config.contact.whatsappUrl;
@@ -200,6 +291,10 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
             rating: 5,
           }))
         : siteContent.testimonials,
+    benefits:
+      remoteBenefits !== null
+        ? normalizeBenefits(remoteBenefits)
+        : siteContent.benefits,
     faqs: remoteFaqs !== null ? normalizeFaqs(remoteFaqs) : siteContent.faqs,
   };
 }

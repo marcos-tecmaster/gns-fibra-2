@@ -368,3 +368,45 @@ Resultado:
 - Matriz responsiva em 360, 390, 414, 430, 768, 1024, 1280 e 1440 px, Dark e Light: sem overflow horizontal, mascotes carregados nas secoes-alvo e sem corte horizontal.
 
 Detalhes completos estao em `IMPLEMENTACAO-COLECAO-MASCOTES-V2-GNS-FIBRA.md`.
+
+## 19. Beneficios administraveis no Painel 2.0
+
+Atualizado em 16/07/2026.
+
+A secao de Beneficios passou a ter fluxo administravel de ponta a ponta:
+
+`Banco MySQL -> admin/beneficios.php -> api/site-content.php -> src/services/site-content-service.ts -> Benefits`
+
+Arquivos principais:
+
+- `database/migration-2026-07-16-create-benefits.sql`;
+- `admin/beneficios.php`;
+- `admin/includes/simple-crud.php`;
+- `admin/includes/layout.php`;
+- `admin/dashboard.php`;
+- `api/site-content.php`;
+- `src/services/site-content-service.ts`;
+- `IMPLEMENTACAO-BENEFICIOS-ADMINISTRAVEIS-GNS-FIBRA-2.md`.
+
+Conteudo inicial:
+
+- `wifi-incluso`;
+- `atendimento-humano`;
+- `pagamento-flexivel`;
+- `camera-seguranca`.
+
+Foram preservados:
+
+- os quatro textos locais atuais;
+- fallback local em `src/lib/site-content.ts`;
+- layout, cards, icones e animacoes de `Benefits.tsx`;
+- regra comercial da camera;
+- Dark/Light e responsividade.
+
+O painel restringe icones a `wifi`, `headset`, `credit-card`, `camera` e `tv`. CTAs sao opcionais, mas precisam de label e link seguros. O normalizador TypeScript respeita `benefits: []` como secao vazia, ignora registros invalidos isoladamente e usa fallback visual seguro para icone desconhecido.
+
+Continuam fora desta fase:
+
+- Tecnologias administraveis;
+- novos beneficios comerciais ainda nao aprovados;
+- TV, streaming, Mesh, Wi-Fi 6, Wi-Fi 7, telefonia, fidelidade e promocoes.

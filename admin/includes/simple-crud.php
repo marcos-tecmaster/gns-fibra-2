@@ -13,6 +13,19 @@ function run_simple_crud(array $config): void
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         verify_csrf();
 
+        if (($config['reject_extra_fields'] ?? false) === true) {
+            $allowedPostFields = ['csrf_token' => true, 'form_action' => true, 'id' => true];
+            foreach ($fields as $name => $_field) {
+                $allowedPostFields[$name] = true;
+            }
+            foreach (array_keys($_POST) as $postField) {
+                if (!isset($allowedPostFields[$postField])) {
+                    flash('error', 'A requisição contém campos não permitidos.');
+                    redirect($page);
+                }
+            }
+        }
+
         if (post_string('form_action', 20) === 'delete') {
             $deleteId = post_int('id');
             $currentStatement = $pdo->prepare("SELECT * FROM {$table} WHERE id = :id");
@@ -64,6 +77,13 @@ function run_simple_crud(array $config): void
 
             if ($type === 'checkbox') {
                 $values[$name] = post_bool($name);
+            } elseif ($type === 'select') {
+                $options = $field['options'] ?? [];
+                $value = trim((string) ($_POST[$name] ?? ''));
+                if (!array_key_exists($value, $options)) {
+                    $errors[] = 'Selecione uma opção válida em ' . $field['label'] . '.';
+                }
+                $values[$name] = $value;
             } elseif ($type === 'number') {
                 $rawNumber = $_POST[$name] ?? '';
                 $number = filter_var($rawNumber, FILTER_VALIDATE_INT);
@@ -87,6 +107,9 @@ function run_simple_crud(array $config): void
             } else {
                 $maxLength = (int) ($field['max'] ?? 65535);
                 $rawValue = trim((string) ($_POST[$name] ?? ''));
+                if (($field['disallow_html'] ?? false) && ($rawValue !== strip_tags($rawValue) || str_contains($rawValue, '<') || str_contains($rawValue, '>'))) {
+                    $errors[] = 'O campo ' . $field['label'] . ' não pode conter HTML.';
+                }
                 if (mb_strlen($rawValue) > $maxLength) {
                     $errors[] = 'O campo ' . $field['label'] . ' deve ter no máximo ' . $maxLength . ' caracteres.';
                 }
@@ -97,8 +120,49 @@ function run_simple_crud(array $config): void
             if (($field['required'] ?? false) && ($values[$name] ?? '') === '') {
                 $errors[] = 'Preencha o campo ' . $field['label'] . '.';
             }
-            if ($type === 'url' && $values[$name] !== '' && filter_var($values[$name], FILTER_VALIDATE_URL) === false) {
-                $errors[] = 'Informe uma URL válida em ' . $field['label'] . '.';
+            if (isset($field['pattern']) && ($values[$name] ?? '') !== '' && preg_match((string) $field['pattern'], (string) $values[$name]) !== 1) {
+                $errors[] = $field['pattern_message'] ?? ('Informe um valor válido em ' . $field['label'] . '.');
+            }
+            if ($type === 'url' && ($values[$name] ?? '') !== '') {
+                $urlError = simple_crud_validate_url((string) $values[$name], $field);
+                if ($urlError !== null) {
+                    $errors[] = $urlError;
+                }
+            }
+        }
+
+        foreach ($fields as $name => $field) {
+            if (($field['unique'] ?? false) !== true || ($values[$name] ?? '') === '') {
+                continue;
+            }
+
+            $uniqueStatement = $pdo->prepare("SELECT COUNT(*) FROM {$table} WHERE {$name} = :value AND id <> :id");
+            $uniqueStatement->execute(['value' => $values[$name], 'id' => $recordId]);
+            if ((int) $uniqueStatement->fetchColumn() > 0) {
+                $errors[] = $field['unique_message'] ?? ('Já existe um registro com este valor em ' . $field['label'] . '.');
+            }
+        }
+
+        foreach ($fields as $name => $field) {
+            if (!isset($field['validate']) || !is_callable($field['validate'])) {
+                continue;
+            }
+            $fieldError = $field['validate']($values[$name] ?? null, $values, $current);
+            if (is_string($fieldError) && $fieldError !== '') {
+                $errors[] = $fieldError;
+            }
+        }
+
+        if (isset($config['validate']) && is_callable($config['validate'])) {
+            $globalErrors = $config['validate']($values, $current);
+            if (is_string($globalErrors) && $globalErrors !== '') {
+                $errors[] = $globalErrors;
+            } elseif (is_array($globalErrors)) {
+                foreach ($globalErrors as $globalError) {
+                    if (is_string($globalError) && $globalError !== '') {
+                        $errors[] = $globalError;
+                    }
+                }
             }
         }
 
@@ -107,14 +171,22 @@ function run_simple_crud(array $config): void
             redirect($page . '?action=' . ($recordId ? 'edit&id=' . $recordId : 'new'));
         }
 
-        if ($recordId > 0) {
-            $assignments = implode(', ', array_map(static fn(string $field): string => "{$field} = :{$field}", array_keys($values)));
-            $values['id'] = $recordId;
-            $pdo->prepare("UPDATE {$table} SET {$assignments} WHERE id = :id")->execute($values);
-        } else {
-            $columns = implode(', ', array_keys($values));
-            $placeholders = implode(', ', array_map(static fn(string $field): string => ":{$field}", array_keys($values)));
-            $pdo->prepare("INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})")->execute($values);
+        try {
+            if ($recordId > 0) {
+                $assignments = implode(', ', array_map(static fn(string $field): string => "{$field} = :{$field}", array_keys($values)));
+                $values['id'] = $recordId;
+                $pdo->prepare("UPDATE {$table} SET {$assignments} WHERE id = :id")->execute($values);
+            } else {
+                $columns = implode(', ', array_keys($values));
+                $placeholders = implode(', ', array_map(static fn(string $field): string => ":{$field}", array_keys($values)));
+                $pdo->prepare("INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})")->execute($values);
+            }
+        } catch (PDOException $exception) {
+            if ((string) $exception->getCode() === '23000') {
+                flash('error', $config['duplicate_message'] ?? 'Já existe um registro com dados únicos iguais.');
+                redirect($page . '?action=' . ($recordId ? 'edit&id=' . $recordId : 'new'));
+            }
+            throw $exception;
         }
 
         flash('success', $config['singular'] . ($recordId ? ' atualizado(a).' : ' criado(a).'));
@@ -175,12 +247,26 @@ function render_simple_form(array $config, array $record): void
                         <?php elseif ($type === 'file'): ?>
                             <?php if (!empty($record[$name])): ?><img class="image-preview" src="../<?= h($record[$name]) ?>" alt="Imagem atual"><?php endif; ?>
                             <input id="<?= h($name) ?>" name="<?= h($name) ?>" type="file" accept="image/jpeg,image/png,image/webp">
+                        <?php elseif ($type === 'select'): ?>
+                            <select id="<?= h($name) ?>" name="<?= h($name) ?>" <?= ($field['required'] ?? false) ? 'required' : '' ?>>
+                                <?php foreach (($field['options'] ?? []) as $optionValue => $optionLabel): ?>
+                                    <?php $optionValue = (string) $optionValue; ?>
+                                    <option value="<?= h($optionValue) ?>" <?= (string) ($record[$name] ?? '') === $optionValue ? 'selected' : '' ?>><?= h((string) $optionLabel) ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         <?php else: ?>
-                            <input id="<?= h($name) ?>" name="<?= h($name) ?>" type="<?= h($type) ?>" value="<?= h((string) ($record[$name] ?? '')) ?>"
+                            <?php $htmlType = (string) ($field['html_type'] ?? $type); ?>
+                            <input id="<?= h($name) ?>" name="<?= h($name) ?>" type="<?= h($htmlType) ?>" value="<?= h((string) ($record[$name] ?? '')) ?>"
                                    <?= isset($field['max']) ? 'maxlength="' . (int) $field['max'] . '"' : '' ?>
                                    <?= isset($field['min']) ? 'min="' . (int) $field['min'] . '"' : '' ?>
                                    <?= $type === 'number' && isset($field['max']) ? 'max="' . (int) $field['max'] . '"' : '' ?>
+                                   <?= isset($field['placeholder']) ? 'placeholder="' . h((string) $field['placeholder']) . '"' : '' ?>
+                                   <?= isset($field['html_pattern']) ? 'pattern="' . h((string) $field['html_pattern']) . '"' : '' ?>
+                                   <?= isset($field['inputmode']) ? 'inputmode="' . h((string) $field['inputmode']) . '"' : '' ?>
                                    <?= ($field['required'] ?? false) ? 'required' : '' ?>>
+                        <?php endif; ?>
+                        <?php if (!empty($field['help'])): ?>
+                            <p class="field-help"><?= h((string) $field['help']) ?></p>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
@@ -189,6 +275,73 @@ function render_simple_form(array $config, array $record): void
         </form>
     </section>
     <?php
+}
+
+function simple_crud_validate_url(string $value, array $field): ?string
+{
+    $label = (string) ($field['label'] ?? 'URL');
+
+    if (($field['allow_hash'] ?? false) === true && str_starts_with($value, '#')) {
+        return preg_match('/^#[A-Za-z0-9_-]+$/', $value) === 1
+            ? null
+            : 'Informe um link interno válido em ' . $label . '.';
+    }
+
+    if (str_contains($value, '<') || str_contains($value, '>') || $value !== strip_tags($value)) {
+        return 'O campo ' . $label . ' não pode conter HTML.';
+    }
+
+    $parts = parse_url($value);
+    $scheme = isset($parts['scheme']) ? mb_strtolower((string) $parts['scheme']) : '';
+    $allowedSchemes = $field['allowed_schemes'] ?? null;
+
+    if (is_array($allowedSchemes)) {
+        $allowedSchemes = array_map(static fn($scheme): string => mb_strtolower((string) $scheme), $allowedSchemes);
+        if (!in_array($scheme, $allowedSchemes, true)) {
+            if ($scheme === 'http' && ($field['allow_http_local'] ?? false) === true && simple_crud_is_local_http_url($value)) {
+                return null;
+            }
+            return 'Use um link com protocolo permitido em ' . $label . '.';
+        }
+    }
+
+    if ($scheme === 'mailto') {
+        $email = preg_replace('/\?.*$/', '', mb_substr($value, 7));
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false
+            ? null
+            : 'Informe um e-mail válido em ' . $label . '.';
+    }
+
+    if ($scheme === 'tel') {
+        return preg_match('/^tel:\+?[0-9().\-\s]+$/', $value) === 1
+            ? null
+            : 'Informe um telefone válido em ' . $label . '.';
+    }
+
+    if (filter_var($value, FILTER_VALIDATE_URL) === false) {
+        return 'Informe uma URL válida em ' . $label . '.';
+    }
+
+    if ($scheme === 'http' && ($field['allow_http_local'] ?? false) === true && !simple_crud_is_local_http_url($value)) {
+        return 'Use HTTPS em ' . $label . ', exceto para endereços locais.';
+    }
+
+    return null;
+}
+
+function simple_crud_is_local_http_url(string $value): bool
+{
+    $host = parse_url($value, PHP_URL_HOST);
+    if (!is_string($host)) {
+        return false;
+    }
+
+    $host = mb_strtolower(trim($host, '[]'));
+    return $host === 'localhost'
+        || $host === '127.0.0.1'
+        || $host === '::1'
+        || str_ends_with($host, '.localhost')
+        || str_ends_with($host, '.test');
 }
 
 function render_simple_table(array $config, array $records): void

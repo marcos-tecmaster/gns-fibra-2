@@ -2,15 +2,13 @@
 
 Data: 16/07/2026
 Ambiente: local
-Status: diagnostico, sem alteracao funcional
+Status: matriz atualizada apos FAQ e Beneficios administraveis
 
 ## Avisos
 
-- Nenhuma migration foi executada.
-- Nenhum banco foi alterado.
-- Nenhum codigo foi alterado.
+- As fases de FAQ e Beneficios administraveis ja foram implementadas localmente.
 - Nenhuma credencial foi registrada.
-- A matriz reflete o estado real observado no commit `86096e9`.
+- A matriz reflete o estado local apos o commit base `b373eb0` e as alteracoes ainda sem commit desta fase.
 
 ## Legenda de status
 
@@ -39,7 +37,7 @@ Status: diagnostico, sem alteracao funcional
 | Diferenciais | `siteContent.differentials` | Nao | Nao | Nao | Sim | Somente fallback local |
 | Planos | `siteContent.plans` | `plans` | `plans` | `planos.php` | Sim | Dinamico completo |
 | Beneficios dos planos | `plan.features` | `plans.benefits` | `plans.benefits` JSON | `planos.php` | Sim | Dinamico parcial |
-| Beneficios globais | `siteContent.benefits` | Nao | Nao | Nao | Sim | Somente fallback local |
+| Beneficios globais | `siteContent.benefits` | `benefits` | `benefits` | `beneficios.php` | Sim | Dinamico completo |
 | Tecnologias | `siteContent.technologies` | Nao | Nao | Nao | Sim | Somente fallback local |
 | Cobertura | `coverageAreas` | `coverage` | `coverage` | `cobertura.php` | Sim | Dinamico completo |
 | Mapa geral de cobertura | local + API | `settings.coverage_map_url` + `coverage.map_url` | `settings`, `coverage` | Configuracoes/Cobertura | Sim | Dinamico completo |
@@ -73,6 +71,7 @@ Campos reais retornados:
   "coverage": [],
   "testimonials": [],
   "banners": [],
+  "benefits": [],
   "faqs": [],
   "generated_at": ""
 }
@@ -82,7 +81,6 @@ Campos nao retornados hoje:
 
 - `navigation`
 - `differentials`
-- `benefits`
 - `technologies`
 - `stats`
 - `historyGallery`
@@ -117,7 +115,7 @@ Cinco cards locais. Sem tabela e sem API.
 
 ### Beneficios
 
-Arquivo: `src/lib/site-content.ts`
+Arquivos: `src/lib/site-content.ts`, `api/site-content.php`, `admin/beneficios.php`
 
 Quatro itens locais:
 
@@ -126,7 +124,15 @@ Quatro itens locais:
 - pagamento com praticidade;
 - mais seguranca para sua rotina.
 
-Painel/API: inexistentes.
+Os quatro itens permanecem no fallback local, mas agora tambem existem em `benefits`, sao administrados pelo painel e entregues pela API publica quando o banco esta disponivel.
+
+Regras:
+
+- `slug` e o id logico usado no frontend;
+- `camera-seguranca` so aparece quando algum plano publico possui feature contendo "camera" ou "câmera";
+- `benefits: []` e respeitado e oculta a secao;
+- API sem `benefits` ou indisponivel usa fallback local;
+- icone desconhecido usa fallback visual seguro.
 
 ### Tecnologias
 
@@ -180,7 +186,7 @@ O TypeScript ja possui:
 - `technologies`
 - `faqs`
 
-`src/services/site-content-service.ts` agora le `faqs` da API. `benefits` e `technologies` continuam preparados apenas no fallback.
+`src/services/site-content-service.ts` agora le `faqs` e `benefits` da API. `technologies` continua preparado apenas no fallback.
 
 ## Modulos atuais por fonte
 
@@ -196,17 +202,16 @@ O TypeScript ja possui:
 | Login/logout | Sim | `users`, `login_attempts` | Nao | Nao |
 | FAQ | Sim | Sim | Sim | Sim |
 | Suporte | Nao | Nao | Nao | Sim local/com config |
-| Beneficios | Nao | Nao | Nao | Sim local |
+| Beneficios | Sim | Sim | Sim | Sim |
 | Tecnologias | Nao | Nao | Nao | Sim local |
 
 ## Lacunas para Painel 2.0
 
 Prioridade alta:
 
-1. `benefits` no banco, painel e API.
-2. `technologies` no banco, painel e API.
-3. suporte/atendimento administravel, provavelmente via settings no inicio.
-4. CTA/Contato administravel, provavelmente via settings no inicio.
+1. `technologies` no banco, painel e API.
+2. suporte/atendimento administravel, provavelmente via settings no inicio.
+3. CTA/Contato administravel, provavelmente via settings no inicio.
 
 Prioridade posterior:
 
@@ -225,7 +230,7 @@ Prioridade posterior:
 Nao tentar tornar todo o conteudo dinamico de uma vez. A ordem mais segura e:
 
 1. Revisar o FAQ administravel em ambiente local/homologacao.
-2. Beneficios, com allowlist de icones e seed do conteudo atual.
+2. Revisar Beneficios administraveis em ambiente local/homologacao.
 3. Tecnologias, com aprovacao de termos tecnicos.
 4. Suporte/CTA via settings.
 5. Depois revisar menu, logs, roles e modulos de marketing.
