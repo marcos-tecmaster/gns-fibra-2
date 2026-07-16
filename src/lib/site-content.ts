@@ -78,6 +78,7 @@ export const siteContent: SiteContent = {
     { label: "Empresarial", href: "#empresarial" },
     { label: "Cobertura", href: "#cobertura" },
     { label: "Quem Somos", href: "#quem-somos" },
+    { label: "FAQ", href: "#faq" },
     { label: "Contato", href: "#contato" },
   ],
   differentials: [
@@ -176,6 +177,57 @@ export const siteContent: SiteContent = {
       description:
         "Soluções adaptadas para diferentes perfis de uso.",
       availability: "Para cada rotina",
+      active: true,
+    },
+  ],
+  faqs: [
+    {
+      id: "contratar-plano",
+      question: "Como contratar um plano da GNS Fibra?",
+      answer:
+        "Entre em contato pelo WhatsApp. A equipe verifica a disponibilidade no endereço e orienta sobre os planos adequados para sua rotina.",
+      active: true,
+    },
+    {
+      id: "verificar-cobertura",
+      question: "Como verifico a cobertura no meu endereço?",
+      answer:
+        "Use a área de cobertura do site ou envie seu endereço pelo WhatsApp para a equipe verificar a disponibilidade técnica.",
+      active: true,
+    },
+    {
+      id: "atendimento-empresas",
+      question: "A GNS Fibra possui atendimento para empresas?",
+      answer:
+        "Sim. A GNS Fibra oferece soluções para residências e empresas. Entre em contato para avaliar a necessidade e a disponibilidade no local.",
+      active: true,
+    },
+    {
+      id: "central-assinante",
+      question: "Onde acesso a Central do Assinante?",
+      answer:
+        "A Central do Assinante pode ser acessada pelo botão disponível no menu e nas áreas de atendimento do site.",
+      active: true,
+    },
+    {
+      id: "cliente-atendimento",
+      question: "Como solicito atendimento sendo cliente?",
+      answer:
+        "Use o WhatsApp, telefone ou Central do Assinante apresentados no site para entrar em contato com a equipe.",
+      active: true,
+    },
+    {
+      id: "analise-tecnica",
+      question: "A instalação depende de análise técnica?",
+      answer:
+        "Sim. A contratação e a instalação dependem da cobertura e da viabilidade técnica no endereço informado.",
+      active: true,
+    },
+    {
+      id: "formas-pagamento",
+      question: "Quais são as formas de pagamento?",
+      answer:
+        "As formas disponíveis podem variar conforme o plano e a condição comercial. Consulte a equipe antes da contratação.",
       active: true,
     },
   ],

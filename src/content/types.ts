@@ -84,6 +84,12 @@ export type SiteContent = {
     availability: string;
     active: boolean;
   }>;
+  faqs: Array<{
+    id: string;
+    question: string;
+    answer: string;
+    active: boolean;
+  }>;
   coverageAreas: CoverageArea[];
   testimonials: Array<{
     id: string;

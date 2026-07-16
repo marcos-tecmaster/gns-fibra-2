@@ -14,6 +14,7 @@ const sectionNavigation = [
   { id: "cobertura", href: "#cobertura" },
   { id: "quem-somos", href: "#quem-somos" },
   { id: "depoimentos", href: "#quem-somos" },
+  { id: "faq", href: "#faq" },
   { id: "contato", href: "#contato" },
 ] as const;
 
@@ -112,7 +113,7 @@ export function Header() {
         </a>
 
         <nav
-          className="hidden items-center gap-1 rounded-full border border-border/70 bg-card/50 p-1 shadow-card backdrop-blur-xl xl:flex"
+          className="hidden items-center gap-0.5 rounded-full border border-border/70 bg-card/50 p-1 shadow-card backdrop-blur-xl xl:flex"
           aria-label="Navegação principal"
         >
           {navigation.map((item) => (
@@ -120,7 +121,7 @@ export function Header() {
               key={item.href}
               href={item.href}
               aria-current={activeHref === item.href ? "location" : undefined}
-              className={`rounded-full px-3.5 py-2 text-xs font-semibold transition-colors focus-visible:outline-offset-0 ${
+              className={`rounded-full px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-offset-0 ${
                 activeHref === item.href
                   ? "bg-primary text-primary-foreground shadow-brand hover:bg-primary hover:text-primary-foreground"
                   : "text-foreground/75 hover:bg-primary/10 hover:text-primary"

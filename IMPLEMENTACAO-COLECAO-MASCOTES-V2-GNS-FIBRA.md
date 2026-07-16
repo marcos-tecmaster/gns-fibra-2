@@ -210,3 +210,27 @@ Observacao: elementos decorativos ja existentes podem ultrapassar seu proprio re
 - Publicar as poses reservadas somente em fases funcionais correspondentes.
 
 Nenhum commit foi criado. Nenhum push foi feito. O stash existente foi preservado.
+
+## 14. Atualizacao FAQ, suporte e contato
+
+Atualizado em 16/07/2026.
+
+Tres poses antes reservadas foram publicadas em nova fase funcional:
+
+| Asset de producao | Origem | Dimensoes finais | Peso final | Economia | SHA-256 final | Uso |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| `src/assets/mascote/v2/suporte-tecnico.png` | `docs/branding/mascote/originais/v2-oficiais/suporte-tecnico.png` | 596 x 840 px | 471.752 bytes | 603.915 bytes, 56,14% | `9537D61EFF64F9736FCBB1D5B846A63C7E19C516B91F70F1F6EA490743CB5050` | suporte humanizado |
+| `src/assets/mascote/v2/faq-pensando.png` | `docs/branding/mascote/originais/v2-oficiais/faq-pensando.png` | 515 x 840 px | 447.765 bytes | 622.614 bytes, 58,17% | `99107DAE22200D320B0DF1875FF235E11DD2F8AFD9A618A6D2B9A929A3769918` | perguntas frequentes |
+| `src/assets/mascote/v2/contato-whatsapp-acenando.png` | `docs/branding/mascote/originais/v2-oficiais/contato-whatsapp-acenando.png` | 582 x 840 px | 495.563 bytes | 638.469 bytes, 56,30% | `AEF5106E238FFC1D230D78341CA1334906CDEA32EA0B051DC2545CF85449DD2C` | CTA final de contato/WhatsApp |
+
+Metodo preservado: recorte pelo retangulo real de alpha, recomposicao com 48 px de margem segura, redimensionamento bicubico pelo encoder PNG nativo do Windows e preservacao de transparencia. O contorno verde fino discreto existente no antialiasing original foi apenas registrado.
+
+As tres imagens usam `alt=""`, `aria-hidden="true"`, `loading="lazy"`, `decoding="async"` e dimensoes explicitas no markup. Nao foi criado importador central de mascotes; `Support`, `FAQ` e `CTASection` importam somente a pose usada por cada secao.
+
+Build final da fase gerou:
+
+- `faq-pensando-CjDBxbg0.png`: 447,77 kB;
+- `suporte-tecnico-DXl6ztwf.png`: 471,75 kB;
+- `contato-whatsapp-acenando-CGRdh_DH.png`: 495,56 kB;
+- JS final: `assets/index-CtxQvtF_.js`, 395,81 kB, gzip 121,42 kB;
+- CSS final: `assets/index-C1bySrYX.css`, 68,60 kB, gzip 11,32 kB.

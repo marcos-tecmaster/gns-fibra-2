@@ -1,7 +1,7 @@
 # MAPA DE USO DO MASCOTE - GNS FIBRA 2.0
 
 Data: 13/07/2026
-Status: colecao V2 oficial auditada, Hero atualizado e mascotes de Tecnologias/Empresarial integrados
+Status: colecao V2 oficial auditada; Hero, Tecnologias, Empresarial, Suporte, FAQ e Contato integrados
 
 ## 1. Escopo
 
@@ -112,7 +112,7 @@ Para novas implementacoes, cada pose deve receber um asset de producao separado,
 
 - Preservar `docs/branding/mascote/referencias/guia-oficial-poses-mascote-gns.png` sem alteracoes.
 - Criar derivados aprovados somente em local proprio de producao quando a fase visual for autorizada.
-- Exportar apenas poses selecionadas e aprovadas; na colecao V2 publicada, apenas Hero, Tecnologias e Empresarial entram no bundle.
+- Exportar apenas poses selecionadas e aprovadas; na colecao V2 publicada, Hero, Tecnologias, Empresarial, Suporte, FAQ e Contato entram no bundle.
 - Validar bordas, transparencia, nitidez e proporcao de cada exportacao.
 - Gerar WebP/AVIF quando houver encoder confiavel que preserve alpha; nao instalar dependencia pesada apenas para conversao.
 - Manter PNG ou original como fallback somente quando necessario.
@@ -169,10 +169,10 @@ Os oito originais V2 foram auditados e preservados sem alteracao. Todos sao PNG 
 | `hero-apresentando-apontando.png` | 1080 x 1350 px | 1.014.517 bytes | L90 / T86 / R104 / B73 | `05F325808433F298354ED849D7EC8FE22DF7CF0619E6F76255BF131BA0FBFB07` | Hero, apontando para texto e CTAs | publicado via derivado V2 |
 | `wifi-turbo.png` | 1080 x 1350 px | 1.391.504 bytes | L71 / T0 / R80 / B1 | `2A62EF4206F3D753150EC446308218DCA728CA4816FA3E2352EB12867F1EC1FB` | Tecnologias e performance Wi-Fi | publicado via derivado V2 |
 | `empresarial-notebook.png` | 1080 x 1350 px | 1.162.618 bytes | L83 / T42 / R75 / B82 | `C9D30377147F200D3B642EC94EDD57837F9AAB992B91C9C2A9FB052B93C5ED8D` | Empresarial, suporte e home office | publicado via derivado V2 |
-| `contato-whatsapp-acenando.png` | 1080 x 1350 px | 1.134.032 bytes | L76 / T48 / R168 / B52 | `3DA22BECB11BD8B8689EDA29B9D43A22DDCF9838EAF9C265F04CE307BBC745B1` | CTA final e contato/WhatsApp | reservado |
-| `suporte-tecnico.png` | 1080 x 1350 px | 1.075.667 bytes | L143 / T37 / R83 / B71 | `0B5600810A4031F3A0A686EDEF4A8F7571870797DC290B8010B591DAA7278E77` | atendimento humanizado | reservado |
+| `contato-whatsapp-acenando.png` | 1080 x 1350 px | 1.134.032 bytes | L76 / T48 / R168 / B52 | `3DA22BECB11BD8B8689EDA29B9D43A22DDCF9838EAF9C265F04CE307BBC745B1` | CTA final e contato/WhatsApp | publicado via derivado V2 |
+| `suporte-tecnico.png` | 1080 x 1350 px | 1.075.667 bytes | L143 / T37 / R83 / B71 | `0B5600810A4031F3A0A686EDEF4A8F7571870797DC290B8010B591DAA7278E77` | atendimento humanizado | publicado via derivado V2 |
 | `conversao-comemorando.png` | 1080 x 1350 px | 1.094.527 bytes | L57 / T80 / R51 / B78 | `0CA7856F1988CBD446B1DF8E3A29822008C610F008E8EBA14006F41F7F2C29DD` | confirmacao de formulario e Indique e Ganhe | reservado |
-| `faq-pensando.png` | 1080 x 1350 px | 1.070.379 bytes | L151 / T21 / R193 / B68 | `5FE09714C5DC4DEEAB7FE2098A756CB1601293A40628E844BD8DB78D37AC1070` | futura secao FAQ | reservado |
+| `faq-pensando.png` | 1080 x 1350 px | 1.070.379 bytes | L151 / T21 / R193 / B68 | `5FE09714C5DC4DEEAB7FE2098A756CB1601293A40628E844BD8DB78D37AC1070` | FAQ | publicado via derivado V2 |
 | `apresentando-reserva.png` | 1080 x 1350 px | 1.381.755 bytes | L34 / T12 / R66 / B29 | `B545EBD8DC2CAF21CD80EF7938630A19A7AF3628F1C249299082C483DA35F192` | campanhas, planos ou beneficios | reservado |
 
 ## 12. Derivados V2 publicados
@@ -184,6 +184,9 @@ Criados somente os tres assets usados nesta fase:
 | `src/assets/mascote/v2/hero-apresentando-apontando.png` | 687 x 900 px | 540.995 bytes | `583CC01A2B8A0F95AB7B827EFF9F812CA00E9A2CD82BCA4F59AEA1D5A26FD412` | Hero | alt informativo |
 | `src/assets/mascote/v2/wifi-turbo.png` | 596 x 840 px | 528.774 bytes | `75EE67B402B1E303B73D89245A3AEE6E987308B554B718C488A4C26F8413C24F` | Tecnologias | `alt=""`, decorativo |
 | `src/assets/mascote/v2/empresarial-notebook.png` | 647 x 840 px | 516.793 bytes | `3D7CE8BFDBBB79E6CF745A31FC51C25A52C9717A8524700AA26E2B43AA7279E2` | Empresarial | `alt=""`, decorativo |
+| `src/assets/mascote/v2/suporte-tecnico.png` | 596 x 840 px | 471.752 bytes | `9537D61EFF64F9736FCBB1D5B846A63C7E19C516B91F70F1F6EA490743CB5050` | Suporte | `alt=""`, decorativo |
+| `src/assets/mascote/v2/faq-pensando.png` | 515 x 840 px | 447.765 bytes | `99107DAE22200D320B0DF1875FF235E11DD2F8AFD9A618A6D2B9A929A3769918` | FAQ | `alt=""`, decorativo |
+| `src/assets/mascote/v2/contato-whatsapp-acenando.png` | 582 x 840 px | 495.563 bytes | `AEF5106E238FFC1D230D78341CA1334906CDEA32EA0B051DC2545CF85449DD2C` | Contato/WhatsApp | `alt=""`, decorativo |
 
 Metodo: recorte pelo retangulo real de alpha, recomposicao com 48 px de margem segura, redimensionamento bicubico pelo encoder PNG nativo do Windows e preservacao de transparencia. WebP/AVIF continuam pendentes ate existir encoder confiavel com suporte a alpha.
 

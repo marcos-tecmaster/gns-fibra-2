@@ -788,6 +788,35 @@ Sempre:
 
 ---
 
+## 21. Estado atual do frontend publico
+
+Atualizado em 16/07/2026.
+
+A pagina publica da GNS Fibra 2.0 passa a incluir, no frontend, as secoes de suporte humanizado e FAQ antes do CTA final de contato/WhatsApp.
+
+Ordem publica atual:
+
+1. Hero
+2. Stats
+3. Diferenciais
+4. Planos
+5. Beneficios
+6. Tecnologias
+7. Empresarial
+8. Cobertura
+9. Historia
+10. Suporte
+11. Depoimentos
+12. FAQ
+13. Contato
+14. Footer
+
+O FAQ usa conteudo local no `SiteContentProvider` e gera `FAQPage` a partir das perguntas visiveis. A estrutura de conteúdo está preparada no frontend, mas o gerenciamento de FAQs pelo painel será desenvolvido em fase futura.
+
+As poses V2 publicadas no site sao: Hero, Tecnologias, Empresarial, Suporte, FAQ e Contato/WhatsApp. As poses restantes continuam reservadas para campanhas, confirmacoes e futuras telas aprovadas.
+
+---
+
 # Encerramento
 
 Este projeto representa uma nova etapa da GNS Fibra e também uma nova etapa profissional para todos os envolvidos.

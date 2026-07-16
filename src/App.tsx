@@ -4,11 +4,13 @@ import { Differentials } from "@/components/site/Differentials";
 import { Benefits } from "@/components/site/Benefits";
 import { Business } from "@/components/site/Business";
 import { Footer } from "@/components/site/Footer";
+import { FAQ } from "@/components/site/FAQ";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { History } from "@/components/site/History";
 import { Plans } from "@/components/site/Plans";
 import { Stats } from "@/components/site/Stats";
+import { Support } from "@/components/site/Support";
 import { Technologies } from "@/components/site/Technologies";
 import { Testimonials } from "@/components/site/Testimonials";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -29,7 +31,9 @@ export default function App() {
           <Business />
           <Coverage />
           <History />
+          <Support />
           <Testimonials />
+          <FAQ />
           <CTASection />
         </main>
         <Footer />

@@ -11,10 +11,10 @@ export function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Fale conosco pelo WhatsApp"
-      className="fixed bottom-4 right-4 z-40 grid h-14 w-14 place-items-center rounded-full bg-whatsapp text-white shadow-whatsapp transition-transform hover:scale-110 sm:bottom-5 sm:right-5"
+      className="whatsapp-float fixed z-40 grid place-items-center rounded-full bg-whatsapp text-white shadow-whatsapp transition-transform hover:scale-110"
     >
       <span className="absolute inset-0 animate-ping rounded-full bg-whatsapp opacity-25 motion-reduce:hidden" />
-      <MessageCircle className="relative h-7 w-7" fill="currentColor" />
+      <MessageCircle className="whatsapp-float-icon relative" fill="currentColor" />
     </a>
   );
 }

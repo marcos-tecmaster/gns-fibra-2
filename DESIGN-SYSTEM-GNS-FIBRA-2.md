@@ -548,7 +548,7 @@ O `letter-spacing` global de headings foi ajustado para `0`, evitando compressao
 
 ## 23. Colecao oficial de mascotes V2
 
-Atualizado em 15/07/2026.
+Atualizado em 16/07/2026.
 
 Fonte oficial V2:
 
@@ -570,11 +570,14 @@ Aplicacoes publicadas nesta fase:
 | Hero | `hero-apresentando-apontando.png` | `src/assets/mascote/v2/hero-apresentando-apontando.png` | lado direito, gesto direcionado ao texto e CTAs, `loading="eager"` |
 | Tecnologias | `wifi-turbo.png` | `src/assets/mascote/v2/wifi-turbo.png` | apoio visual unico, coluna lateral no desktop e fluxo normal antes do painel no mobile |
 | Empresarial | `empresarial-notebook.png` | `src/assets/mascote/v2/empresarial-notebook.png` | apoio visual subordinado a proposta empresarial, sem substituir texto ou CTA |
+| Suporte | `suporte-tecnico.png` | `src/assets/mascote/v2/suporte-tecnico.png` | apoio visual para atendimento humanizado, coluna lateral no desktop e fluxo normal no mobile |
+| FAQ | `faq-pensando.png` | `src/assets/mascote/v2/faq-pensando.png` | apoio visual discreto para duvidas frequentes, sem competir com o accordion |
+| Contato | `contato-whatsapp-acenando.png` | `src/assets/mascote/v2/contato-whatsapp-acenando.png` | apoio visual no CTA final de contato/WhatsApp |
 
 Acessibilidade:
 
 - Hero usa alt informativo: `Mascote da GNS Fibra apontando para a mensagem principal`.
-- Tecnologias e Empresarial usam `alt=""` e `aria-hidden="true"`, pois as imagens sao apoio visual redundante ao conteudo textual.
+- Tecnologias, Empresarial, Suporte, FAQ e Contato usam `alt=""` e `aria-hidden="true"`, pois as imagens sao apoio visual redundante ao conteudo textual.
 - As imagens nao recebem foco, nao recebem eventos de ponteiro e nao carregam informacao comercial exclusiva.
 
 Performance:
@@ -582,14 +585,27 @@ Performance:
 - Hero declara `width={687}` e `height={900}`.
 - Wi-Fi Turbo declara `width={596}` e `height={840}`, com `loading="lazy"`.
 - Empresarial declara `width={647}` e `height={840}`, com `loading="lazy"`.
+- Suporte declara `width={596}` e `height={840}`, com `loading="lazy"`.
+- FAQ declara `width={515}` e `height={840}`, com `loading="lazy"`.
+- Contato declara `width={582}` e `height={840}`, com `loading="lazy"`.
 - Todos usam `decoding="async"` e CSS com `aspect-ratio`/dimensoes maximas para reduzir layout shift.
 
 Poses V2 reservadas para fases futuras:
 
-- `contato-whatsapp-acenando.png`: CTA final e contato/WhatsApp.
-- `suporte-tecnico.png`: atendimento humanizado.
 - `conversao-comemorando.png`: confirmacao de formulario e Indique e Ganhe.
-- `faq-pensando.png`: futura secao FAQ.
 - `apresentando-reserva.png`: campanhas, planos ou beneficios.
 
 Detalhes completos da auditoria V2 estao em `IMPLEMENTACAO-COLECAO-MASCOTES-V2-GNS-FIBRA.md`.
+
+## 24. Suporte, FAQ e contato
+
+Atualizado em 16/07/2026.
+
+Direcao aplicada:
+
+- Suporte usa composicao em duas colunas no desktop e fluxo normal no mobile, com cards de acao para contratacao, atendimento de cliente e Central do Assinante.
+- FAQ usa accordion acessivel, com todas as perguntas fechadas no carregamento inicial e apenas uma aberta por vez.
+- CTA final preserva o fundo `fiber-bundle.jpg` e passa a separar conteudo/botoes do mascote acenando.
+- Os contatos continuam vindo de `SiteContentProvider`, usando `config.contact.whatsappUrl`, `config.contact.phone`, `config.contact.email` e `config.links.customerPortal`.
+- O menu principal recebeu `FAQ` antes de `Contato`; `Suporte` ficou fora do menu para evitar excesso de itens.
+- A estrutura de conteúdo está preparada no frontend, mas o gerenciamento de FAQs pelo painel será desenvolvido em fase futura.
