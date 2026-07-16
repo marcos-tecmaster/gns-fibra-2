@@ -8,6 +8,7 @@ function admin_header(string $title): void
         'dashboard.php' => 'Dashboard',
         'planos.php' => 'Planos',
         'beneficios.php' => 'Benefícios',
+        'tecnologias.php' => 'Tecnologias',
         'banners.php' => 'Banners',
         'cobertura.php' => 'Cobertura',
         'depoimentos.php' => 'Depoimentos',

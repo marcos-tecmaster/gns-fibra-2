@@ -11,6 +11,8 @@ $counts = [
     'testimonials' => 0,
     'benefits' => 0,
     'active_benefits' => 0,
+    'technologies' => 0,
+    'active_technologies' => 0,
     'faqs' => 0,
     'active_faqs' => 0,
 ];
@@ -22,6 +24,8 @@ try {
     $counts['testimonials'] = (int) db()->query('SELECT COUNT(*) FROM testimonials')->fetchColumn();
     $counts['benefits'] = (int) db()->query('SELECT COUNT(*) FROM benefits')->fetchColumn();
     $counts['active_benefits'] = (int) db()->query('SELECT COUNT(*) FROM benefits WHERE active = 1')->fetchColumn();
+    $counts['technologies'] = (int) db()->query('SELECT COUNT(*) FROM technologies')->fetchColumn();
+    $counts['active_technologies'] = (int) db()->query('SELECT COUNT(*) FROM technologies WHERE active = 1')->fetchColumn();
     $counts['faqs'] = (int) db()->query('SELECT COUNT(*) FROM faqs')->fetchColumn();
     $counts['active_faqs'] = (int) db()->query('SELECT COUNT(*) FROM faqs WHERE active = 1')->fetchColumn();
 } catch (PDOException) {
@@ -56,6 +60,11 @@ admin_header('Dashboard');
         <a class="muted" href="beneficios.php">Gerenciar benefícios →</a>
     </article>
     <article class="card">
+        <span>Tecnologias ativas / total</span>
+        <strong><?= $counts['active_technologies'] ?>/<?= $counts['technologies'] ?></strong>
+        <a class="muted" href="tecnologias.php">Gerenciar tecnologias →</a>
+    </article>
+    <article class="card">
         <span>FAQs ativas / total</span>
         <strong><?= $counts['active_faqs'] ?>/<?= $counts['faqs'] ?></strong>
         <a class="muted" href="faqs.php">Gerenciar FAQ →</a>
@@ -72,6 +81,7 @@ admin_header('Dashboard');
     <div class="actions">
         <a class="button" href="planos.php?action=new">Novo plano</a>
         <a class="button secondary" href="beneficios.php?action=new">Novo benefício</a>
+        <a class="button secondary" href="tecnologias.php?action=new">Nova tecnologia</a>
         <a class="button secondary" href="banners.php?action=new">Novo banner</a>
         <a class="button secondary" href="cobertura.php?action=new">Nova cobertura</a>
         <a class="button secondary" href="faqs.php?action=new">Nova FAQ</a>

@@ -107,6 +107,9 @@ function run_simple_crud(array $config): void
             } else {
                 $maxLength = (int) ($field['max'] ?? 65535);
                 $rawValue = trim((string) ($_POST[$name] ?? ''));
+                if (($field['lowercase'] ?? false) === true) {
+                    $rawValue = mb_strtolower($rawValue);
+                }
                 if (($field['disallow_html'] ?? false) && ($rawValue !== strip_tags($rawValue) || str_contains($rawValue, '<') || str_contains($rawValue, '>'))) {
                     $errors[] = 'O campo ' . $field['label'] . ' não pode conter HTML.';
                 }

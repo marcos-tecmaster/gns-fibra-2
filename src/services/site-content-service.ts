@@ -69,12 +69,24 @@ type ApiBenefit = {
   display_order?: number;
 };
 
+type ApiTechnology = {
+  id: number;
+  slug: string;
+  icon: string;
+  name: string;
+  description: string;
+  availability: string;
+  active?: boolean;
+  display_order?: number;
+};
+
 type SiteContentApiResponse = {
   settings?: ApiSettings;
   plans?: ApiPlan[];
   coverage?: ApiCoverage[];
   testimonials?: ApiTestimonial[];
   benefits?: ApiBenefit[];
+  technologies?: ApiTechnology[];
   faqs?: ApiFaq[];
   error?: string;
 };
@@ -197,6 +209,52 @@ function normalizeBenefits(items: ApiBenefit[]): SiteContent["benefits"] {
     );
 }
 
+const TECHNOLOGY_ICONS = new Set<IconName>([
+  "network",
+  "wifi",
+  "shield",
+  "home",
+  "router",
+  "zap",
+  "headset",
+]);
+const TECHNOLOGY_ICON_FALLBACK: IconName = "network";
+
+function normalizeTechnologyIcon(icon: string): IconName {
+  const normalizedIcon = String(icon ?? "").trim() as IconName;
+  return TECHNOLOGY_ICONS.has(normalizedIcon)
+    ? normalizedIcon
+    : TECHNOLOGY_ICON_FALLBACK;
+}
+
+function normalizeTechnologies(
+  items: ApiTechnology[],
+): SiteContent["technologies"] {
+  return items
+    .map((item) => {
+      const slug = String(item.slug ?? "").trim();
+      const name = String(item.name ?? "").trim();
+      const description = String(item.description ?? "").trim();
+      const availability = String(item.availability ?? "").trim();
+
+      return {
+        id: slug,
+        icon: normalizeTechnologyIcon(item.icon),
+        name,
+        description,
+        availability,
+        active: true,
+      };
+    })
+    .filter(
+      (technology) =>
+        technology.id !== "" &&
+        technology.name !== "" &&
+        technology.description !== "" &&
+        technology.availability !== "",
+    );
+}
+
 function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const settings = response.settings ?? {};
   const coverage = Array.isArray(response.coverage) ? response.coverage : null;
@@ -208,6 +266,9 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
     : null;
   const remoteBenefits = Array.isArray(response.benefits)
     ? response.benefits
+    : null;
+  const remoteTechnologies = Array.isArray(response.technologies)
+    ? response.technologies
     : null;
   const remoteFaqs = Array.isArray(response.faqs) ? response.faqs : null;
   const whatsappUrl = settings.whatsapp || siteContent.config.contact.whatsappUrl;
@@ -295,6 +356,10 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
       remoteBenefits !== null
         ? normalizeBenefits(remoteBenefits)
         : siteContent.benefits,
+    technologies:
+      remoteTechnologies !== null
+        ? normalizeTechnologies(remoteTechnologies)
+        : siteContent.technologies,
     faqs: remoteFaqs !== null ? normalizeFaqs(remoteFaqs) : siteContent.faqs,
   };
 }

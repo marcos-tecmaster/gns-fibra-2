@@ -125,6 +125,8 @@ Novos beneficios internos como GNS TV Plus, streaming, Mesh e telefone fixo fica
 
 Foi criada a secao `Technologies`, com visual proprio e linguagem tecnica controlada.
 
+Atualizacao em 16/07/2026: a secao passou a consumir `technologies` da API publica quando disponivel, com administracao pelo painel em `admin/tecnologias.php` e fallback local preservado.
+
 Estrutura atual:
 
 - nome;
@@ -138,7 +140,7 @@ Conteudo publicado nesta fase:
 - fibra optica;
 - Wi-Fi;
 - rede monitorada;
-- alta performance.
+- casa e empresa.
 
 Tecnologias futuras como Wi-Fi 6, Wi-Fi 7 e XGS-PON foram preparadas na documentacao, mas nao publicadas sem confirmacao formal.
 
@@ -257,7 +259,7 @@ Observacao: durante a automacao do navegador apareceram mensagens externas do am
 - Confirmar formalmente nova matriz comercial.
 - Definir se plano sob consulta sera campo proprio ou convencao de preco.
 - Criar migrations futuras somente em fase aprovada.
-- Criar modulos reais de Beneficios e Tecnologias no painel.
+- Revisar em homologacao os modulos reais de Beneficios e Tecnologias no painel.
 - Validar contraste com ferramenta WCAG dedicada antes de producao.
 
 ## 17. Revisao de conteudo publico e navegacao
@@ -405,8 +407,4 @@ Foram preservados:
 
 O painel restringe icones a `wifi`, `headset`, `credit-card`, `camera` e `tv`. CTAs sao opcionais, mas precisam de label e link seguros. O normalizador TypeScript respeita `benefits: []` como secao vazia, ignora registros invalidos isoladamente e usa fallback visual seguro para icone desconhecido.
 
-Continuam fora desta fase:
-
-- Tecnologias administraveis;
-- novos beneficios comerciais ainda nao aprovados;
-- TV, streaming, Mesh, Wi-Fi 6, Wi-Fi 7, telefonia, fidelidade e promocoes.
+Atualizacao em 16/07/2026: Tecnologias administraveis tambem foram implementadas localmente com tabela `technologies`, seed idempotente dos quatro itens oficiais, CRUD PHP, API publica e normalizacao TypeScript. Continuam fora do frontend e sem publicacao comercial: TV, streaming, Mesh, Wi-Fi 6, Wi-Fi 7, telefonia, fidelidade, promocoes e outras tecnologias ainda nao aprovadas.

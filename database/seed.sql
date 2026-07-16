@@ -80,6 +80,47 @@ FROM (
 ) AS seed
 WHERE NOT EXISTS (SELECT 1 FROM benefits);
 
+INSERT INTO technologies (slug, icon, name, description, availability, active, display_order)
+SELECT seed.slug, seed.icon, seed.name, seed.description, seed.availability, seed.active, seed.display_order
+FROM (
+  SELECT
+    'fibra-optica' AS slug,
+    'network' AS icon,
+    'Fibra óptica' AS name,
+    'Conexão de alta capacidade para residências e empresas.' AS description,
+    'Conforme cobertura' AS availability,
+    1 AS active,
+    10 AS display_order
+  UNION ALL
+  SELECT
+    'wifi',
+    'wifi',
+    'Wi-Fi',
+    'Recursos definidos de acordo com o plano, equipamento e viabilidade técnica.',
+    'Conforme o plano',
+    1,
+    20
+  UNION ALL
+  SELECT
+    'rede-monitorada',
+    'shield',
+    'Rede monitorada',
+    'Infraestrutura acompanhada para oferecer mais estabilidade e confiabilidade.',
+    'Rede GNS Fibra',
+    1,
+    30
+  UNION ALL
+  SELECT
+    'casa-empresa',
+    'home',
+    'Casa e empresa',
+    'Soluções adaptadas para diferentes perfis de uso.',
+    'Para cada rotina',
+    1,
+    40
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM technologies);
+
 INSERT INTO coverage (region, description, map_url, active, display_order) VALUES
 ('Alvorada/Viamão', 'Ponto de atendimento e cobertura regional.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 1),
 ('Canoas/Cachoeirinha', 'Ponto de atendimento e cobertura regional.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 2),

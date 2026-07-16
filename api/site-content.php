@@ -77,6 +77,23 @@ try {
     }
     unset($benefit);
 
+    $technologies = $pdo->query(
+        'SELECT id, slug, icon, name, description, availability, active, display_order
+         FROM technologies WHERE active = 1 ORDER BY display_order, id'
+    )->fetchAll();
+
+    foreach ($technologies as &$technology) {
+        $technology['id'] = (int) $technology['id'];
+        $technology['slug'] = (string) $technology['slug'];
+        $technology['icon'] = (string) $technology['icon'];
+        $technology['name'] = (string) $technology['name'];
+        $technology['description'] = (string) $technology['description'];
+        $technology['availability'] = (string) $technology['availability'];
+        $technology['active'] = (bool) $technology['active'];
+        $technology['display_order'] = (int) $technology['display_order'];
+    }
+    unset($technology);
+
     $faqs = $pdo->query(
         'SELECT id, question, answer, active, display_order
          FROM faqs WHERE active = 1 ORDER BY display_order, id'
@@ -98,6 +115,7 @@ try {
         'testimonials' => $testimonials,
         'banners' => $banners,
         'benefits' => $benefits,
+        'technologies' => $technologies,
         'faqs' => $faqs,
         'generated_at' => gmdate(DATE_ATOM),
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);

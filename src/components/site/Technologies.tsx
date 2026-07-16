@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import {
   Headphones,
+  Home,
   LucideIcon,
   Network,
   Router,
@@ -15,6 +16,7 @@ import type { IconName } from "@/content/types";
 
 const ICONS: Partial<Record<IconName, LucideIcon>> = {
   headset: Headphones,
+  home: Home,
   network: Network,
   router: Router,
   shield: ShieldCheck,

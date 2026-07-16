@@ -1,12 +1,11 @@
 # PLANO IMPLEMENTACAO PAINEL ADMIN 2 - GNS FIBRA
 
 Data: 16/07/2026
-Status: planejamento com FAQ e Beneficios implementados localmente
+Status: planejamento com FAQ, Beneficios e Tecnologias implementados localmente
 
 ## Avisos
 
-- FAQ e Beneficios ja foram implementados localmente em fases separadas.
-- Tecnologias segue como proxima etapa recomendada.
+- FAQ, Beneficios e Tecnologias ja foram implementados localmente em fases separadas.
 - As mensagens de commit sao sugestoes.
 
 ## Etapa 1 - Fundacao reutilizavel e migration de FAQs
@@ -187,20 +186,24 @@ Commit sugerido:
 
 Objetivo: administrar tecnologias publicadas.
 
+Status em 16/07/2026: implementado localmente. Criada a migration `database/migration-2026-07-16-create-technologies.sql`, atualizados `schema.sql` e `seed.sql`, criado `admin/tecnologias.php`, adicionadas Tecnologias ao menu/dashboard, API publica passou a entregar `technologies` e o normalizador TypeScript preserva fallback local.
+
 Arquivos:
 
-- `database/migration-YYYY-MM-DD-technologies.sql`
+- `database/migration-2026-07-16-create-technologies.sql`
 - `admin/tecnologias.php`
 - `admin/includes/layout.php`
+- `admin/dashboard.php`
 - `api/site-content.php`
-- `src/content/types.ts`
 - `src/services/site-content-service.ts`
-- `src/lib/site-content.ts`
 - `src/components/site/Technologies.tsx`
+- `database/schema.sql`
+- `database/seed.sql`
 
 Tabela:
 
 - id;
+- slug;
 - icon;
 - name;
 - description;
@@ -212,11 +215,13 @@ Tabela:
 
 Validacoes:
 
+- slug obrigatorio, unico e no formato `/^[a-z0-9]+(?:-[a-z0-9]+)*$/`;
 - icon por allowlist;
 - name obrigatorio;
 - description obrigatoria;
-- availability max 160;
-- display_order >= 0.
+- availability obrigatoria, max 140;
+- display_order entre 0 e 10000;
+- campos extras rejeitados.
 
 Seed:
 
@@ -239,6 +244,8 @@ Criterio de aprovacao:
 
 - quatro tecnologias atuais preservadas;
 - ordenacao e ativo funcionam;
+- `technologies: []` oculta a secao;
+- fallback local funciona com API antiga ou indisponivel;
 - mobile e temas preservados.
 
 Commit sugerido:

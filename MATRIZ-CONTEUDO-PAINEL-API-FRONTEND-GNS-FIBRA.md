@@ -2,13 +2,13 @@
 
 Data: 16/07/2026
 Ambiente: local
-Status: matriz atualizada apos FAQ e Beneficios administraveis
+Status: matriz atualizada apos FAQ, Beneficios e Tecnologias administraveis
 
 ## Avisos
 
-- As fases de FAQ e Beneficios administraveis ja foram implementadas localmente.
+- As fases de FAQ, Beneficios e Tecnologias administraveis ja foram implementadas localmente.
 - Nenhuma credencial foi registrada.
-- A matriz reflete o estado local apos o commit base `b373eb0` e as alteracoes ainda sem commit desta fase.
+- A matriz reflete o estado local apos o commit base `e23bb1e` e as alteracoes ainda sem commit desta fase.
 
 ## Legenda de status
 
@@ -38,7 +38,7 @@ Status: matriz atualizada apos FAQ e Beneficios administraveis
 | Planos | `siteContent.plans` | `plans` | `plans` | `planos.php` | Sim | Dinamico completo |
 | Beneficios dos planos | `plan.features` | `plans.benefits` | `plans.benefits` JSON | `planos.php` | Sim | Dinamico parcial |
 | Beneficios globais | `siteContent.benefits` | `benefits` | `benefits` | `beneficios.php` | Sim | Dinamico completo |
-| Tecnologias | `siteContent.technologies` | Nao | Nao | Nao | Sim | Somente fallback local |
+| Tecnologias | `siteContent.technologies` | `technologies` | `technologies` | `tecnologias.php` | Sim | Dinamico completo |
 | Cobertura | `coverageAreas` | `coverage` | `coverage` | `cobertura.php` | Sim | Dinamico completo |
 | Mapa geral de cobertura | local + API | `settings.coverage_map_url` + `coverage.map_url` | `settings`, `coverage` | Configuracoes/Cobertura | Sim | Dinamico completo |
 | Historia | `config.company.aboutText`, `historyGallery` | `about_text` parcial | `settings` parcial | Configuracoes parcial | Sim | Dinamico parcial |
@@ -72,6 +72,7 @@ Campos reais retornados:
   "testimonials": [],
   "banners": [],
   "benefits": [],
+  "technologies": [],
   "faqs": [],
   "generated_at": ""
 }
@@ -81,7 +82,6 @@ Campos nao retornados hoje:
 
 - `navigation`
 - `differentials`
-- `technologies`
 - `stats`
 - `historyGallery`
 - `support`
@@ -93,7 +93,7 @@ Campos nao retornados hoje:
 
 ### Navegacao
 
-Arquivo: `src/lib/site-content.ts`
+Arquivos: `src/lib/site-content.ts`, `api/site-content.php`, `admin/tecnologias.php`
 
 Itens:
 
@@ -105,7 +105,16 @@ Itens:
 - FAQ
 - Contato
 
-Painel/API: inexistentes.
+Os quatro itens permanecem no fallback local, mas agora tambem existem em `technologies`, sao administrados pelo painel e entregues pela API publica quando o banco esta disponivel.
+
+Regras:
+
+- `slug` e o id logico usado no frontend;
+- `technologies: []` e respeitado e oculta a secao;
+- API sem `technologies` ou indisponivel usa fallback local;
+- registros sem slug, nome, descricao ou disponibilidade sao ignorados individualmente;
+- icone desconhecido usa fallback visual seguro `network`;
+- mascote Wi-Fi Turbo e aviso tecnico final permanecem no componente.
 
 ### Diferenciais
 
@@ -186,7 +195,7 @@ O TypeScript ja possui:
 - `technologies`
 - `faqs`
 
-`src/services/site-content-service.ts` agora le `faqs` e `benefits` da API. `technologies` continua preparado apenas no fallback.
+`src/services/site-content-service.ts` agora le `faqs`, `benefits` e `technologies` da API.
 
 ## Modulos atuais por fonte
 
@@ -203,7 +212,7 @@ O TypeScript ja possui:
 | FAQ | Sim | Sim | Sim | Sim |
 | Suporte | Nao | Nao | Nao | Sim local/com config |
 | Beneficios | Sim | Sim | Sim | Sim |
-| Tecnologias | Nao | Nao | Nao | Sim local |
+| Tecnologias | Sim | Sim | Sim | Sim |
 
 ## Lacunas para Painel 2.0
 
@@ -231,6 +240,6 @@ Nao tentar tornar todo o conteudo dinamico de uma vez. A ordem mais segura e:
 
 1. Revisar o FAQ administravel em ambiente local/homologacao.
 2. Revisar Beneficios administraveis em ambiente local/homologacao.
-3. Tecnologias, com aprovacao de termos tecnicos.
+3. Revisar Tecnologias administraveis em ambiente local/homologacao.
 4. Suporte/CTA via settings.
 5. Depois revisar menu, logs, roles e modulos de marketing.
