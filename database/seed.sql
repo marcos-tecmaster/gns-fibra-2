@@ -47,6 +47,64 @@ INSERT INTO plans (name, speed, unit, price, audience, benefits, payment_method,
 ('EXTREME', '1000', 'MEGA', 149.90, 'Velocidade máxima para sua conexão', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'), 'Cartão de crédito ou débito em conta', 0, 1, 6),
 ('EXTREME COMBO', '1000', 'MEGA', 199.90, 'O combo completo da GNS Fibra', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'), 'Cartão de crédito ou débito em conta', 0, 1, 7);
 
+INSERT INTO stats (slug, value, label, active, display_order)
+SELECT seed.slug, seed.value, seed.label, seed.active, seed.display_order
+FROM (
+  SELECT 'anos-de-mercado' AS slug, '14+' AS value, 'Anos de mercado' AS label, 1 AS active, 10 AS display_order
+  UNION ALL
+  SELECT 'rede-fibra-optica', '100%', 'Rede em fibra óptica', 1, 20
+  UNION ALL
+  SELECT 'rede-monitorada', '24/H', 'Rede monitorada', 1, 30
+  UNION ALL
+  SELECT 'atendimento-proximo', 'Humanizado', 'Atendimento próximo', 1, 40
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM stats);
+
+INSERT INTO differentials (slug, icon, title, description, active, display_order)
+SELECT seed.slug, seed.icon, seed.title, seed.description, seed.active, seed.display_order
+FROM (
+  SELECT
+    'fibra-ponta-a-ponta' AS slug,
+    'wifi' AS icon,
+    'Fibra de ponta a ponta' AS title,
+    'Mais velocidade e estabilidade para todos os seus dispositivos.' AS description,
+    1 AS active,
+    10 AS display_order
+  UNION ALL
+  SELECT
+    'alta-performance',
+    'zap',
+    'Alta performance',
+    'Conexão preparada para streaming, games, trabalho e estudo.',
+    1,
+    20
+  UNION ALL
+  SELECT
+    'suporte-humanizado',
+    'headset',
+    'Suporte humanizado',
+    'Atendimento próximo, rápido e focado em resolver.',
+    1,
+    30
+  UNION ALL
+  SELECT
+    'rede-confiavel',
+    'shield',
+    'Rede confiável',
+    'Infraestrutura monitorada para manter sua rotina conectada.',
+    1,
+    40
+  UNION ALL
+  SELECT
+    'casa-empresa',
+    'home',
+    'Casa e empresa',
+    'Soluções adequadas para cada perfil de consumo.',
+    1,
+    50
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM differentials);
+
 INSERT INTO benefits (slug, icon, title, description, cta_label, cta_href, active, display_order)
 SELECT seed.slug, seed.icon, seed.title, seed.description, seed.cta_label, seed.cta_href, seed.active, seed.display_order
 FROM (

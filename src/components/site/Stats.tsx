@@ -3,14 +3,19 @@ import { useSiteContent } from "@/content/SiteContentProvider";
 
 export function Stats() {
   const { stats } = useSiteContent();
+  const visibleStats = stats.filter((stat) => stat.active !== false);
+
+  if (visibleStats.length === 0) {
+    return null;
+  }
 
   return (
     <section className="relative border-y border-border/50 bg-card/35 py-14 backdrop-blur-sm">
       <div className="container mx-auto px-5">
-        <div className="grid grid-cols-2 gap-7 md:grid-cols-4 md:gap-8">
-          {stats.map((s, i) => (
+        <div className="grid [grid-template-columns:repeat(auto-fit,minmax(130px,1fr))] gap-7 md:gap-8">
+          {visibleStats.map((s, i) => (
             <motion.div
-              key={s.label}
+              key={s.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

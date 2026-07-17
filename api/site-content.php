@@ -37,6 +37,37 @@ try {
     }
     unset($plan);
 
+    $stats = $pdo->query(
+        'SELECT id, slug, value, label, active, display_order
+         FROM stats WHERE active = 1 ORDER BY display_order, id'
+    )->fetchAll();
+
+    foreach ($stats as &$stat) {
+        $stat['id'] = (int) $stat['id'];
+        $stat['slug'] = (string) $stat['slug'];
+        $stat['value'] = (string) $stat['value'];
+        $stat['label'] = (string) $stat['label'];
+        $stat['active'] = (bool) $stat['active'];
+        $stat['display_order'] = (int) $stat['display_order'];
+    }
+    unset($stat);
+
+    $differentials = $pdo->query(
+        'SELECT id, slug, icon, title, description, active, display_order
+         FROM differentials WHERE active = 1 ORDER BY display_order, id'
+    )->fetchAll();
+
+    foreach ($differentials as &$differential) {
+        $differential['id'] = (int) $differential['id'];
+        $differential['slug'] = (string) $differential['slug'];
+        $differential['icon'] = (string) $differential['icon'];
+        $differential['title'] = (string) $differential['title'];
+        $differential['description'] = (string) $differential['description'];
+        $differential['active'] = (bool) $differential['active'];
+        $differential['display_order'] = (int) $differential['display_order'];
+    }
+    unset($differential);
+
     $coverage = $pdo->query(
         'SELECT id, region, description, map_url, display_order
          FROM coverage WHERE active = 1 ORDER BY display_order, id'
@@ -111,6 +142,8 @@ try {
     echo json_encode([
         'settings' => $settings,
         'plans' => $plans,
+        'stats' => $stats,
+        'differentials' => $differentials,
         'coverage' => $coverage,
         'testimonials' => $testimonials,
         'banners' => $banners,

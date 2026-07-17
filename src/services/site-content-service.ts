@@ -69,6 +69,25 @@ type ApiFaq = {
   display_order?: number;
 };
 
+type ApiStat = {
+  id: number;
+  slug: string;
+  value: string;
+  label: string;
+  active?: boolean;
+  display_order?: number;
+};
+
+type ApiDifferential = {
+  id: number;
+  slug: string;
+  icon: string;
+  title: string;
+  description: string;
+  active?: boolean;
+  display_order?: number;
+};
+
 type ApiBenefit = {
   id: number;
   slug: string;
@@ -95,6 +114,8 @@ type ApiTechnology = {
 type SiteContentApiResponse = {
   settings?: ApiSettings;
   plans?: ApiPlan[];
+  stats?: ApiStat[];
+  differentials?: ApiDifferential[];
   coverage?: ApiCoverage[];
   testimonials?: ApiTestimonial[];
   benefits?: ApiBenefit[];
@@ -172,6 +193,64 @@ function normalizeFaqs(items: ApiFaq[]): SiteContent["faqs"] {
       active: true,
     }))
     .filter((item) => item.question !== "" && item.answer !== "");
+}
+
+function normalizeStats(items: ApiStat[]): SiteContent["stats"] {
+  return items
+    .map((item) => {
+      const slug = String(item.slug ?? "").trim();
+      const value = String(item.value ?? "").trim();
+      const label = String(item.label ?? "").trim();
+
+      return {
+        id: slug,
+        value,
+        label,
+        active: true,
+      };
+    })
+    .filter((stat) => stat.id !== "" && stat.value !== "" && stat.label !== "");
+}
+
+const DIFFERENTIAL_ICONS = new Set<IconName>([
+  "wifi",
+  "zap",
+  "headset",
+  "shield",
+  "home",
+]);
+const DIFFERENTIAL_ICON_FALLBACK: IconName = "wifi";
+
+function normalizeDifferentialIcon(icon: string): IconName {
+  const normalizedIcon = String(icon ?? "").trim() as IconName;
+  return DIFFERENTIAL_ICONS.has(normalizedIcon)
+    ? normalizedIcon
+    : DIFFERENTIAL_ICON_FALLBACK;
+}
+
+function normalizeDifferentials(
+  items: ApiDifferential[],
+): SiteContent["differentials"] {
+  return items
+    .map((item) => {
+      const slug = String(item.slug ?? "").trim();
+      const title = String(item.title ?? "").trim();
+      const description = String(item.description ?? "").trim();
+
+      return {
+        id: slug,
+        icon: normalizeDifferentialIcon(item.icon),
+        title,
+        description,
+        active: true,
+      };
+    })
+    .filter(
+      (differential) =>
+        differential.id !== "" &&
+        differential.title !== "" &&
+        differential.description !== "",
+    );
 }
 
 const BENEFIT_ICONS = new Set<IconName>([
@@ -296,6 +375,10 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const normalizedCoverage =
     coverage !== null ? normalizeCoverage(coverage) : siteContent.coverageAreas;
   const remotePlans = Array.isArray(response.plans) ? response.plans : null;
+  const remoteStats = Array.isArray(response.stats) ? response.stats : null;
+  const remoteDifferentials = Array.isArray(response.differentials)
+    ? response.differentials
+    : null;
   const remoteTestimonials = Array.isArray(response.testimonials)
     ? response.testimonials
     : null;
@@ -419,6 +502,12 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
             ],
           }))
         : siteContent.plans,
+    stats:
+      remoteStats !== null ? normalizeStats(remoteStats) : siteContent.stats,
+    differentials:
+      remoteDifferentials !== null
+        ? normalizeDifferentials(remoteDifferentials)
+        : siteContent.differentials,
     coverageAreas: normalizedCoverage,
     testimonials:
       remoteTestimonials !== null

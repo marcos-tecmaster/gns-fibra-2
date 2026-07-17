@@ -1,11 +1,26 @@
 import { motion } from "framer-motion";
 import { Wifi, Zap, Headphones, ShieldCheck, Home } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useSiteContent } from "@/content/SiteContentProvider";
+import type { IconName } from "@/content/types";
 
-const ICONS = { wifi: Wifi, zap: Zap, headset: Headphones, shield: ShieldCheck, home: Home };
+const ICONS: Partial<Record<IconName, LucideIcon>> = {
+  wifi: Wifi,
+  zap: Zap,
+  headset: Headphones,
+  shield: ShieldCheck,
+  home: Home,
+};
 
 export function Differentials() {
   const { differentials } = useSiteContent();
+  const visibleDifferentials = differentials.filter(
+    (differential) => differential.active !== false,
+  );
+
+  if (visibleDifferentials.length === 0) {
+    return null;
+  }
 
   return (
     <section id="diferenciais" className="section-spacing-standard relative">
@@ -19,12 +34,12 @@ export function Differentials() {
           </h2>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {differentials.map((d, i) => {
-            const Icon = ICONS[d.icon as keyof typeof ICONS];
+        <div className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))]">
+          {visibleDifferentials.map((d, i) => {
+            const Icon = ICONS[d.icon] ?? Wifi;
             return (
               <motion.div
-                key={d.title}
+                key={d.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

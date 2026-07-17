@@ -7,6 +7,10 @@ require_auth();
 
 $counts = [
     'plans' => 0,
+    'stats' => 0,
+    'active_stats' => 0,
+    'differentials' => 0,
+    'active_differentials' => 0,
     'coverage' => 0,
     'testimonials' => 0,
     'benefits' => 0,
@@ -20,6 +24,10 @@ $databaseError = null;
 
 try {
     $counts['plans'] = (int) db()->query('SELECT COUNT(*) FROM plans')->fetchColumn();
+    $counts['stats'] = (int) db()->query('SELECT COUNT(*) FROM stats')->fetchColumn();
+    $counts['active_stats'] = (int) db()->query('SELECT COUNT(*) FROM stats WHERE active = 1')->fetchColumn();
+    $counts['differentials'] = (int) db()->query('SELECT COUNT(*) FROM differentials')->fetchColumn();
+    $counts['active_differentials'] = (int) db()->query('SELECT COUNT(*) FROM differentials WHERE active = 1')->fetchColumn();
     $counts['coverage'] = (int) db()->query('SELECT COUNT(*) FROM coverage')->fetchColumn();
     $counts['testimonials'] = (int) db()->query('SELECT COUNT(*) FROM testimonials')->fetchColumn();
     $counts['benefits'] = (int) db()->query('SELECT COUNT(*) FROM benefits')->fetchColumn();
@@ -43,6 +51,16 @@ admin_header('Dashboard');
         <span>Planos cadastrados</span>
         <strong><?= $counts['plans'] ?></strong>
         <a class="muted" href="planos.php">Gerenciar planos →</a>
+    </article>
+    <article class="card">
+        <span>Estatísticas ativas / total</span>
+        <strong><?= $counts['active_stats'] ?>/<?= $counts['stats'] ?></strong>
+        <a class="muted" href="estatisticas.php">Gerenciar estatísticas →</a>
+    </article>
+    <article class="card">
+        <span>Diferenciais ativos / total</span>
+        <strong><?= $counts['active_differentials'] ?>/<?= $counts['differentials'] ?></strong>
+        <a class="muted" href="diferenciais.php">Gerenciar diferenciais →</a>
     </article>
     <article class="card">
         <span>Pontos de atendimento</span>
@@ -80,6 +98,8 @@ admin_header('Dashboard');
     </div>
     <div class="actions">
         <a class="button" href="planos.php?action=new">Novo plano</a>
+        <a class="button secondary" href="estatisticas.php?action=new">Nova estatística</a>
+        <a class="button secondary" href="diferenciais.php?action=new">Novo diferencial</a>
         <a class="button secondary" href="beneficios.php?action=new">Novo benefício</a>
         <a class="button secondary" href="tecnologias.php?action=new">Nova tecnologia</a>
         <a class="button secondary" href="banners.php?action=new">Novo banner</a>

@@ -7,6 +7,8 @@ function admin_header(string $title): void
     $items = [
         'dashboard.php' => 'Dashboard',
         'planos.php' => 'Planos',
+        'estatisticas.php' => 'Estatísticas',
+        'diferenciais.php' => 'Diferenciais',
         'beneficios.php' => 'Benefícios',
         'tecnologias.php' => 'Tecnologias',
         'banners.php' => 'Banners',

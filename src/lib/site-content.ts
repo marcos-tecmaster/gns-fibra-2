@@ -102,29 +102,39 @@ export const siteContent: SiteContent = {
   },
   differentials: [
     {
+      id: "fibra-ponta-a-ponta",
       icon: "wifi",
       title: "Fibra de ponta a ponta",
       description: "Mais velocidade e estabilidade para todos os seus dispositivos.",
+      active: true,
     },
     {
+      id: "alta-performance",
       icon: "zap",
       title: "Alta performance",
       description: "Conexão preparada para streaming, games, trabalho e estudo.",
+      active: true,
     },
     {
+      id: "suporte-humanizado",
       icon: "headset",
       title: "Suporte humanizado",
       description: "Atendimento próximo, rápido e focado em resolver.",
+      active: true,
     },
     {
+      id: "rede-confiavel",
       icon: "shield",
       title: "Rede confiável",
       description: "Infraestrutura monitorada para manter sua rotina conectada.",
+      active: true,
     },
     {
+      id: "casa-empresa",
       icon: "home",
       title: "Casa e empresa",
       description: "Soluções adequadas para cada perfil de consumo.",
+      active: true,
     },
   ],
   benefits: [
@@ -384,10 +394,10 @@ export const siteContent: SiteContent = {
     },
   ],
   stats: [
-    { value: "14+", label: "Anos de mercado" },
-    { value: "100%", label: "Rede em fibra óptica" },
-    { value: "24/H", label: "Rede monitorada" },
-    { value: "Humanizado", label: "Atendimento próximo" },
+    { id: "anos-de-mercado", value: "14+", label: "Anos de mercado", active: true },
+    { id: "rede-fibra-optica", value: "100%", label: "Rede em fibra óptica", active: true },
+    { id: "rede-monitorada", value: "24/H", label: "Rede monitorada", active: true },
+    { id: "atendimento-proximo", value: "Humanizado", label: "Atendimento próximo", active: true },
   ],
   historyGallery: [
     {

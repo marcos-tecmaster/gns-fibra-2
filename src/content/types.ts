@@ -68,9 +68,11 @@ export type SiteContent = {
     whatsappMessage: string;
   };
   differentials: Array<{
+    id: string;
     icon: IconName;
     title: string;
     description: string;
+    active: boolean;
   }>;
   plans: Array<{
     id: string;
@@ -114,7 +116,12 @@ export type SiteContent = {
     text: string;
     rating: number;
   }>;
-  stats: Array<{ value: string; label: string }>;
+  stats: Array<{
+    id: string;
+    value: string;
+    label: string;
+    active: boolean;
+  }>;
   historyGallery: Array<{
     id: string;
     title: string;

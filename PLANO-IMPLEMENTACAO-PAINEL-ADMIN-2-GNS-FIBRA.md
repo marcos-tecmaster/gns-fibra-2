@@ -1,11 +1,12 @@
 # PLANO IMPLEMENTACAO PAINEL ADMIN 2 - GNS FIBRA
 
 Data: 16/07/2026
-Status: planejamento com FAQ, Beneficios, Tecnologias, Suporte e CTA implementados localmente
+Status: planejamento com FAQ, Beneficios, Tecnologias, Suporte, CTA, Estatisticas e Diferenciais implementados localmente
 
 ## Avisos
 
 - FAQ, Beneficios, Tecnologias, Suporte e CTA ja foram implementados localmente em fases separadas.
+- Estatisticas e Diferenciais tambem foram implementados localmente em fase separada em 17/07/2026.
 - As mensagens de commit sao sugestoes.
 
 ## Etapa 1 - Fundacao reutilizavel e migration de FAQs
@@ -397,10 +398,15 @@ Commit sugerido:
 
 ## Etapas posteriores
 
-### Diferenciais
+### Estatisticas e Diferenciais
 
-- Avaliar tabela propria ou manter local.
-- Depende de estrategia comercial de copy.
+Status em 17/07/2026: implementados localmente. Criada a migration `database/migration-2026-07-17-create-stats-differentials.sql`, atualizados `schema.sql` e `seed.sql`, criados `admin/estatisticas.php` e `admin/diferenciais.php`, adicionados ao menu/dashboard, API publica passou a entregar `stats` e `differentials` e o normalizador TypeScript preserva fallback local e arrays vazios.
+
+Risco principal: numeros como `100%` e `24/H` ja existiam no fallback e foram preservados, mas devem ser confirmados com responsavel da GNS antes de uso em campanha.
+
+Commit sugerido:
+
+`feat: add admin-managed stats and differentials content`
 
 ### Historia e galeria
 

@@ -24,8 +24,10 @@ Pastas principais:
 | --- | --- | --- | --- |
 | Login | `admin/login.php` | `users`, `login_attempts` | Autenticacao com rate limit |
 | Logout | `admin/logout.php` | sessao | Encerra sessao |
-| Dashboard | `admin/dashboard.php` | `plans`, `coverage`, `testimonials`, `benefits`, `technologies`, `faqs` | Indicadores simples |
+| Dashboard | `admin/dashboard.php` | `plans`, `stats`, `differentials`, `coverage`, `testimonials`, `benefits`, `technologies`, `faqs` | Indicadores simples |
 | Planos | `admin/planos.php` | `plans` | CRUD especifico com beneficios JSON |
+| Estatisticas | `admin/estatisticas.php` | `stats` | CRUD generico com slug, valor textual, rotulo, ativo e ordenacao |
+| Diferenciais | `admin/diferenciais.php` | `differentials` | CRUD generico com slug, icone em whitelist, titulo, descricao, ativo e ordenacao |
 | Beneficios | `admin/beneficios.php` | `benefits` | CRUD generico com slug, icone em whitelist, CTA seguro e ordenacao |
 | Tecnologias | `admin/tecnologias.php` | `technologies` | CRUD generico com slug, icone em whitelist, disponibilidade e ordenacao |
 | Banners | `admin/banners.php` | `banners` | CRUD generico com upload |
@@ -60,6 +62,8 @@ API:
 - `login_attempts`
 - `settings`
 - `plans`
+- `stats`
+- `differentials`
 - `coverage`
 - `testimonials`
 - `banners`
@@ -70,6 +74,8 @@ API:
 Campos criticos:
 
 - `plans.benefits` e JSON.
+- `stats.slug` e unico; `stats.value` e texto para preservar valores como `14+`, `100%`, `24/H` e textos.
+- `differentials.slug` e unico; `differentials.icon` usa whitelist do painel e fallback visual seguro no frontend.
 - `benefits.slug` e unico; `camera-seguranca` possui regra especial no site.
 - `technologies.slug` e unico; icone usa whitelist do modulo publico.
 - `benefits.icon` usa whitelist do painel e fallback visual no frontend.
@@ -126,6 +132,8 @@ Arquitetura:
 | Concluido localmente | Tecnologias | Gerenciar tecnologias publicadas sem promessas futuras | `technologies` |
 | Concluido localmente | FAQ | Perguntas frequentes e schema futuro | `faqs` |
 | Concluido localmente | Suporte e CTA final | Gerenciar textos principais sem criar novas tabelas | `settings` |
+| Concluido localmente | Estatisticas | Gerenciar numeros e rotulos publicados com cautela comercial | `stats` |
+| Concluido localmente | Diferenciais | Gerenciar cards de diferenciais publicados | `differentials` |
 | Alta | Campanhas | Sazonais e comerciais | `campaigns` |
 | Alta | Indicacoes | Indique e Ganhe | `referrals` |
 | Media | Leads | Formularios de interesse | `leads` |
@@ -155,6 +163,8 @@ Sugestoes conceituais:
 - `technologies`: implementada com slug, nome, descricao, disponibilidade, icone em whitelist, ativo e ordem.
 - `faqs`: implementada com pergunta, resposta, ativo e ordem.
 - `settings`: implementada para Suporte e CTA final com `support_*`, `cta_*`, validacao condicional e fallback local.
+- `stats`: implementada com slug, valor textual, rotulo, ativo e ordem.
+- `differentials`: implementada com slug, icone em whitelist, titulo, descricao, ativo e ordem.
 - `campaigns`: nome, slug, periodo, status, headline, termos, CTA, imagem.
 - `referrals`: dados do indicador, dados do indicado, consentimento, status, origem, timestamps.
 - `leads`: origem, nome, telefone, cidade, bairro, plano, status.
@@ -169,12 +179,13 @@ Sugestoes conceituais:
 5. Revisar Tecnologias administraveis implementadas localmente.
 6. Revisar FAQ administravel ja implementado localmente.
 7. Revisar Suporte e CTA final administraveis implementados localmente.
-8. Expandir API para entregar novos blocos quando houver necessidade real.
-9. Atualizar frontend para consumir novos blocos com fallback.
-10. Adicionar Campanhas.
-11. Adicionar Leads e Indicacoes.
-12. Adicionar logs e integracoes.
-13. Integrar IXC somente apos homologacao.
+8. Revisar Estatisticas e Diferenciais administraveis implementados localmente.
+9. Expandir API para entregar novos blocos quando houver necessidade real.
+10. Atualizar frontend para consumir novos blocos com fallback.
+11. Adicionar Campanhas.
+12. Adicionar Leads e Indicacoes.
+13. Adicionar logs e integracoes.
+14. Integrar IXC somente apos homologacao.
 
 ## 10. Integracao futura IXC
 

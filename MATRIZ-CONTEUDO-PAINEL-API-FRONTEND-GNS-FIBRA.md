@@ -34,7 +34,7 @@ Status: matriz atualizada apos FAQ, Beneficios, Tecnologias, Suporte e CTA admin
 | About text | local + API | `settings.about_text` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Anos de mercado | local + API | `settings.years_in_market` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Navegacao | `siteContent.navigation` | Nao | Nao | Nao | Sim | Somente fallback local |
-| Diferenciais | `siteContent.differentials` | Nao | Nao | Nao | Sim | Somente fallback local |
+| Diferenciais | `siteContent.differentials` | `differentials` | `differentials` | `diferenciais.php` | Sim | Dinamico completo |
 | Planos | `siteContent.plans` | `plans` | `plans` | `planos.php` | Sim | Dinamico completo |
 | Beneficios dos planos | `plan.features` | `plans.benefits` | `plans.benefits` JSON | `planos.php` | Sim | Dinamico parcial |
 | Beneficios globais | `siteContent.benefits` | `benefits` | `benefits` | `beneficios.php` | Sim | Dinamico completo |
@@ -53,7 +53,7 @@ Status: matriz atualizada apos FAQ, Beneficios, Tecnologias, Suporte e CTA admin
 | CTA final contatos | config local/API | settings contato | `settings` | Configuracoes | Sim | Dinamico parcial |
 | Banners | Nao usado no frontend | `banners` | `banners` | `banners.php` | Nao | Dinamico parcial sem consumo publico |
 | Mascotes publicados | imports em componentes | Nao | Nao | Nao | Assets locais | Hardcoded no componente |
-| Stats | `siteContent.stats` | Nao | Nao | Nao | Sim | Somente fallback local |
+| Stats | `siteContent.stats` | `stats` | `stats` | `estatisticas.php` | Sim | Dinamico completo |
 | Developer footer | `siteContent.config.developer` | Nao | Nao | Nao | Sim | Somente fallback local |
 
 ## Contrato JSON atual da API
@@ -68,6 +68,8 @@ Campos reais retornados:
 {
   "settings": {},
   "plans": [],
+  "stats": [],
+  "differentials": [],
   "coverage": [],
   "testimonials": [],
   "banners": [],
@@ -81,8 +83,6 @@ Campos reais retornados:
 Campos nao retornados hoje:
 
 - `navigation`
-- `differentials`
-- `stats`
 - `historyGallery`
 - `support`
 - `cta`
@@ -109,9 +109,17 @@ Itens locais. Sem tabela, painel ou API.
 
 ### Diferenciais
 
-Arquivo: `src/lib/site-content.ts`
+Arquivos: `src/lib/site-content.ts`, `api/site-content.php`, `admin/diferenciais.php`
 
-Cinco cards locais. Sem tabela e sem API.
+Cinco cards locais preservados como fallback e agora tambem existentes em `differentials`, administrados pelo painel e entregues pela API publica quando o banco esta disponivel.
+
+Regras:
+
+- `slug` e o id logico usado no frontend;
+- `differentials: []` e respeitado e oculta a secao;
+- API sem `differentials` ou indisponivel usa fallback local;
+- registros sem slug, titulo ou descricao sao ignorados individualmente;
+- icone desconhecido usa fallback visual seguro `wifi`.
 
 ### Beneficios
 
@@ -200,6 +208,21 @@ Arquivos importam assets diretamente:
 
 Nao ha painel/API/banco para mascotes.
 
+### Stats
+
+Arquivos: `src/lib/site-content.ts`, `api/site-content.php`, `admin/estatisticas.php`
+
+Quatro estatisticas locais preservadas como fallback e agora tambem existentes em `stats`, administradas pelo painel e entregues pela API publica quando o banco esta disponivel.
+
+Regras:
+
+- `slug` e o id logico usado no frontend;
+- `value` permanece texto, sem conversao numerica;
+- `stats: []` e respeitado e oculta a secao;
+- API sem `stats` ou indisponivel usa fallback local;
+- registros sem slug, valor ou rotulo sao ignorados individualmente;
+- os valores `100%` e `24/H` foram preservados por existirem no conteudo atual, mas exigem confirmacao futura antes de campanhas.
+
 ## Tipos publicos normalizados
 
 O TypeScript possui:
@@ -209,6 +232,8 @@ O TypeScript possui:
 - `faqs`
 - `support`
 - `cta`
+- `stats`
+- `differentials`
 
 `src/services/site-content-service.ts` agora le `faqs`, `benefits`, `technologies`, `support_*` e `cta_*` da API.
 
@@ -218,6 +243,8 @@ O TypeScript possui:
 | --- | --- | --- | --- | --- |
 | Dashboard | Sim | contagens | Nao | Nao |
 | Planos | Sim | Sim | Sim | Sim |
+| Estatisticas | Sim | Sim | Sim | Sim |
+| Diferenciais | Sim | Sim | Sim | Sim |
 | Banners | Sim | Sim | Sim | Nao |
 | Cobertura | Sim | Sim | Sim | Sim |
 | Depoimentos | Sim | Sim | Sim | Sim |
@@ -235,8 +262,9 @@ O TypeScript possui:
 Prioridade alta:
 
 1. revisar em homologacao os fluxos ja implementados de FAQ, Beneficios, Tecnologias, Suporte e CTA.
-2. definir se Diferenciais e Historia continuam locais ou entram em nova fase administravel.
-3. manter mascotes e banners publicos fora do painel ate haver governanca de assets.
+2. revisar Estatisticas e Diferenciais administraveis em ambiente local/homologacao.
+3. definir se Historia continua local ou entra em nova fase administravel.
+4. manter mascotes e banners publicos fora do painel ate haver governanca de assets.
 
 Prioridade posterior:
 
