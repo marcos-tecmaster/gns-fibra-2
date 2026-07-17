@@ -18,7 +18,19 @@ type ApiSettings = Partial<Record<
   | "coverage_map_url"
   | "hero_title"
   | "about_text"
-  | "years_in_market",
+  | "years_in_market"
+  | "support_enabled"
+  | "support_eyebrow"
+  | "support_title"
+  | "support_description"
+  | "support_button_label"
+  | "support_whatsapp_message"
+  | "cta_enabled"
+  | "cta_eyebrow"
+  | "cta_title"
+  | "cta_description"
+  | "cta_button_label"
+  | "cta_whatsapp_message",
   string
 >>;
 
@@ -115,6 +127,29 @@ function formatWhatsappDisplay(url: string, fallback: string): string {
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
   }
   return fallback;
+}
+
+function parseBooleanSetting(
+  value: string | undefined,
+  fallback: boolean,
+): boolean {
+  const normalizedValue = String(value ?? "").trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(normalizedValue)) {
+    return true;
+  }
+  if (["0", "false", "no", "off"].includes(normalizedValue)) {
+    return false;
+  }
+
+  return fallback;
+}
+
+function normalizeSettingText(
+  value: string | undefined,
+  fallback: string,
+): string {
+  const normalizedValue = String(value ?? "").trim();
+  return normalizedValue !== "" ? normalizedValue : fallback;
 }
 
 function normalizeCoverage(items: ApiCoverage[]): CoverageArea[] {
@@ -314,6 +349,49 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
         facebook: settings.facebook_url || siteContent.config.links.facebook,
         instagram: settings.instagram_url || siteContent.config.links.instagram,
       },
+    },
+    support: {
+      enabled: parseBooleanSetting(
+        settings.support_enabled,
+        siteContent.support.enabled,
+      ),
+      eyebrow: normalizeSettingText(
+        settings.support_eyebrow,
+        siteContent.support.eyebrow,
+      ),
+      title: normalizeSettingText(
+        settings.support_title,
+        siteContent.support.title,
+      ),
+      description: normalizeSettingText(
+        settings.support_description,
+        siteContent.support.description,
+      ),
+      buttonLabel: normalizeSettingText(
+        settings.support_button_label,
+        siteContent.support.buttonLabel,
+      ),
+      whatsappMessage: normalizeSettingText(
+        settings.support_whatsapp_message,
+        siteContent.support.whatsappMessage,
+      ),
+    },
+    cta: {
+      enabled: parseBooleanSetting(settings.cta_enabled, siteContent.cta.enabled),
+      eyebrow: normalizeSettingText(settings.cta_eyebrow, siteContent.cta.eyebrow),
+      title: normalizeSettingText(settings.cta_title, siteContent.cta.title),
+      description: normalizeSettingText(
+        settings.cta_description,
+        siteContent.cta.description,
+      ),
+      buttonLabel: normalizeSettingText(
+        settings.cta_button_label,
+        siteContent.cta.buttonLabel,
+      ),
+      whatsappMessage: normalizeSettingText(
+        settings.cta_whatsapp_message,
+        siteContent.cta.whatsappMessage,
+      ),
     },
     plans:
       remotePlans !== null

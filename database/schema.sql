@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- Conteudos de Suporte e CTA final usam chaves support_* e cta_* nesta tabela.
+
 CREATE TABLE IF NOT EXISTS plans (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(120) NOT NULL,

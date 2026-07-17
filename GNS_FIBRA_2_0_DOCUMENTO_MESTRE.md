@@ -819,6 +819,8 @@ Atualizacao em 16/07/2026: os Beneficios passaram a ter fluxo administravel loca
 
 Atualizacao em 16/07/2026: as Tecnologias passaram a ter fluxo administravel local de ponta a ponta no Painel Administrativo 2.0, com tabela `technologies`, CRUD PHP em `admin/tecnologias.php`, entrega por `api/site-content.php` e normalizacao em `src/services/site-content-service.ts`. O fallback local permanece preservado para API antiga ou indisponivel, `technologies: []` oculta a secao e o aviso tecnico publico permanece inalterado.
 
+Atualizacao em 16/07/2026: Suporte e CTA final passaram a ter textos principais administraveis pelo modulo Configuracoes, usando chaves `support_*` e `cta_*` na tabela `settings`. A API publica continua entregando essas chaves dentro do mapa `settings`, o TypeScript normaliza `support` e `cta` com fallback local, e `support_enabled = 0` ou `cta_enabled = 0` ocultam as secoes sem alterar layout, mascotes ou mensagens de outros blocos.
+
 As poses V2 publicadas no site sao: Hero, Tecnologias, Empresarial, Suporte, FAQ e Contato/WhatsApp. As poses restantes continuam reservadas para campanhas, confirmacoes e futuras telas aprovadas.
 
 ---

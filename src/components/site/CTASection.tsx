@@ -4,8 +4,26 @@ import contactMascot from "@/assets/mascote/v2/contato-whatsapp-acenando.png";
 import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
 
+function renderCtaTitle(title: string) {
+  const highlight = "GNS Fibra?";
+  if (title.endsWith(highlight)) {
+    return (
+      <>
+        {title.slice(0, -highlight.length)}
+        <span className="text-gradient">{highlight}</span>
+      </>
+    );
+  }
+
+  return title;
+}
+
 export function CTASection() {
-  const { config } = useSiteContent();
+  const { config, cta } = useSiteContent();
+  if (!cta.enabled) {
+    return null;
+  }
+
   const phoneHref = config.contact.phone
     ? `tel:${config.contact.phone.replace(/\D/g, "")}`
     : undefined;
@@ -33,29 +51,24 @@ export function CTASection() {
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/15 px-4 py-1.5">
                 <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
                 <span className="text-xs font-bold uppercase tracking-widest text-primary">
-                  Vamos conectar você
+                  {cta.eyebrow}
                 </span>
               </div>
               <h2 className="max-w-3xl text-3xl font-black leading-tight md:text-5xl">
-                Pronto para falar com a{" "}
-                <span className="text-gradient">GNS Fibra?</span>
+                {renderCtaTitle(cta.title)}
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-                Conte onde você mora ou trabalha e nossa equipe ajuda a
-                verificar a cobertura e encontrar a opção adequada.
+                {cta.description}
               </p>
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <a
-                  href={whatsappLink(
-                    config.contact.whatsappUrl,
-                    "Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.",
-                  )}
+                  href={whatsappLink(config.contact.whatsappUrl, cta.whatsappMessage)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-primary to-primary-glow px-7 py-3.5 text-center font-bold text-primary-foreground shadow-brand transition-transform hover:scale-[1.03]"
                 >
                   <MessageCircle className="h-5 w-5" aria-hidden="true" />
-                  Falar pelo WhatsApp
+                  {cta.buttonLabel}
                 </a>
                 <a
                   href={`mailto:${config.contact.email}`}

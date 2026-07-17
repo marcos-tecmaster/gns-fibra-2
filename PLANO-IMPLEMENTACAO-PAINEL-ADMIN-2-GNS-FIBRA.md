@@ -1,11 +1,11 @@
 # PLANO IMPLEMENTACAO PAINEL ADMIN 2 - GNS FIBRA
 
 Data: 16/07/2026
-Status: planejamento com FAQ, Beneficios e Tecnologias implementados localmente
+Status: planejamento com FAQ, Beneficios, Tecnologias, Suporte e CTA implementados localmente
 
 ## Avisos
 
-- FAQ, Beneficios e Tecnologias ja foram implementados localmente em fases separadas.
+- FAQ, Beneficios, Tecnologias, Suporte e CTA ja foram implementados localmente em fases separadas.
 - As mensagens de commit sao sugestoes.
 
 ## Etapa 1 - Fundacao reutilizavel e migration de FAQs
@@ -256,7 +256,9 @@ Commit sugerido:
 
 Objetivo: permitir edicao segura de textos e canais de suporte/contato.
 
-Opcao recomendada inicial:
+Status em 16/07/2026: implementado localmente. Criada a migration `database/migration-2026-07-16-add-support-cta-settings.sql`, atualizados `schema.sql` e `seed.sql`, agrupado o formulario `admin/configuracoes.php`, API publica passou a entregar as chaves `support_*` e `cta_*` dentro de `settings`, e o normalizador TypeScript criou os blocos `support` e `cta` com fallback local.
+
+Opcao aplicada:
 
 - usar `settings` para textos do CTA e mensagens de WhatsApp;
 - manter canais principais em settings atuais;
@@ -264,28 +266,34 @@ Opcao recomendada inicial:
 
 Arquivos:
 
-- `admin/configuracoes.php` ou novo `admin/atendimento.php`
+- `admin/configuracoes.php`
 - `api/site-content.php`
 - `src/services/site-content-service.ts`
 - `src/components/site/Support.tsx`
 - `src/components/site/CTASection.tsx`
 
-Settings possiveis:
+Settings aplicadas:
 
-- support_title;
-- support_description;
-- support_sales_message;
-- support_client_message;
-- cta_eyebrow;
-- cta_title;
-- cta_description;
-- cta_whatsapp_message;
+- `support_enabled`;
+- `support_eyebrow`;
+- `support_title`;
+- `support_description`;
+- `support_button_label`;
+- `support_whatsapp_message`;
+- `cta_enabled`;
+- `cta_eyebrow`;
+- `cta_title`;
+- `cta_description`;
+- `cta_button_label`;
+- `cta_whatsapp_message`;
 
 Validacoes:
 
-- URLs validas;
+- CSRF e rejeicao de campos extras;
 - textos obrigatorios para blocos publicados;
 - limite de tamanho;
+- HTML/script rejeitado;
+- booleanos normalizados para `0`/`1`;
 - mensagens de WhatsApp sem dados sensiveis.
 
 Riscos:
@@ -305,7 +313,7 @@ Criterio de aprovacao:
 
 Commit sugerido:
 
-`feat: make support and CTA content configurable`
+`feat: add admin-managed support and CTA content`
 
 ## Etapa 6 - Revisao visual e responsiva do painel
 

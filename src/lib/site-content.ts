@@ -81,6 +81,25 @@ export const siteContent: SiteContent = {
     { label: "FAQ", href: "#faq" },
     { label: "Contato", href: "#contato" },
   ],
+  support: {
+    enabled: true,
+    eyebrow: "ATENDIMENTO GNS FIBRA",
+    title: "Atendimento humano para ajudar você de verdade.",
+    description:
+      "Seja para conhecer os planos, verificar sua conexão ou acessar os serviços de cliente, nossa equipe está pronta para orientar você.",
+    buttonLabel: "Conhecer planos pelo WhatsApp",
+    whatsappMessage: "Olá! Quero conhecer os planos da GNS Fibra.",
+  },
+  cta: {
+    enabled: true,
+    eyebrow: "VAMOS CONECTAR VOCÊ",
+    title: "Pronto para falar com a GNS Fibra?",
+    description:
+      "Conte onde você mora ou trabalha e nossa equipe ajuda a verificar a cobertura e encontrar a opção adequada.",
+    buttonLabel: "Falar pelo WhatsApp",
+    whatsappMessage:
+      "Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.",
+  },
   differentials: [
     {
       icon: "wifi",

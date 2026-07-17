@@ -32,7 +32,7 @@ Pastas principais:
 | Cobertura | `admin/cobertura.php` | `coverage` | CRUD generico com Google Maps |
 | Depoimentos | `admin/depoimentos.php` | `testimonials` | CRUD generico |
 | FAQ | `admin/faqs.php` | `faqs` | CRUD generico com perguntas ativas e ordenacao |
-| Configuracoes | `admin/configuracoes.php` | `settings` | Dados institucionais |
+| Configuracoes | `admin/configuracoes.php` | `settings` | Dados institucionais, links, hero, Suporte e CTA final |
 | Usuarios | `admin/usuarios.php` | `users` | CRUD de admins |
 | Troca de senha | `admin/trocar-senha.php` | `users` | Exige senha forte |
 
@@ -75,7 +75,7 @@ Campos criticos:
 - `benefits.icon` usa whitelist do painel e fallback visual no frontend.
 - `benefits.cta_href` aceita apenas protocolos seguros.
 - `coverage.map_url` alimenta links clicaveis.
-- `settings` usa chave/valor.
+- `settings` usa chave/valor; `support_*` e `cta_*` controlam textos principais e visibilidade de Suporte/CTA final.
 - `users.password_hash` nunca deve expor senha.
 - `login_attempts` suporta rate limit.
 
@@ -116,7 +116,7 @@ Arquitetura:
 
 - Frontend e API tem contrato implicito, nao versionado.
 - API retorna banners, mas o frontend Premium/Dark nao usa.
-- Configuracoes chave/valor podem crescer demais sem agrupamento.
+- Configuracoes chave/valor podem crescer demais, embora o formulario ja esteja agrupado por contexto.
 
 ## 7. Modulos futuros recomendados
 
@@ -125,6 +125,7 @@ Arquitetura:
 | Concluido localmente | Beneficios | Separar beneficios dos planos | `benefits` |
 | Concluido localmente | Tecnologias | Gerenciar tecnologias publicadas sem promessas futuras | `technologies` |
 | Concluido localmente | FAQ | Perguntas frequentes e schema futuro | `faqs` |
+| Concluido localmente | Suporte e CTA final | Gerenciar textos principais sem criar novas tabelas | `settings` |
 | Alta | Campanhas | Sazonais e comerciais | `campaigns` |
 | Alta | Indicacoes | Indique e Ganhe | `referrals` |
 | Media | Leads | Formularios de interesse | `leads` |
@@ -152,7 +153,8 @@ Sugestoes conceituais:
 
 - `benefits`: implementada com slug, titulo, descricao, icone em whitelist, CTA opcional, ativo e ordem.
 - `technologies`: implementada com slug, nome, descricao, disponibilidade, icone em whitelist, ativo e ordem.
-- `faqs`: pergunta, resposta, categoria, ativo, ordem.
+- `faqs`: implementada com pergunta, resposta, ativo e ordem.
+- `settings`: implementada para Suporte e CTA final com `support_*`, `cta_*`, validacao condicional e fallback local.
 - `campaigns`: nome, slug, periodo, status, headline, termos, CTA, imagem.
 - `referrals`: dados do indicador, dados do indicado, consentimento, status, origem, timestamps.
 - `leads`: origem, nome, telefone, cidade, bairro, plano, status.
@@ -166,12 +168,13 @@ Sugestoes conceituais:
 4. Revisar Beneficios administraveis implementados localmente.
 5. Revisar Tecnologias administraveis implementadas localmente.
 6. Revisar FAQ administravel ja implementado localmente.
-7. Expandir API para entregar novos blocos.
-8. Atualizar frontend para consumir novos blocos com fallback.
-9. Adicionar Campanhas.
-10. Adicionar Leads e Indicacoes.
-11. Adicionar logs e integracoes.
-12. Integrar IXC somente apos homologacao.
+7. Revisar Suporte e CTA final administraveis implementados localmente.
+8. Expandir API para entregar novos blocos quando houver necessidade real.
+9. Atualizar frontend para consumir novos blocos com fallback.
+10. Adicionar Campanhas.
+11. Adicionar Leads e Indicacoes.
+12. Adicionar logs e integracoes.
+13. Integrar IXC somente apos homologacao.
 
 ## 10. Integracao futura IXC
 
@@ -272,10 +275,19 @@ Tecnologias:
 
 FAQ:
 
-- `admin/faq.php`
+- `admin/faqs.php`
 - `api/site-content.php`
-- `src/components/site/Faq.tsx`
+- `src/components/site/FAQ.tsx`
 - `index.html` ou geracao de schema futuro
+- `database/migration-*.sql`
+
+Suporte e CTA final:
+
+- `admin/configuracoes.php`
+- `api/site-content.php`
+- `src/components/site/Support.tsx`
+- `src/components/site/CTASection.tsx`
+- `src/services/site-content-service.ts`
 - `database/migration-*.sql`
 
 Campanhas:
@@ -313,7 +325,7 @@ IXC:
 
 O painel atual e uma boa base para a GNS Fibra 2.0. Ele ja cobre conteudo essencial, seguranca basica adequada e fluxo administrativo funcional.
 
-A evolucao deve ser incremental. O primeiro passo nao deve ser IXC nem Indicacoes; deve ser consolidar contrato de API, migrations e modulos simples como Beneficios, Tecnologias e FAQ. Depois disso, Campanhas, Leads, Indicacoes e IXC podem ser implementados com menor risco.
+A evolucao deve ser incremental. O primeiro passo nao deve ser IXC nem Indicacoes; deve ser consolidar contrato de API, migrations e modulos simples como Beneficios, Tecnologias, FAQ, Suporte e CTA. Depois disso, Campanhas, Leads, Indicacoes e IXC podem ser implementados com menor risco.
 
 ## 15. Atualizacao da fase Planos, Beneficios e Tecnologias
 

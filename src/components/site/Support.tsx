@@ -17,8 +17,6 @@ const supportOptions = [
     title: "Quero contratar",
     description:
       "Conheça os planos e encontre a opção adequada para sua casa ou empresa.",
-    ctaLabel: "Conhecer planos pelo WhatsApp",
-    message: "Olá! Quero conhecer os planos da GNS Fibra.",
     icon: MessageCircle,
   },
   {
@@ -31,8 +29,26 @@ const supportOptions = [
   },
 ];
 
+function renderSupportTitle(title: string) {
+  const highlight = "de verdade.";
+  if (title.endsWith(highlight)) {
+    return (
+      <>
+        {title.slice(0, -highlight.length)}
+        <span className="text-gradient">{highlight}</span>
+      </>
+    );
+  }
+
+  return title;
+}
+
 export function Support() {
-  const { config } = useSiteContent();
+  const { config, support } = useSiteContent();
+  if (!support.enabled) {
+    return null;
+  }
+
   const phoneHref = config.contact.phone
     ? `tel:${config.contact.phone.replace(/\D/g, "")}`
     : undefined;
@@ -50,40 +66,61 @@ export function Support() {
             className="min-w-0"
           >
             <span className="text-xs font-bold uppercase tracking-[0.28em] text-primary">
-              Atendimento GNS Fibra
+              {support.eyebrow}
             </span>
             <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight md:text-5xl">
-              Atendimento humano para ajudar você{" "}
-              <span className="text-gradient">de verdade.</span>
+              {renderSupportTitle(support.title)}
             </h2>
             <p className="mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-              Seja para conhecer os planos, verificar sua conexão ou acessar os
-              serviços de cliente, nossa equipe está pronta para orientar você.
+              {support.description}
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-2">
-              {supportOptions.map(({ id, title, description, ctaLabel, message, icon: Icon }) => (
-                <article key={id} className="support-card">
-                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-brand">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-lg font-black leading-snug">{title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      {description}
-                    </p>
-                  </div>
-                  <a
-                    href={whatsappLink(config.contact.whatsappUrl, message)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-auto inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-3 text-center text-sm font-bold text-primary-foreground shadow-brand transition-transform hover:scale-[1.02]"
-                  >
-                    <MessageCircle className="h-4 w-4" aria-hidden="true" />
-                    {ctaLabel}
-                  </a>
-                </article>
-              ))}
+              {supportOptions.map(
+                ({
+                  id,
+                  title,
+                  description,
+                  ctaLabel: defaultCtaLabel,
+                  message: defaultMessage,
+                  icon: Icon,
+                }) => {
+                const ctaLabel =
+                  id === "contratar"
+                    ? support.buttonLabel
+                    : defaultCtaLabel;
+                const message =
+                  id === "contratar"
+                    ? support.whatsappMessage
+                    : defaultMessage;
+
+                return (
+                  <article key={id} className="support-card">
+                    <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-brand">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-black leading-snug">{title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                        {description}
+                      </p>
+                    </div>
+                    <a
+                      href={whatsappLink(
+                        config.contact.whatsappUrl,
+                        message ?? "",
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-auto inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-3 text-center text-sm font-bold text-primary-foreground shadow-brand transition-transform hover:scale-[1.02]"
+                    >
+                      <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                      {ctaLabel}
+                    </a>
+                  </article>
+                );
+                },
+              )}
 
               <article className="support-card md:col-span-2">
                 <div className="grid h-11 w-11 place-items-center rounded-2xl border border-primary/35 bg-primary/10 text-primary">

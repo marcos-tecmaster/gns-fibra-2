@@ -51,6 +51,22 @@ export type SiteContent = {
     };
   };
   navigation: Array<{ label: string; href: string }>;
+  support: {
+    enabled: boolean;
+    eyebrow: string;
+    title: string;
+    description: string;
+    buttonLabel: string;
+    whatsappMessage: string;
+  };
+  cta: {
+    enabled: boolean;
+    eyebrow: string;
+    title: string;
+    description: string;
+    buttonLabel: string;
+    whatsappMessage: string;
+  };
   differentials: Array<{
     icon: IconName;
     title: string;

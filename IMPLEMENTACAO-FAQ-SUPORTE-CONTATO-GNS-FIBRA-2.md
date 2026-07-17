@@ -98,6 +98,8 @@ Contatos dinamicos usados:
 - `config.contact.email`;
 - `config.links.customerPortal`.
 
+Atualizacao em 16/07/2026: etiqueta, titulo, descricao, texto do botao principal, mensagem principal de WhatsApp e visibilidade da secao passaram a ser administrados por `settings.support_*` em `admin/configuracoes.php`, com fallback local preservado em `src/lib/site-content.ts`.
+
 O mascote `suporte-tecnico.png` e decorativo, usa `alt=""`, `aria-hidden="true"`, `loading="lazy"`, `decoding="async"`, `width={596}`, `height={840}`, fluxo normal no mobile e coluna lateral no desktop.
 
 ## 5. FAQ
@@ -135,7 +137,7 @@ faqs: Array<{
 
 Somente FAQs com `active === true` sao exibidas.
 
-A estrutura de conteúdo está preparada no frontend, mas o gerenciamento de FAQs pelo painel será desenvolvido em fase futura.
+Atualizacao em 16/07/2026: o FAQ passou a ser administrado por `admin/faqs.php`, tabela `faqs`, API publica e normalizacao TypeScript, mantendo fallback local.
 
 ## 6. Accordion acessivel
 
@@ -196,6 +198,8 @@ Conteudo publicado:
 - telefone exibido de forma discreta quando `config.contact.phone` existe.
 
 O mascote `contato-whatsapp-acenando.png` e decorativo, usa `alt=""`, `aria-hidden="true"`, `loading="lazy"`, `decoding="async"`, `width={582}`, `height={840}` e fluxo normal, sem `position absolute` sobre conteudo.
+
+Atualizacao em 16/07/2026: etiqueta, titulo, descricao, texto do botao principal, mensagem principal de WhatsApp e visibilidade do CTA final passaram a ser administrados por `settings.cta_*` em `admin/configuracoes.php`, com fallback local preservado em `src/lib/site-content.ts`.
 
 ## 9. Navegacao
 
@@ -274,12 +278,9 @@ Impacto frente ao build anterior documentado:
 
 ## 14. Itens reservados para painel futuro
 
-- gerenciamento de FAQs no painel;
-- endpoint/API para FAQs;
-- ordenacao administravel de FAQs;
-- ativacao/desativacao via banco;
-- campos de suporte/contato editaveis alem das configuracoes ja existentes;
-- WebP/AVIF dos mascotes quando houver encoder confiavel com alpha.
+- WebP/AVIF dos mascotes quando houver encoder confiavel com alpha;
+- administracao de canais adicionais de suporte somente se houver necessidade operacional clara;
+- governanca de assets/mascotes antes de permitir troca pelo painel.
 
 ## 15. Validacoes tecnicas
 

@@ -17,7 +17,19 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('coverage_map_url', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13'),
 ('hero_title', 'Internet que acompanha o ritmo da sua vida.'),
 ('about_text', 'Há mais de 14 anos conectando famílias e empresas com fibra óptica, estabilidade e atendimento humano.'),
-('years_in_market', '14')
+('years_in_market', '14'),
+('support_enabled', '1'),
+('support_eyebrow', 'ATENDIMENTO GNS FIBRA'),
+('support_title', 'Atendimento humano para ajudar você de verdade.'),
+('support_description', 'Seja para conhecer os planos, verificar sua conexão ou acessar os serviços de cliente, nossa equipe está pronta para orientar você.'),
+('support_button_label', 'Conhecer planos pelo WhatsApp'),
+('support_whatsapp_message', 'Olá! Quero conhecer os planos da GNS Fibra.'),
+('cta_enabled', '1'),
+('cta_eyebrow', 'VAMOS CONECTAR VOCÊ'),
+('cta_title', 'Pronto para falar com a GNS Fibra?'),
+('cta_description', 'Conte onde você mora ou trabalha e nossa equipe ajuda a verificar a cobertura e encontrar a opção adequada.'),
+('cta_button_label', 'Falar pelo WhatsApp'),
+('cta_whatsapp_message', 'Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.')
 ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
 
 DELETE FROM banners;
