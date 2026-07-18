@@ -24,6 +24,59 @@ function run_simple_crud(array $config): void
                     redirect($page);
                 }
             }
+            foreach (array_keys($_FILES) as $fileField) {
+                if (!isset($allowedPostFields[$fileField])) {
+                    flash('error', 'A requisição contém arquivos não permitidos.');
+                    redirect($page);
+                }
+            }
+        }
+
+        if (post_string('form_action', 20) === 'clear_file') {
+            $clearConfig = simple_crud_file_clear_config($config);
+            if ($clearConfig === null) {
+                flash('error', 'A ação solicitada não está disponível.');
+                redirect($page);
+            }
+
+            $clearId = post_int('id');
+            if ($clearId <= 0) {
+                flash('error', $config['singular'] . ' não encontrado(a).');
+                redirect($page);
+            }
+
+            $field = $clearConfig['field'];
+            $currentStatement = $pdo->prepare("SELECT * FROM {$table} WHERE id = :id");
+            $currentStatement->execute(['id' => $clearId]);
+            $current = $currentStatement->fetch();
+
+            if (!$current) {
+                flash('error', $config['singular'] . ' não encontrado(a).');
+                redirect($page);
+            }
+
+            $currentPath = isset($current[$field]) ? trim((string) $current[$field]) : '';
+            if ($currentPath === '') {
+                flash('error', 'Este registro já está sem imagem.');
+                redirect($page);
+            }
+
+            try {
+                $pdo->beginTransaction();
+                $statement = $pdo->prepare("UPDATE {$table} SET {$field} = NULL WHERE id = :id");
+                $statement->execute(['id' => $clearId]);
+                $pdo->commit();
+            } catch (Throwable $exception) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                flash('error', 'Não foi possível remover a imagem. Tente novamente.');
+                redirect($page);
+            }
+
+            delete_uploaded_file_if_unused($pdo, $table, $field, $currentPath, $clearId);
+            flash('success', $clearConfig['success']);
+            redirect($page);
         }
 
         if (post_string('form_action', 20) === 'delete') {
@@ -59,6 +112,7 @@ function run_simple_crud(array $config): void
         $recordId = post_int('id');
         $values = [];
         $errors = [];
+        $uploadedFileValues = [];
         $current = null;
 
         if ($recordId > 0) {
@@ -100,7 +154,14 @@ function run_simple_crud(array $config): void
                 $values[$name] = $number;
             } elseif ($type === 'file') {
                 try {
-                    $values[$name] = upload_image($name, $field['directory'], $current[$name] ?? null);
+                    $previousValue = isset($current[$name]) ? (string) $current[$name] : null;
+                    $values[$name] = upload_image($name, $field['directory'], $previousValue);
+                    if ($values[$name] !== $previousValue && $values[$name] !== null) {
+                        $uploadedFileValues[$name] = [
+                            'new' => (string) $values[$name],
+                            'old' => $previousValue,
+                        ];
+                    }
                 } catch (RuntimeException $exception) {
                     $errors[] = $exception->getMessage();
                 }
@@ -170,6 +231,9 @@ function run_simple_crud(array $config): void
         }
 
         if ($errors) {
+            foreach ($uploadedFileValues as $name => $paths) {
+                delete_uploaded_file_if_unused($pdo, $table, $name, $paths['new'], $recordId);
+            }
             flash('error', implode(' ', $errors));
             redirect($page . '?action=' . ($recordId ? 'edit&id=' . $recordId : 'new'));
         }
@@ -183,8 +247,18 @@ function run_simple_crud(array $config): void
                 $columns = implode(', ', array_keys($values));
                 $placeholders = implode(', ', array_map(static fn(string $field): string => ":{$field}", array_keys($values)));
                 $pdo->prepare("INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})")->execute($values);
+                $recordId = (int) $pdo->lastInsertId();
+            }
+
+            foreach ($uploadedFileValues as $name => $paths) {
+                if ($paths['old'] !== null && $paths['old'] !== '') {
+                    delete_uploaded_file_if_unused($pdo, $table, $name, $paths['old'], $recordId);
+                }
             }
         } catch (PDOException $exception) {
+            foreach ($uploadedFileValues as $name => $paths) {
+                delete_uploaded_file_if_unused($pdo, $table, $name, $paths['new'], $recordId);
+            }
             if ((string) $exception->getCode() === '23000') {
                 flash('error', $config['duplicate_message'] ?? 'Já existe um registro com dados únicos iguais.');
                 redirect($page . '?action=' . ($recordId ? 'edit&id=' . $recordId : 'new'));
@@ -219,6 +293,29 @@ function run_simple_crud(array $config): void
     }
 
     admin_footer();
+}
+
+function simple_crud_file_clear_config(array $config): ?array
+{
+    $clearConfig = $config['file_clear_action'] ?? null;
+    if (!is_array($clearConfig)) {
+        return null;
+    }
+
+    $field = $clearConfig['field'] ?? null;
+    if (!is_string($field) || !isset($config['fields'][$field])) {
+        return null;
+    }
+    if (($config['fields'][$field]['type'] ?? '') !== 'file') {
+        return null;
+    }
+
+    return [
+        'field' => $field,
+        'label' => (string) ($clearConfig['label'] ?? 'Remover imagem'),
+        'confirm' => (string) ($clearConfig['confirm'] ?? 'Remover somente esta imagem? Os demais dados serão mantidos.'),
+        'success' => (string) ($clearConfig['success'] ?? 'Imagem removida com sucesso. Os textos e demais dados foram preservados.'),
+    ];
 }
 
 function render_simple_form(array $config, array $record): void
@@ -349,6 +446,7 @@ function simple_crud_is_local_http_url(string $value): bool
 
 function render_simple_table(array $config, array $records): void
 {
+    $fileClearConfig = simple_crud_file_clear_config($config);
     ?>
     <section class="panel">
         <div class="panel-header">
@@ -379,6 +477,12 @@ function render_simple_table(array $config, array $records): void
                     <?php endforeach; ?>
                     <td><div class="actions">
                         <a class="button secondary small" href="<?= h($config['page']) ?>?action=edit&id=<?= (int) $record['id'] ?>">Editar</a>
+                        <?php if ($fileClearConfig !== null && !empty($record[$fileClearConfig['field']])): ?>
+                        <form method="post" onsubmit="return confirm(<?= h(json_encode($fileClearConfig['confirm'], JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT)) ?>)">
+                            <?= csrf_field() ?><input type="hidden" name="form_action" value="clear_file"><input type="hidden" name="id" value="<?= (int) $record['id'] ?>">
+                            <button class="button warning small" type="submit" aria-label="<?= h($fileClearConfig['label']) ?>; os demais dados serão mantidos"><?= h($fileClearConfig['label']) ?></button>
+                        </form>
+                        <?php endif; ?>
                         <form method="post" onsubmit="return confirm('Confirma a exclusão?')">
                             <?= csrf_field() ?><input type="hidden" name="form_action" value="delete"><input type="hidden" name="id" value="<?= (int) $record['id'] ?>">
                             <button class="button danger small" type="submit">Excluir</button>

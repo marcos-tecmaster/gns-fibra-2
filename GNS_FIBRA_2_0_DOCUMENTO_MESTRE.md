@@ -823,6 +823,8 @@ Atualizacao em 16/07/2026: Suporte e CTA final passaram a ter textos principais 
 
 Atualizacao em 17/07/2026: Estatisticas e Diferenciais passaram a ter fluxo administravel local de ponta a ponta no Painel Administrativo 2.0, com tabelas explicitas `stats` e `differentials`, CRUDs PHP em `admin/estatisticas.php` e `admin/diferenciais.php`, entrega por `api/site-content.php` e normalizacao em `src/services/site-content-service.ts`. O fallback local permanece preservado para API antiga ou indisponivel, `stats: []` e `differentials: []` ocultam as secoes, e os numeros comerciais publicados foram mantidos exatamente como estavam no conteudo local ate confirmacao futura com responsavel da GNS.
 
+Atualizacao em 17/07/2026: Historia / Quem Somos passou a ter fluxo administravel local de ponta a ponta, com conteudo institucional unico em `settings` por chaves `history_*`, galeria repetivel em `history_gallery`, CRUD PHP em `admin/historia-galeria.php`, grupo especifico em `admin/configuracoes.php`, entrega por `api/site-content.php` e normalizacao em `src/services/site-content-service.ts`. `years_in_market` continua sendo a fonte unica dos anos de atuacao, `about_text` permanece como texto institucional geral, e o fallback local da secao e da galeria permanece preservado.
+
 As poses V2 publicadas no site sao: Hero, Tecnologias, Empresarial, Suporte, FAQ e Contato/WhatsApp. As poses restantes continuam reservadas para campanhas, confirmacoes e futuras telas aprovadas.
 
 ---
@@ -843,3 +845,4 @@ A meta é construir um produto:
 - preparado para crescer.
 
 **Palavra-chave: Bora 😎**
+Atualização em 18/07/2026: os CRUDs de Galeria da História e Banners distinguem `Remover imagem` de `Excluir`. A primeira ação limpa somente o campo de arquivo, preservando o registro e todos os textos; a segunda continua removendo o registro. A exclusão física ocorre após a atualização do banco e somente para uploads gerenciados, não compartilhados e contidos no diretório permitido. Arquivos versionados/protegidos apenas perdem a referência no banco. A História recebe `image_path: null` e mostra placeholder; banners sem imagem permanecem no painel e na API, mas continuam sem consumo no frontend atual.

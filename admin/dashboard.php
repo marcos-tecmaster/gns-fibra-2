@@ -11,6 +11,8 @@ $counts = [
     'active_stats' => 0,
     'differentials' => 0,
     'active_differentials' => 0,
+    'history_gallery' => 0,
+    'active_history_gallery' => 0,
     'coverage' => 0,
     'testimonials' => 0,
     'benefits' => 0,
@@ -28,6 +30,8 @@ try {
     $counts['active_stats'] = (int) db()->query('SELECT COUNT(*) FROM stats WHERE active = 1')->fetchColumn();
     $counts['differentials'] = (int) db()->query('SELECT COUNT(*) FROM differentials')->fetchColumn();
     $counts['active_differentials'] = (int) db()->query('SELECT COUNT(*) FROM differentials WHERE active = 1')->fetchColumn();
+    $counts['history_gallery'] = (int) db()->query('SELECT COUNT(*) FROM history_gallery')->fetchColumn();
+    $counts['active_history_gallery'] = (int) db()->query('SELECT COUNT(*) FROM history_gallery WHERE active = 1')->fetchColumn();
     $counts['coverage'] = (int) db()->query('SELECT COUNT(*) FROM coverage')->fetchColumn();
     $counts['testimonials'] = (int) db()->query('SELECT COUNT(*) FROM testimonials')->fetchColumn();
     $counts['benefits'] = (int) db()->query('SELECT COUNT(*) FROM benefits')->fetchColumn();
@@ -61,6 +65,11 @@ admin_header('Dashboard');
         <span>Diferenciais ativos / total</span>
         <strong><?= $counts['active_differentials'] ?>/<?= $counts['differentials'] ?></strong>
         <a class="muted" href="diferenciais.php">Gerenciar diferenciais →</a>
+    </article>
+    <article class="card">
+        <span>Galeria da história ativos / total</span>
+        <strong><?= $counts['active_history_gallery'] ?>/<?= $counts['history_gallery'] ?></strong>
+        <a class="muted" href="historia-galeria.php">Gerenciar galeria →</a>
     </article>
     <article class="card">
         <span>Pontos de atendimento</span>
@@ -100,6 +109,7 @@ admin_header('Dashboard');
         <a class="button" href="planos.php?action=new">Novo plano</a>
         <a class="button secondary" href="estatisticas.php?action=new">Nova estatística</a>
         <a class="button secondary" href="diferenciais.php?action=new">Novo diferencial</a>
+        <a class="button secondary" href="historia-galeria.php?action=new">Novo item de história</a>
         <a class="button secondary" href="beneficios.php?action=new">Novo benefício</a>
         <a class="button secondary" href="tecnologias.php?action=new">Nova tecnologia</a>
         <a class="button secondary" href="banners.php?action=new">Novo banner</a>

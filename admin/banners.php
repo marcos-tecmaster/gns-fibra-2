@@ -13,6 +13,11 @@ run_simple_crud([
     'singular' => 'Banner',
     'description' => 'Conteúdo promocional e imagem principal.',
     'order_by' => 'display_order, id',
+    'file_clear_action' => [
+        'field' => 'image_path',
+        'label' => 'Remover imagem',
+        'confirm' => 'Remover somente esta imagem? O título, os textos e os demais dados serão mantidos.',
+    ],
     'fields' => [
         'title' => ['label' => 'Título', 'required' => true, 'max' => 180],
         'subtitle' => ['label' => 'Subtítulo', 'type' => 'textarea', 'full' => true],

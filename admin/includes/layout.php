@@ -12,6 +12,7 @@ function admin_header(string $title): void
         'beneficios.php' => 'Benefícios',
         'tecnologias.php' => 'Tecnologias',
         'banners.php' => 'Banners',
+        'historia-galeria.php' => 'Galeria da história',
         'cobertura.php' => 'Cobertura',
         'depoimentos.php' => 'Depoimentos',
         'faqs.php' => 'FAQ',

@@ -67,6 +67,18 @@ export type SiteContent = {
     buttonLabel: string;
     whatsappMessage: string;
   };
+  history: {
+    enabled: boolean;
+    eyebrow: string;
+    title: string;
+    titleHighlight: string;
+    description: string;
+    secondaryText: string;
+    experienceSuffix: string;
+    experienceLabel: string;
+    teamTitle: string;
+    teamDescription: string;
+  };
   differentials: Array<{
     id: string;
     icon: IconName;
@@ -127,6 +139,8 @@ export type SiteContent = {
     title: string;
     description: string;
     image?: string;
+    imageAlt: string;
+    active: boolean;
   }>;
 };
 

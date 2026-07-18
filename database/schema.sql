@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Conteudos de Suporte e CTA final usam chaves support_* e cta_* nesta tabela.
+-- Conteudos de Suporte, CTA final e Historia usam chaves support_*, cta_* e history_* nesta tabela.
 
 CREATE TABLE IF NOT EXISTS plans (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -79,6 +79,21 @@ CREATE TABLE IF NOT EXISTS differentials (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uq_differentials_slug (slug),
   INDEX idx_differentials_active_order (active, display_order, id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS history_gallery (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(100) NOT NULL,
+  title VARCHAR(180) NOT NULL,
+  description TEXT NOT NULL,
+  image_path VARCHAR(500) NULL,
+  image_alt VARCHAR(180) NOT NULL,
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  display_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_history_gallery_slug (slug),
+  INDEX idx_history_gallery_active_order (active, display_order, id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS benefits (

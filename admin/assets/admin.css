@@ -320,6 +320,12 @@ select {
   background: #7c2825;
 }
 
+.button.warning {
+  color: #2b1904;
+  border: 1px solid #d49a35;
+  background: #f4c96f;
+}
+
 .button.small {
   min-height: 32px;
   padding: 7px 10px;

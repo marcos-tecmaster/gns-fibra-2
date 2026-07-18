@@ -68,6 +68,25 @@ try {
     }
     unset($differential);
 
+    $historyGallery = $pdo->query(
+        'SELECT id, slug, title, description, image_path, image_alt, active, display_order
+         FROM history_gallery WHERE active = 1 ORDER BY display_order, id'
+    )->fetchAll();
+
+    foreach ($historyGallery as &$historyGalleryItem) {
+        $historyGalleryItem['id'] = (int) $historyGalleryItem['id'];
+        $historyGalleryItem['slug'] = (string) $historyGalleryItem['slug'];
+        $historyGalleryItem['title'] = (string) $historyGalleryItem['title'];
+        $historyGalleryItem['description'] = (string) $historyGalleryItem['description'];
+        $historyGalleryItem['image_path'] = $historyGalleryItem['image_path'] !== null
+            ? (string) $historyGalleryItem['image_path']
+            : null;
+        $historyGalleryItem['image_alt'] = (string) $historyGalleryItem['image_alt'];
+        $historyGalleryItem['active'] = (bool) $historyGalleryItem['active'];
+        $historyGalleryItem['display_order'] = (int) $historyGalleryItem['display_order'];
+    }
+    unset($historyGalleryItem);
+
     $coverage = $pdo->query(
         'SELECT id, region, description, map_url, display_order
          FROM coverage WHERE active = 1 ORDER BY display_order, id'
@@ -144,6 +163,7 @@ try {
         'plans' => $plans,
         'stats' => $stats,
         'differentials' => $differentials,
+        'history_gallery' => $historyGallery,
         'coverage' => $coverage,
         'testimonials' => $testimonials,
         'banners' => $banners,

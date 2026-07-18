@@ -48,5 +48,7 @@ uploads/*
 !uploads/banners/.gitkeep
 !uploads/galeria/
 !uploads/galeria/.gitkeep
+!uploads/history/
+!uploads/history/install.jpg
 !uploads/logos/
 !uploads/logos/.gitkeep

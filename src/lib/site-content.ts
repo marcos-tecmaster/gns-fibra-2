@@ -100,6 +100,20 @@ export const siteContent: SiteContent = {
     whatsappMessage:
       "Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.",
   },
+  history: {
+    enabled: true,
+    eyebrow: "Quem somos",
+    title: "Nossa",
+    titleHighlight: "História",
+    description:
+      "Há mais de 14 anos conectando famílias e empresas com fibra óptica, estabilidade e atendimento humano.",
+    secondaryText:
+      "Nossa trajetória é construída diariamente por uma equipe que conhece a região, investe em infraestrutura e entende que conexão de qualidade também depende de atendimento humano.",
+    experienceSuffix: "+ anos",
+    experienceLabel: "de experiência",
+    teamTitle: "Equipe local",
+    teamDescription: "próxima do cliente",
+  },
   differentials: [
     {
       id: "fibra-ponta-a-ponta",
@@ -405,16 +419,22 @@ export const siteContent: SiteContent = {
       title: "Estrutura",
       description: "Infraestrutura e equipamentos que sustentam nossa operação.",
       image: installImage,
+      imageAlt: "Estrutura",
+      active: true,
     },
     {
       id: "equipe",
       title: "Nossa equipe",
       description: "Profissionais próximos, preparados para orientar e atender você.",
+      imageAlt: "Nossa equipe",
+      active: true,
     },
     {
       id: "frota",
       title: "Nossa frota",
       description: "Estrutura de atendimento para acompanhar nossa área de cobertura.",
+      imageAlt: "Nossa frota",
+      active: true,
     },
   ],
 };

@@ -242,6 +242,11 @@ function delete_uploaded_file_if_unused(
         return;
     }
 
+    $normalizedPath = str_replace('\\', '/', trim($path));
+    if (preg_match('#^uploads/[A-Za-z0-9_-]+/[a-f0-9]{32}\.(?:jpg|png|webp)$#', $normalizedPath) !== 1) {
+        return;
+    }
+
     $statement = $pdo->prepare(
         "SELECT COUNT(*) FROM {$table} WHERE {$field} = :path AND id <> :id"
     );
@@ -251,8 +256,9 @@ function delete_uploaded_file_if_unused(
     }
 
     $uploadsRoot = realpath(dirname(__DIR__) . '/uploads');
-    $file = realpath(dirname(__DIR__) . '/' . ltrim($path, '/'));
-    if ($uploadsRoot && $file && str_starts_with($file, $uploadsRoot . DIRECTORY_SEPARATOR) && is_file($file)) {
+    $file = realpath(dirname(__DIR__) . '/' . ltrim($normalizedPath, '/'));
+    $uploadsPrefix = $uploadsRoot ? rtrim($uploadsRoot, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR : null;
+    if ($uploadsPrefix && $file && str_starts_with($file, $uploadsPrefix) && is_file($file)) {
         unlink($file);
     }
 }
@@ -266,6 +272,10 @@ function upload_image(string $field, string $directory, ?string $current = null)
     $file = $_FILES[$field];
     if ($file['error'] !== UPLOAD_ERR_OK || $file['size'] > 5 * 1024 * 1024) {
         throw new RuntimeException('A imagem deve ter no máximo 5 MB.');
+    }
+
+    if (!class_exists('finfo')) {
+        throw new RuntimeException('Validação de imagem indisponível no servidor.');
     }
 
     $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
@@ -287,15 +297,6 @@ function upload_image(string $field, string $directory, ?string $current = null)
     $filename = bin2hex(random_bytes(16)) . '.' . $extensions[$mime];
     if (!move_uploaded_file($file['tmp_name'], $targetDir . '/' . $filename)) {
         throw new RuntimeException('Não foi possível salvar a imagem.');
-    }
-
-    if ($current) {
-        $oldPath = dirname(__DIR__) . '/' . ltrim($current, '/');
-        $uploadsRoot = realpath(dirname(__DIR__) . '/uploads');
-        $oldReal = realpath($oldPath);
-        if ($uploadsRoot && $oldReal && str_starts_with($oldReal, $uploadsRoot) && is_file($oldReal)) {
-            unlink($oldReal);
-        }
     }
 
     return 'uploads/' . trim($directory, '/') . '/' . $filename;

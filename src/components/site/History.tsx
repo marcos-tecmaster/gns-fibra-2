@@ -3,45 +3,55 @@ import { Camera, Clock3, UsersRound } from "lucide-react";
 import { useSiteContent } from "@/content/SiteContentProvider";
 
 export function History() {
-  const { config, historyGallery } = useSiteContent();
+  const { config, history, historyGallery } = useSiteContent();
+  const visibleGallery = historyGallery.filter((item) => item.active !== false);
+
+  if (!history.enabled) {
+    return null;
+  }
 
   return (
     <section id="quem-somos" className="section-spacing-standard relative">
       <div className="container mx-auto px-5">
-        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+        <div
+          className={`grid gap-12 lg:items-end ${
+            visibleGallery.length > 0
+              ? "lg:grid-cols-[0.8fr_1.2fr]"
+              : "mx-auto max-w-3xl"
+          }`}
+        >
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary">
-              Quem somos
+              {history.eyebrow}
             </span>
             <h2 className="mt-4 text-3xl font-black leading-tight md:text-5xl">
-              Nossa <span className="text-gradient">História</span>
+              {history.title} <span className="text-gradient">{history.titleHighlight}</span>
             </h2>
             <p className="mt-6 leading-relaxed text-muted-foreground">
-              {config.company.aboutText}
+              {history.description}
             </p>
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              Nossa trajetória é construída diariamente por uma equipe que conhece
-              a região, investe em infraestrutura e entende que conexão de qualidade
-              também depende de atendimento humano.
+              {history.secondaryText}
             </p>
             <div className="mt-8 grid grid-cols-2 gap-3">
               <div className="rounded-2xl border border-border bg-card/50 p-4">
                 <Clock3 className="h-5 w-5 text-primary" />
                 <strong className="mt-3 block font-display text-xl">
-                  {config.company.yearsActive}+ anos
+                  {config.company.yearsActive}{history.experienceSuffix}
                 </strong>
-                <span className="text-xs text-muted-foreground">de experiência</span>
+                <span className="text-xs text-muted-foreground">{history.experienceLabel}</span>
               </div>
               <div className="rounded-2xl border border-border bg-card/50 p-4">
                 <UsersRound className="h-5 w-5 text-primary" />
-                <strong className="mt-3 block font-display text-xl">Equipe local</strong>
-                <span className="text-xs text-muted-foreground">próxima do cliente</span>
+                <strong className="mt-3 block font-display text-xl">{history.teamTitle}</strong>
+                <span className="text-xs text-muted-foreground">{history.teamDescription}</span>
               </div>
             </div>
           </div>
 
+          {visibleGallery.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2">
-            {historyGallery.map((item, index) => (
+            {visibleGallery.map((item, index) => (
               <motion.article
                 key={item.id}
                 initial={{ opacity: 0, y: 24 }}
@@ -49,13 +59,13 @@ export function History() {
                 viewport={{ once: true, amount: 0.25 }}
                 transition={{ delay: index * 0.08 }}
                 className={`group relative min-h-64 overflow-hidden rounded-3xl border border-border bg-card ${
-                  index === 0 ? "sm:col-span-2 sm:min-h-80" : ""
+                  index === 0 && visibleGallery.length > 1 ? "sm:col-span-2 sm:min-h-80" : ""
                 }`}
               >
                 {item.image ? (
                   <img
                     src={item.image}
-                    alt={item.title}
+                    alt={item.imageAlt}
                     loading="lazy"
                     decoding="async"
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -64,7 +74,7 @@ export function History() {
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-card to-background">
-                    <Camera className="h-12 w-12 text-primary/30" />
+                    <Camera className="h-12 w-12 text-primary/30" aria-hidden="true" />
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
@@ -75,6 +85,7 @@ export function History() {
               </motion.article>
             ))}
           </div>
+          ) : null}
         </div>
       </div>
     </section>

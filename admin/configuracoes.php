@@ -24,6 +24,18 @@ $fieldGroups = [
         'about_text' => ['label' => 'Texto sobre a empresa', 'type' => 'textarea', 'required' => true, 'max' => 500],
         'years_in_market' => ['label' => 'Anos de mercado', 'type' => 'number', 'required' => true, 'max_value' => 100],
     ],
+    'História e conteúdo institucional' => [
+        'history_enabled' => ['label' => 'Exibir seção História', 'type' => 'checkbox'],
+        'history_eyebrow' => ['label' => 'Rótulo', 'type' => 'text', 'max' => 80],
+        'history_title' => ['label' => 'Título principal', 'type' => 'text', 'max' => 220],
+        'history_title_highlight' => ['label' => 'Destaque do título', 'type' => 'text', 'max' => 120],
+        'history_description' => ['label' => 'Texto principal', 'type' => 'textarea', 'max' => 1500],
+        'history_secondary_text' => ['label' => 'Texto complementar', 'type' => 'textarea', 'max' => 1500],
+        'history_experience_suffix' => ['label' => 'Sufixo dos anos', 'type' => 'text', 'max' => 40],
+        'history_experience_label' => ['label' => 'Legenda dos anos', 'type' => 'text', 'max' => 100],
+        'history_team_title' => ['label' => 'Título do card da equipe', 'type' => 'text', 'max' => 100],
+        'history_team_description' => ['label' => 'Descrição do card da equipe', 'type' => 'text', 'max' => 140],
+    ],
     'Suporte' => [
         'support_enabled' => ['label' => 'Exibir seção de Suporte', 'type' => 'checkbox'],
         'support_eyebrow' => ['label' => 'Chamada superior', 'type' => 'text', 'max' => 80],
@@ -133,6 +145,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cta_button_label',
             'cta_whatsapp_message',
         ],
+        'history_enabled' => [
+            'history_eyebrow',
+            'history_title',
+            'history_title_highlight',
+            'history_description',
+            'history_secondary_text',
+            'history_experience_suffix',
+            'history_experience_label',
+            'history_team_title',
+            'history_team_description',
+        ],
     ];
     foreach ($enabledRequiredGroups as $enabledKey => $requiredKeys) {
         if (($values[$enabledKey] ?? '0') !== '1') {
@@ -183,6 +206,9 @@ admin_header('Configurações');
                     <h2><?= h($groupTitle) ?></h2>
                     <p class="muted">Informações retornadas pela API pública.</p>
                 </div>
+                <?php if ($groupTitle === 'História e conteúdo institucional'): ?>
+                    <a class="button secondary" href="historia-galeria.php">Gerenciar galeria da história</a>
+                <?php endif; ?>
             </div>
             <div class="form-grid">
                 <?php foreach ($groupFields as $key => $field): ?>

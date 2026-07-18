@@ -31,6 +31,7 @@ Pastas principais:
 | Beneficios | `admin/beneficios.php` | `benefits` | CRUD generico com slug, icone em whitelist, CTA seguro e ordenacao |
 | Tecnologias | `admin/tecnologias.php` | `technologies` | CRUD generico com slug, icone em whitelist, disponibilidade e ordenacao |
 | Banners | `admin/banners.php` | `banners` | CRUD generico com upload |
+| Galeria da historia | `admin/historia-galeria.php` | `history_gallery` | CRUD generico com slug, imagem opcional, alt text, ativo e ordenacao |
 | Cobertura | `admin/cobertura.php` | `coverage` | CRUD generico com Google Maps |
 | Depoimentos | `admin/depoimentos.php` | `testimonials` | CRUD generico |
 | FAQ | `admin/faqs.php` | `faqs` | CRUD generico com perguntas ativas e ordenacao |
@@ -64,6 +65,7 @@ API:
 - `plans`
 - `stats`
 - `differentials`
+- `history_gallery`
 - `coverage`
 - `testimonials`
 - `banners`
@@ -76,6 +78,8 @@ Campos criticos:
 - `plans.benefits` e JSON.
 - `stats.slug` e unico; `stats.value` e texto para preservar valores como `14+`, `100%`, `24/H` e textos.
 - `differentials.slug` e unico; `differentials.icon` usa whitelist do painel e fallback visual seguro no frontend.
+- `history_gallery.slug` e unico; `image_path` e caminho relativo seguro e `image_alt` e obrigatorio.
+- `settings.history_*` controla Historia / Quem Somos; `years_in_market` continua fonte unica dos anos de atuacao.
 - `benefits.slug` e unico; `camera-seguranca` possui regra especial no site.
 - `technologies.slug` e unico; icone usa whitelist do modulo publico.
 - `benefits.icon` usa whitelist do painel e fallback visual no frontend.
@@ -134,6 +138,7 @@ Arquitetura:
 | Concluido localmente | Suporte e CTA final | Gerenciar textos principais sem criar novas tabelas | `settings` |
 | Concluido localmente | Estatisticas | Gerenciar numeros e rotulos publicados com cautela comercial | `stats` |
 | Concluido localmente | Diferenciais | Gerenciar cards de diferenciais publicados | `differentials` |
+| Concluido localmente | Historia | Gerenciar conteudo institucional e galeria da Historia | `settings`, `history_gallery` |
 | Alta | Campanhas | Sazonais e comerciais | `campaigns` |
 | Alta | Indicacoes | Indique e Ganhe | `referrals` |
 | Media | Leads | Formularios de interesse | `leads` |
@@ -165,6 +170,7 @@ Sugestoes conceituais:
 - `settings`: implementada para Suporte e CTA final com `support_*`, `cta_*`, validacao condicional e fallback local.
 - `stats`: implementada com slug, valor textual, rotulo, ativo e ordem.
 - `differentials`: implementada com slug, icone em whitelist, titulo, descricao, ativo e ordem.
+- `history_gallery`: implementada com slug, titulo, descricao, imagem opcional, alt text, ativo e ordem; textos principais de Historia ficam em `settings.history_*`.
 - `campaigns`: nome, slug, periodo, status, headline, termos, CTA, imagem.
 - `referrals`: dados do indicador, dados do indicado, consentimento, status, origem, timestamps.
 - `leads`: origem, nome, telefone, cidade, bairro, plano, status.
@@ -180,12 +186,13 @@ Sugestoes conceituais:
 6. Revisar FAQ administravel ja implementado localmente.
 7. Revisar Suporte e CTA final administraveis implementados localmente.
 8. Revisar Estatisticas e Diferenciais administraveis implementados localmente.
-9. Expandir API para entregar novos blocos quando houver necessidade real.
-10. Atualizar frontend para consumir novos blocos com fallback.
-11. Adicionar Campanhas.
-12. Adicionar Leads e Indicacoes.
-13. Adicionar logs e integracoes.
-14. Integrar IXC somente apos homologacao.
+9. Revisar Historia / Quem Somos administravel implementada localmente.
+10. Expandir API para entregar novos blocos quando houver necessidade real.
+11. Atualizar frontend para consumir novos blocos com fallback.
+12. Adicionar Campanhas.
+13. Adicionar Leads e Indicacoes.
+14. Adicionar logs e integracoes.
+15. Integrar IXC somente apos homologacao.
 
 ## 10. Integracao futura IXC
 
@@ -437,3 +444,6 @@ Fallback:
 - O frontend infere beneficio principal e Wi-Fi a partir de `plans.benefits`; isso deve ser substituido por campos proprios em fase de banco.
 - Publicar Wi-Fi 6, Wi-Fi 7, XGS-PON, GNS TV Plus, streaming, Mesh ou telefone fixo exige confirmacao comercial e tecnica.
 - `quote_only` deve ser campo semantico futuro; hoje o frontend apenas tolera preco vazio ou zero.
+## Remoção isolada de imagens
+
+`admin/historia-galeria.php` e `admin/banners.php` usam a capacidade genérica `file_clear_action` do CRUD. Em registros com imagem, as ações são `Editar`, `Remover imagem` e `Excluir`. Remover imagem limpa apenas o campo `image_path`; excluir remove o registro. O caminho sempre vem do banco, e o helper só remove fisicamente uploads gerenciados, não compartilhados e seguros. Arquivos versionados ou protegidos não são apagados.

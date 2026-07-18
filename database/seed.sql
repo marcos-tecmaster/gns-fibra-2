@@ -29,7 +29,17 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('cta_title', 'Pronto para falar com a GNS Fibra?'),
 ('cta_description', 'Conte onde você mora ou trabalha e nossa equipe ajuda a verificar a cobertura e encontrar a opção adequada.'),
 ('cta_button_label', 'Falar pelo WhatsApp'),
-('cta_whatsapp_message', 'Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.')
+('cta_whatsapp_message', 'Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.'),
+('history_enabled', '1'),
+('history_eyebrow', 'Quem somos'),
+('history_title', 'Nossa'),
+('history_title_highlight', 'História'),
+('history_description', 'Há mais de 14 anos conectando famílias e empresas com fibra óptica, estabilidade e atendimento humano.'),
+('history_secondary_text', 'Nossa trajetória é construída diariamente por uma equipe que conhece a região, investe em infraestrutura e entende que conexão de qualidade também depende de atendimento humano.'),
+('history_experience_suffix', '+ anos'),
+('history_experience_label', 'de experiência'),
+('history_team_title', 'Equipe local'),
+('history_team_description', 'próxima do cliente')
 ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
 
 DELETE FROM banners;
@@ -104,6 +114,38 @@ FROM (
     50
 ) AS seed
 WHERE NOT EXISTS (SELECT 1 FROM differentials);
+
+INSERT INTO history_gallery (slug, title, description, image_path, image_alt, active, display_order)
+SELECT seed.slug, seed.title, seed.description, seed.image_path, seed.image_alt, seed.active, seed.display_order
+FROM (
+  SELECT
+    'estrutura' AS slug,
+    'Estrutura' AS title,
+    'Infraestrutura e equipamentos que sustentam nossa operação.' AS description,
+    'uploads/history/install.jpg' AS image_path,
+    'Estrutura' AS image_alt,
+    1 AS active,
+    10 AS display_order
+  UNION ALL
+  SELECT
+    'equipe',
+    'Nossa equipe',
+    'Profissionais próximos, preparados para orientar e atender você.',
+    NULL,
+    'Nossa equipe',
+    1,
+    20
+  UNION ALL
+  SELECT
+    'frota',
+    'Nossa frota',
+    'Estrutura de atendimento para acompanhar nossa área de cobertura.',
+    NULL,
+    'Nossa frota',
+    1,
+    30
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM history_gallery);
 
 INSERT INTO benefits (slug, icon, title, description, cta_label, cta_href, active, display_order)
 SELECT seed.slug, seed.icon, seed.title, seed.description, seed.cta_label, seed.cta_href, seed.active, seed.display_order

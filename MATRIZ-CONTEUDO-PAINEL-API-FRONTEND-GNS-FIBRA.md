@@ -41,8 +41,8 @@ Status: matriz atualizada apos FAQ, Beneficios, Tecnologias, Suporte e CTA admin
 | Tecnologias | `siteContent.technologies` | `technologies` | `technologies` | `tecnologias.php` | Sim | Dinamico completo |
 | Cobertura | `coverageAreas` | `coverage` | `coverage` | `cobertura.php` | Sim | Dinamico completo |
 | Mapa geral de cobertura | local + API | `settings.coverage_map_url` + `coverage.map_url` | `settings`, `coverage` | Configuracoes/Cobertura | Sim | Dinamico completo |
-| Historia | `config.company.aboutText`, `historyGallery` | `about_text` parcial | `settings` parcial | Configuracoes parcial | Sim | Dinamico parcial |
-| Galeria historia | `historyGallery` | Nao | Nao | Nao | Sim | Somente fallback local |
+| Historia | `siteContent.history` + `config.company.yearsActive` | `settings.history_*` | `settings` | Configuracoes | Sim | Dinamico completo |
+| Galeria historia | `historyGallery` | `history_gallery` | `history_gallery` | `historia-galeria.php` | Sim | Dinamico completo |
 | Suporte | `siteContent.support` + config | `settings.support_*` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Canais de suporte | componente + config | `settings.whatsapp`, `support_whatsapp_message` parcial | `settings` parcial | Configuracoes parcial | Sim | Dinamico parcial |
 | Depoimentos | `testimonials` | `testimonials` | `testimonials` | `depoimentos.php` | Sim | Dinamico parcial |
@@ -70,6 +70,7 @@ Campos reais retornados:
   "plans": [],
   "stats": [],
   "differentials": [],
+  "history_gallery": [],
   "coverage": [],
   "testimonials": [],
   "banners": [],
@@ -83,7 +84,6 @@ Campos reais retornados:
 Campos nao retornados hoje:
 
 - `navigation`
-- `historyGallery`
 - `support`
 - `cta`
 - `mascots`
@@ -223,6 +223,35 @@ Regras:
 - registros sem slug, valor ou rotulo sao ignorados individualmente;
 - os valores `100%` e `24/H` foram preservados por existirem no conteudo atual, mas exigem confirmacao futura antes de campanhas.
 
+### Historia
+
+Arquivos: `src/lib/site-content.ts`, `api/site-content.php`, `admin/configuracoes.php`
+
+Os textos principais da secao Historia / Quem Somos ficam em `settings.history_*`.
+
+Regras:
+
+- `history_enabled` controla a secao inteira;
+- `history_title` e `history_title_highlight` preservam o destaque visual sem HTML no banco;
+- `history_description` e especifico da secao Historia;
+- `about_text` permanece texto institucional geral em `config.company.aboutText`;
+- `years_in_market` continua fonte unica para `config.company.yearsActive`.
+
+### Galeria historia
+
+Arquivos: `src/lib/site-content.ts`, `api/site-content.php`, `admin/historia-galeria.php`
+
+Tres itens locais permanecem como fallback e agora tambem existem em `history_gallery`, administrados pelo painel e entregues pela API publica quando o banco esta disponivel.
+
+Regras:
+
+- `slug` e o id logico usado no frontend;
+- `history_gallery: []` e respeitado e remove somente a area da galeria, mantendo o texto institucional;
+- API sem `history_gallery` ou indisponivel usa fallback local;
+- itens sem slug, titulo, descricao ou alt sao ignorados individualmente;
+- `image_path` vazio ou nulo renderiza placeholder visual;
+- caminhos de imagem sao relativos e normalizados no frontend.
+
 ## Tipos publicos normalizados
 
 O TypeScript possui:
@@ -234,6 +263,8 @@ O TypeScript possui:
 - `cta`
 - `stats`
 - `differentials`
+- `history`
+- `historyGallery`
 
 `src/services/site-content-service.ts` agora le `faqs`, `benefits`, `technologies`, `support_*` e `cta_*` da API.
 
@@ -245,6 +276,8 @@ O TypeScript possui:
 | Planos | Sim | Sim | Sim | Sim |
 | Estatisticas | Sim | Sim | Sim | Sim |
 | Diferenciais | Sim | Sim | Sim | Sim |
+| Historia | Sim via Configuracoes | Sim | Sim | Sim |
+| Galeria historia | Sim | Sim | Sim | Sim |
 | Banners | Sim | Sim | Sim | Nao |
 | Cobertura | Sim | Sim | Sim | Sim |
 | Depoimentos | Sim | Sim | Sim | Sim |
@@ -263,7 +296,7 @@ Prioridade alta:
 
 1. revisar em homologacao os fluxos ja implementados de FAQ, Beneficios, Tecnologias, Suporte e CTA.
 2. revisar Estatisticas e Diferenciais administraveis em ambiente local/homologacao.
-3. definir se Historia continua local ou entra em nova fase administravel.
+3. revisar Historia e Galeria da historia administraveis em ambiente local/homologacao.
 4. manter mascotes e banners publicos fora do painel ate haver governanca de assets.
 
 Prioridade posterior:
@@ -287,3 +320,11 @@ Nao tentar tornar todo o conteudo dinamico de uma vez. A ordem mais segura e:
 3. Revisar Tecnologias administraveis em ambiente local/homologacao.
 4. Revisar Suporte/CTA via settings em ambiente local/homologacao.
 5. Depois revisar menu, logs, roles e modulos de marketing.
+## Semântica de imagem opcional
+
+| Conteúdo | Ação no painel | API | Frontend |
+|---|---|---|---|
+| Galeria da História | `Remover imagem` limpa somente `history_gallery.image_path`; `Excluir` remove o registro | Entrega `image_path: null` | Mantém o card e mostra o placeholder existente |
+| Banners | `Remover imagem` limpa somente `banners.image_path`; `Excluir` remove o registro | Mantém o banner, inclusive com `image_path: null` | Banners ainda não são consumidos pelo frontend; nenhuma imagem de fallback é inventada |
+
+A remoção preserva títulos, textos, links, ordem, status e demais campos. A exclusão física posterior é limitada a uploads gerenciados e não compartilhados; referências versionadas/protegidas são apenas limpas no banco.

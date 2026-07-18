@@ -30,7 +30,17 @@ type ApiSettings = Partial<Record<
   | "cta_title"
   | "cta_description"
   | "cta_button_label"
-  | "cta_whatsapp_message",
+  | "cta_whatsapp_message"
+  | "history_enabled"
+  | "history_eyebrow"
+  | "history_title"
+  | "history_title_highlight"
+  | "history_description"
+  | "history_secondary_text"
+  | "history_experience_suffix"
+  | "history_experience_label"
+  | "history_team_title"
+  | "history_team_description",
   string
 >>;
 
@@ -88,6 +98,17 @@ type ApiDifferential = {
   display_order?: number;
 };
 
+type ApiHistoryGalleryItem = {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  image_path?: string | null;
+  image_alt: string;
+  active?: boolean;
+  display_order?: number;
+};
+
 type ApiBenefit = {
   id: number;
   slug: string;
@@ -116,6 +137,7 @@ type SiteContentApiResponse = {
   plans?: ApiPlan[];
   stats?: ApiStat[];
   differentials?: ApiDifferential[];
+  history_gallery?: ApiHistoryGalleryItem[];
   coverage?: ApiCoverage[];
   testimonials?: ApiTestimonial[];
   benefits?: ApiBenefit[];
@@ -253,6 +275,60 @@ function normalizeDifferentials(
     );
 }
 
+function normalizePublicAssetPath(path: string | null | undefined): string | undefined {
+  const normalizedPath = String(path ?? "").trim().replace(/\\/g, "/");
+  if (
+    normalizedPath === "" ||
+    normalizedPath.includes("\0") ||
+    normalizedPath.startsWith("../") ||
+    normalizedPath.includes("/../")
+  ) {
+    return undefined;
+  }
+
+  try {
+    const parsedUrl = new URL(normalizedPath);
+    return ["http:", "https:"].includes(parsedUrl.protocol)
+      ? parsedUrl.toString()
+      : undefined;
+  } catch {
+    const apiUrl = new URL(API_URL, document.baseURI);
+    const apiBaseUrl = apiUrl.pathname.includes("/api/")
+      ? new URL("../", apiUrl)
+      : new URL(document.baseURI);
+    return new URL(normalizedPath.replace(/^\/+/, ""), apiBaseUrl).toString();
+  }
+}
+
+function normalizeHistoryGallery(
+  items: ApiHistoryGalleryItem[],
+): SiteContent["historyGallery"] {
+  return items
+    .map((item) => {
+      const slug = String(item.slug ?? "").trim();
+      const title = String(item.title ?? "").trim();
+      const description = String(item.description ?? "").trim();
+      const imageAlt = String(item.image_alt ?? "").trim();
+      const image = normalizePublicAssetPath(item.image_path);
+
+      return {
+        id: slug,
+        title,
+        description,
+        image,
+        imageAlt,
+        active: true,
+      };
+    })
+    .filter(
+      (item) =>
+        item.id !== "" &&
+        item.title !== "" &&
+        item.description !== "" &&
+        item.imageAlt !== "",
+    );
+}
+
 const BENEFIT_ICONS = new Set<IconName>([
   "wifi",
   "headset",
@@ -379,6 +455,9 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const remoteDifferentials = Array.isArray(response.differentials)
     ? response.differentials
     : null;
+  const remoteHistoryGallery = Array.isArray(response.history_gallery)
+    ? response.history_gallery
+    : null;
   const remoteTestimonials = Array.isArray(response.testimonials)
     ? response.testimonials
     : null;
@@ -476,6 +555,48 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
         siteContent.cta.whatsappMessage,
       ),
     },
+    history: {
+      enabled: parseBooleanSetting(
+        settings.history_enabled,
+        siteContent.history.enabled,
+      ),
+      eyebrow: normalizeSettingText(
+        settings.history_eyebrow,
+        siteContent.history.eyebrow,
+      ),
+      title: normalizeSettingText(
+        settings.history_title,
+        siteContent.history.title,
+      ),
+      titleHighlight: normalizeSettingText(
+        settings.history_title_highlight,
+        siteContent.history.titleHighlight,
+      ),
+      description: normalizeSettingText(
+        settings.history_description,
+        siteContent.history.description,
+      ),
+      secondaryText: normalizeSettingText(
+        settings.history_secondary_text,
+        siteContent.history.secondaryText,
+      ),
+      experienceSuffix: normalizeSettingText(
+        settings.history_experience_suffix,
+        siteContent.history.experienceSuffix,
+      ),
+      experienceLabel: normalizeSettingText(
+        settings.history_experience_label,
+        siteContent.history.experienceLabel,
+      ),
+      teamTitle: normalizeSettingText(
+        settings.history_team_title,
+        siteContent.history.teamTitle,
+      ),
+      teamDescription: normalizeSettingText(
+        settings.history_team_description,
+        siteContent.history.teamDescription,
+      ),
+    },
     plans:
       remotePlans !== null
         ? remotePlans.map((plan) => ({
@@ -508,6 +629,10 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
       remoteDifferentials !== null
         ? normalizeDifferentials(remoteDifferentials)
         : siteContent.differentials,
+    historyGallery:
+      remoteHistoryGallery !== null
+        ? normalizeHistoryGallery(remoteHistoryGallery)
+        : siteContent.historyGallery,
     coverageAreas: normalizedCoverage,
     testimonials:
       remoteTestimonials !== null

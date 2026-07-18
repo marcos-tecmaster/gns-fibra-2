@@ -1,12 +1,13 @@
 # PLANO IMPLEMENTACAO PAINEL ADMIN 2 - GNS FIBRA
 
 Data: 16/07/2026
-Status: planejamento com FAQ, Beneficios, Tecnologias, Suporte, CTA, Estatisticas e Diferenciais implementados localmente
+Status: planejamento com FAQ, Beneficios, Tecnologias, Suporte, CTA, Estatisticas, Diferenciais e Historia implementados localmente
 
 ## Avisos
 
 - FAQ, Beneficios, Tecnologias, Suporte e CTA ja foram implementados localmente em fases separadas.
 - Estatisticas e Diferenciais tambem foram implementados localmente em fase separada em 17/07/2026.
+- Historia / Quem Somos e Galeria da historia tambem foram implementadas localmente em 17/07/2026.
 - As mensagens de commit sao sugestoes.
 
 ## Etapa 1 - Fundacao reutilizavel e migration de FAQs
@@ -410,8 +411,13 @@ Commit sugerido:
 
 ### Historia e galeria
 
-- Requer politica de imagens, uploads e alt text.
-- Ideal apos hardening de uploads.
+Status em 17/07/2026: implementadas localmente. Criada a migration `database/migration-2026-07-17-create-history-gallery-and-settings.sql`, adicionadas chaves `history_*` em `settings`, criada tabela `history_gallery`, criado `admin/historia-galeria.php`, Configuracoes recebeu grupo Historia e conteudo institucional, API publica passou a entregar `history_gallery` e o normalizador TypeScript preserva fallback local, secao desativavel e galeria vazia.
+
+Risco principal: upload valido precisa ser revisado manualmente em navegador autenticado; o helper rejeita upload quando Fileinfo nao estiver disponivel.
+
+Commit sugerido:
+
+`feat: add admin-managed history content`
 
 ### Mascotes e banners
 
