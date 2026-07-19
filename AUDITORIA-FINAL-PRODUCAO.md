@@ -2,6 +2,8 @@
 
 Data: 10/06/2026
 
+> Documento histórico. Atualização de 19/07/2026: as credenciais padrão, o fallback de produção, o rate limit, os headers, a publicação em subdiretório, o SEO, a remoção segura de uploads e os scripts destrutivos/fixos de banco já foram tratados em fases posteriores. Para o estado atual, consulte `AUDITORIA-FINAL-PENTE-FINO-GNS-FIBRA-2.md` e `IMPLEMENTACAO-BANCO-MIGRATIONS-SEED-SEGURO-GNS-FIBRA-2.md`. Os achados abaixo preservam a fotografia de 10/06/2026 e não devem ser usados como instrução operacional atual.
+
 ## Parecer
 
 **PENDÊNCIAS ENCONTRADAS**

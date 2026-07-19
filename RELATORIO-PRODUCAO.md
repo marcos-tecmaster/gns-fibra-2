@@ -1,5 +1,7 @@
 # Relatório de preparação para produção
 
+> Documento histórico da fase React inicial. Atualização de 19/07/2026: a API PHP, o painel administrativo, o conteúdo dinâmico, os headers de segurança e o banco com schema/seed/migrations portáteis já foram implementados. Consulte `AUDITORIA-FINAL-PENTE-FINO-GNS-FIBRA-2.md`, `ADMIN-README.md` e `database/MIGRATIONS-README.md` para o estado operacional vigente.
+
 ## Escopo concluído
 
 - Revisão completa da estrutura React, TypeScript e Vite.

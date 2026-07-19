@@ -159,22 +159,21 @@ Comparação literal de classes declaradas versus TS/TSX/PHP não encontrou clas
 - 13 tabelas: banners, benefits, coverage, differentials, faqs, history_gallery, login_attempts, plans, settings, stats, technologies, testimonials e users.
 - Contagens reais: 1 banner, 4 benefícios, 4 coberturas, 5 diferenciais, 7 FAQs, 3 itens de história, 7 planos, 36 settings, 4 estatísticas, 4 tecnologias, 4 depoimentos e 1 usuário.
 - Colunas e índices atuais correspondem à estrutura funcional esperada.
-- Divergência importante: `schema.sql` cria/seleciona `gns_fibra`, não o banco local `gns-fibra-2`.
+- Atualização de 19/07/2026: `schema.sql` tornou-se portátil, não cria nem seleciona banco e foi validado com as 13 tabelas em banco descartável.
 
 ## 16. Migrations
 
-- Migrations de criação usam `IF NOT EXISTS` e seeds condicionais, em geral reexecutáveis.
-- `migration-2026-06-17-coverage-map-url.sql` e `migration-2026-06-security.sql` executam `USE gns_fibra`; podem operar no banco errado em ambientes cujo nome difere.
-- A migration de segurança força `must_change_password=1` para username `admin` em toda execução; é reexecutável tecnicamente, mas tem efeito funcional repetido.
-- Migrations mais novas não selecionam banco e dependem da sessão correta.
-- Nenhuma migration foi executada nesta auditoria.
+- Todas as migrations operam no banco selecionado pela sessão; nenhuma contém nome de banco fixo.
+- A migration de Cobertura faz backfill somente quando acabou de criar `map_url`.
+- A migration de Segurança não presume username e só exige troca de senha quando acabou de criar a coluna correspondente.
+- As nove migrations foram executadas duas vezes no banco descartável da fase de 19/07/2026 sem alteração entre as rodadas.
 
 ## 17. Seed
 
-- `seed.sql` também executa `USE gns_fibra`.
-- Settings usam `ON DUPLICATE KEY` sem sobrescrever valores existentes.
-- O seed executa `DELETE FROM` em banners, FAQs, depoimentos, cobertura e planos e recria os registros; isso apaga edições administrativas.
-- O próprio `ADMIN-README.md` alerta para não executá-lo após o painel entrar em uso. Para produção, separar bootstrap inicial de seed demonstrativo destrutivo.
+- O seed é transacional, não seleciona banco e não contém operação destrutiva.
+- A presença de `company_name` marca a instalação como inicializada; reexecuções não sobrescrevem settings, não duplicam dados e não repopulam tabelas esvaziadas posteriormente.
+- Duas execuções no banco local preservaram o hash global `af3b009156864953ca284ff4466cea9bae6f9ecc1b8ae741187c6215f4e41c58`.
+- Duas execuções no banco descartável produziram hash idêntico; um teste adicional confirmou que banners removidos não são recriados.
 
 ## 18. API
 
@@ -266,8 +265,8 @@ Nenhum item crítico confirmado após a correção de exposição de arquivos in
 |---|---|---|---|---|
 | Contrato parcial de Banners | CRUD/API expõem texto e botão; Hero usa só imagem | Consumir campos ou renomear módulo/campos como imagem do Hero | médio | Antes da demo |
 | Descrição de cobertura sem consumidor | `coverage.description` salva e trafega, mas não aparece | Mostrar descrição de modo controlado ou remover campo da UI | baixo | Antes da demo |
-| Nome de banco divergente | local `gns-fibra-2`; schema/seed/migrations usam `gns_fibra` | Remover `USE` rígido ou parametrizar e documentar banco alvo | médio | Antes de implantação |
-| Seed destrutivo | cinco `DELETE FROM` apagam conteúdo gerenciado | Separar seed demonstrativo/reset de bootstrap idempotente | médio | Antes de implantação |
+
+Os antigos itens altos “nome de banco divergente” e “seed destrutivo” foram resolvidos e validados na fase de 19/07/2026.
 
 ## 32. Itens médios
 
@@ -276,7 +275,6 @@ Nenhum item crítico confirmado após a correção de exposição de arquivos in
 - Logo ainda fixa e pesada.
 - Copies de seções e módulo Empresarial permanecem fixos.
 - Documentação histórica misturada na raiz e alguns relatórios conflitam com o estado atual.
-- Migration de segurança refaz a exigência de troca para username `admin`.
 - Ausência de trilha de auditoria administrativa.
 
 ## 33. Itens baixos
@@ -337,4 +335,8 @@ Nenhum arquivo foi adicionado ao index. `git diff --cached --name-only` deve per
 
 ## 40. Próxima fase recomendada
 
-Hardening pré-demonstração: corrigir contrato de Banners/Cobertura, alinhar scripts de banco, executar QA móvel autenticada e atualizar a dependência vulnerável. Em seguida, implementar a logo administrável conforme plano separado.
+Hardening pré-demonstração: corrigir contrato de Banners/Cobertura, executar QA móvel autenticada e atualizar a dependência vulnerável. Em seguida, implementar a logo administrável conforme plano separado.
+
+## 41. Atualização de banco seguro — 19/07/2026
+
+Os achados de banco desta auditoria foram tratados em `IMPLEMENTACAO-BANCO-MIGRATIONS-SEED-SEGURO-GNS-FIBRA-2.md`. O procedimento operacional está em `database/MIGRATIONS-README.md`. Houve backup confirmado, prova de idempotência no banco `gns-fibra-2`, ciclo completo em banco descartável com prefixo controlado e verificação das 13 tabelas, 36 settings e quatro uploads oficiais.
