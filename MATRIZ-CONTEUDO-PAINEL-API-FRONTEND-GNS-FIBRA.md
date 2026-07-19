@@ -2,7 +2,7 @@
 
 Data: 16/07/2026
 Ambiente: local
-Status: matriz atualizada apos FAQ, Beneficios, Tecnologias, Suporte e CTA administraveis
+Status: matriz atualizada em 19/07/2026 após coerência de Cobertura e Imagens do Hero
 
 ## Avisos
 
@@ -39,7 +39,7 @@ Status: matriz atualizada apos FAQ, Beneficios, Tecnologias, Suporte e CTA admin
 | Beneficios dos planos | `plan.features` | `plans.benefits` | `plans.benefits` JSON | `planos.php` | Sim | Dinamico parcial |
 | Beneficios globais | `siteContent.benefits` | `benefits` | `benefits` | `beneficios.php` | Sim | Dinamico completo |
 | Tecnologias | `siteContent.technologies` | `technologies` | `technologies` | `tecnologias.php` | Sim | Dinamico completo |
-| Cobertura | `coverageAreas` | `coverage` | `coverage` | `cobertura.php` | Sim | Dinamico completo |
+| Cobertura: região, descrição e mapa | `coverageAreas` | `coverage` | `coverage` | `cobertura.php` | Sim | Dinamico completo |
 | Mapa geral de cobertura | local + API | `settings.coverage_map_url` + `coverage.map_url` | `settings`, `coverage` | Configuracoes/Cobertura | Sim | Dinamico completo |
 | Historia | `siteContent.history` + `config.company.yearsActive` | `settings.history_*` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Galeria historia | `historyGallery` | `history_gallery` | `history_gallery` | `historia-galeria.php` | Sim | Dinamico completo |
@@ -51,7 +51,7 @@ Status: matriz atualizada apos FAQ, Beneficios, Tecnologias, Suporte e CTA admin
 | FAQPage JSON-LD | `FAQ.tsx` | `faqs` | `faqs` | `faqs.php` | Sim | Dinamico completo |
 | CTA final textos | `siteContent.cta` | `settings.cta_*` | `settings` | Configuracoes | Sim | Dinamico completo |
 | CTA final contatos | config local/API | settings contato | `settings` | Configuracoes | Sim | Dinamico parcial |
-| Banners | Imagem usada no Hero; textos preservados para etapa posterior | `banners` | `banners` | `banners.php` | Sim | Dinamico parcial para textos, completo para imagem |
+| Imagens do Hero | primeira imagem válida recebida | `banners[].id/image_path/display_order` | `banners` | `banners.php` | Sim | Dinamico completo para imagem; metadados internos fora do contrato público |
 | Imagem do Hero | `hero-fiber.jpg` | `banners[].image_path` | `banners` | `banners.php` | Sim | Dinamico completo |
 | Imagem da Cobertura | `datacenter.jpg` | `settings.coverage_image_path` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Fundo do CTA final | `fiber-bundle.jpg` | `settings.cta_background_image_path` | `settings` | Configuracoes | Sim | Dinamico completo |
@@ -281,9 +281,9 @@ O TypeScript possui:
 | Diferenciais | Sim | Sim | Sim | Sim |
 | Historia | Sim via Configuracoes | Sim | Sim | Sim |
 | Galeria historia | Sim | Sim | Sim | Sim |
-| Banners | Sim | Sim | Sim | Nao |
+| Imagens do Hero | Sim | Sim | Sim, somente imagem | Sim, somente imagem |
 
-Atualização de 18/07/2026: o bloco `banners` passou a ser consumido para a imagem do Hero. O primeiro banner ativo com imagem válida assume; os demais campos são preservados e normalizados, mas os textos do Hero continuam nas fontes administrativas existentes para evitar conflito. Cobertura e CTA recebem imagens únicas via settings, sempre com fallback local.
+Atualização de 19/07/2026: o bloco `banners` passou a publicar somente `id`, `image_path` e `display_order`. Identificação e observação são internas; campos legados de botão permanecem no banco. O Hero usa a primeira imagem válida, enquanto título e descrição continuam em settings. Cobertura renderiza e pesquisa região e descrição.
 | Cobertura | Sim | Sim | Sim | Sim |
 | Depoimentos | Sim | Sim | Sim | Sim |
 | Configuracoes | Sim | Sim | Sim | Sim parcial |
@@ -330,6 +330,6 @@ Nao tentar tornar todo o conteudo dinamico de uma vez. A ordem mais segura e:
 | Conteúdo | Ação no painel | API | Frontend |
 |---|---|---|---|
 | Galeria da História | `Remover imagem` limpa somente `history_gallery.image_path`; `Excluir` remove o registro | Entrega `image_path: null` | Mantém o card e mostra o placeholder existente |
-| Banners | `Remover imagem` limpa somente `banners.image_path`; `Excluir` remove o registro | Mantém o banner, inclusive com `image_path: null` | Banners ainda não são consumidos pelo frontend; nenhuma imagem de fallback é inventada |
+| Imagens do Hero | `Remover imagem` limpa somente `banners.image_path`; `Excluir` remove o registro | Entrega id, caminho nullable e ordem | Ignora registros sem imagem válida e usa o fallback local do Hero |
 
-A remoção preserva títulos, textos, links, ordem, status e demais campos. A exclusão física posterior é limitada a uploads gerenciados e não compartilhados; referências versionadas/protegidas são apenas limpas no banco.
+A remoção preserva identificação, observação, campos legados, ordem e status. A exclusão física posterior é limitada a uploads gerenciados e não compartilhados; referências versionadas/protegidas são apenas limpas no banco.

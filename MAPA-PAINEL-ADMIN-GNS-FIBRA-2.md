@@ -1,7 +1,7 @@
 # MAPA DO PAINEL ADMIN - GNS FIBRA 2.0
 
 Data: 13/07/2026  
-Atualizado em: 16/07/2026
+Atualizado em: 19/07/2026
 Status: mapa vivo do painel administrativo
 
 ## 1. Estado atual
@@ -30,7 +30,7 @@ Pastas principais:
 | Diferenciais | `admin/diferenciais.php` | `differentials` | CRUD generico com slug, icone em whitelist, titulo, descricao, ativo e ordenacao |
 | Beneficios | `admin/beneficios.php` | `benefits` | CRUD generico com slug, icone em whitelist, CTA seguro e ordenacao |
 | Tecnologias | `admin/tecnologias.php` | `technologies` | CRUD generico com slug, icone em whitelist, disponibilidade e ordenacao |
-| Banners | `admin/banners.php` | `banners` | CRUD generico com upload |
+| Imagens do Hero | `admin/banners.php` | `banners` | CRUD de imagem com identificação e observação internas |
 | Galeria da historia | `admin/historia-galeria.php` | `history_gallery` | CRUD generico com slug, imagem opcional, alt text, ativo e ordenacao |
 | Cobertura | `admin/cobertura.php` | `coverage` | CRUD generico com Google Maps |
 | Depoimentos | `admin/depoimentos.php` | `testimonials` | CRUD generico |
@@ -85,6 +85,8 @@ Campos criticos:
 - `benefits.icon` usa whitelist do painel e fallback visual no frontend.
 - `benefits.cta_href` aceita apenas protocolos seguros.
 - `coverage.map_url` alimenta links clicaveis.
+- `coverage.description` aparece abaixo da região e participa da pesquisa pública.
+- `banners.title` e `banners.subtitle` são metadados internos; `button_text` e `button_url` são legados preservados somente no banco.
 - `settings` usa chave/valor; `support_*` e `cta_*` controlam textos principais e visibilidade de Suporte/CTA final.
 - `users.password_hash` nunca deve expor senha.
 - `login_attempts` suporta rate limit.
@@ -125,7 +127,7 @@ UX/Admin:
 Arquitetura:
 
 - Frontend e API tem contrato implicito, nao versionado.
-- API retorna banners, mas o frontend Premium/Dark nao usa.
+- O contrato de Imagens do Hero é intencionalmente mínimo: API publica id, imagem e ordem; textos do Hero vêm de settings.
 - Configuracoes chave/valor podem crescer demais, embora o formulario ja esteja agrupado por contexto.
 
 ## 7. Modulos futuros recomendados
@@ -446,6 +448,6 @@ Fallback:
 - `quote_only` deve ser campo semantico futuro; hoje o frontend apenas tolera preco vazio ou zero.
 ## Remoção isolada de imagens
 
-`admin/historia-galeria.php` e `admin/banners.php` usam a capacidade genérica `file_clear_action` do CRUD. Em registros com imagem, as ações são `Editar`, `Remover imagem` e `Excluir`. Remover imagem limpa apenas o campo `image_path`; excluir remove o registro. O caminho sempre vem do banco, e o helper só remove fisicamente uploads gerenciados, não compartilhados e seguros. Arquivos versionados ou protegidos não são apagados.
+`admin/historia-galeria.php` e `admin/banners.php` usam a capacidade genérica `file_clear_action` do CRUD. Em registros com imagem, as ações são `Editar`, `Remover imagem` e `Excluir`. Em Imagens do Hero, remover a imagem preserva identificação interna, observação, ordem, status e campos legados. O caminho sempre vem do banco, e o helper só remove fisicamente uploads gerenciados, não compartilhados e seguros. Arquivos versionados ou protegidos não são apagados.
 
-Configurações também administra as imagens únicas de Cobertura (`uploads/coverage/`) e CTA final (`uploads/cta/`). A remoção limpa somente a setting correspondente e preserva os textos. Banners administra a imagem do Hero em `uploads/banners/`; o primeiro ativo com imagem é o principal.
+Configurações também administra as imagens únicas de Cobertura (`uploads/coverage/`) e CTA final (`uploads/cta/`). A remoção limpa somente a setting correspondente e preserva os textos. Imagens do Hero administra `uploads/banners/`; o primeiro registro ativo com imagem válida é o principal, sem publicar seus metadados internos.

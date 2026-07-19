@@ -419,9 +419,10 @@ Commit sugerido:
 
 `feat: add admin-managed history content`
 
-### Mascotes e banners
+### Mascotes e Imagens do Hero
 
-- Banners ja existem, mas nao sao consumidos.
+- Imagens do Hero são consumidas pelo primeiro registro ativo com caminho válido, na ordem da API.
+- Identificação e observação são internas; título, descrição e CTAs do Hero conservam fontes próprias.
 - Mascotes exigem biblioteca de assets aprovados, sem upload livre em primeira fase.
 
 ### Campanhas
@@ -496,3 +497,5 @@ Commit sugerido:
 - administrar Cobertura e CTA final por settings e diretórios específicos;
 - preservar fallbacks locais, URLs relativas e remoção segura;
 - não depender de `dist/` nem exigir build após troca de upload.
+
+Atualização em 19/07/2026: Banners foi consolidado como Imagens do Hero. A API e os tipos públicos não transportam mais título, subtítulo ou botões legados. A descrição da Cobertura passou a ser renderizada e pesquisável por texto normalizado.

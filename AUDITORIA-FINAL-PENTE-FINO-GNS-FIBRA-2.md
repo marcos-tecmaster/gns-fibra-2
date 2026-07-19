@@ -69,8 +69,8 @@ Não remover fallbacks enquanto a API puder falhar ou o banco puder retornar cam
 - Nenhuma âncora interna aponta para seção ausente.
 - Nenhum upload referenciado aponta para arquivo ausente.
 - Nenhum `javascript:` ou link `#` sem função foi encontrado no código de aplicação.
-- Achado funcional: os campos de texto e botão de Banners chegam à API/normalizador, mas o Hero consome somente `image`.
-- Achado funcional: `coverage.description` chega ao frontend, mas a seção Cobertura mostra apenas `region` e `mapUrl`.
+- Resolvido em 19/07/2026: metadados textuais de Banners deixaram de integrar o contrato público; o módulo foi reclassificado como Imagens do Hero.
+- Resolvido em 19/07/2026: `coverage.description` passou a ser renderizada e pesquisável na seção pública.
 
 ## 7. Uploads
 
@@ -104,7 +104,8 @@ Legenda: A funciona; B salva mas não é consumido; C fixo corretamente; D fixo 
 | Empresa, telefone, e-mail, endereço e redes | A | settings → API → normalizador → Header/Support/CTA/Footer |
 | Hero: título e descrição institucional | A/E | settings; `about_text` também alimenta descrição da empresa |
 | Hero: imagem | A | banner ativo → API → Hero, com fallback |
-| Hero: título/subtítulo/botão do cadastro Banner | B | normalizados, mas Hero ignora essas propriedades |
+| Imagens do Hero: identificação/observação | C | metadados internos do painel; não integram a API pública |
+| Banners: botão legado | F público | preservado no banco por compatibilidade; fora do painel/API/frontend |
 | Estatísticas | A | tabela/CRUD/API/Stats |
 | Planos | A | tabela/CRUD/API/Plans |
 | Diferenciais | A | tabela/CRUD/API/Differentials |
@@ -112,7 +113,7 @@ Legenda: A funciona; B salva mas não é consumido; C fixo corretamente; D fixo 
 | Tecnologias | A | tabela/CRUD/API/Technologies |
 | História e galeria | A | settings + tabela/CRUD/API/History |
 | Cobertura: região e mapa | A | tabela/CRUD/API/Coverage/Footer |
-| Cobertura: descrição do ponto | B | API normaliza; componente não exibe |
+| Cobertura: descrição do ponto | A | tabela/CRUD/API/normalizador/Coverage e pesquisa |
 | Depoimentos | A | tabela/CRUD/API/Testimonials |
 | FAQ | A | tabela/CRUD/API/FAQ |
 | Suporte e CTA | A | settings/Configurações/API/componentes |
@@ -261,12 +262,7 @@ Nenhum item crítico confirmado após a correção de exposição de arquivos in
 
 ## 31. Itens altos
 
-| Descoberta | Evidência/impacto | Recomendação | Risco da correção | Quando |
-|---|---|---|---|---|
-| Contrato parcial de Banners | CRUD/API expõem texto e botão; Hero usa só imagem | Consumir campos ou renomear módulo/campos como imagem do Hero | médio | Antes da demo |
-| Descrição de cobertura sem consumidor | `coverage.description` salva e trafega, mas não aparece | Mostrar descrição de modo controlado ou remover campo da UI | baixo | Antes da demo |
-
-Os antigos itens altos “nome de banco divergente” e “seed destrutivo” foram resolvidos e validados na fase de 19/07/2026.
+Nenhum item alto permanece nos contratos de Banners/Cobertura. Os antigos achados de contrato parcial, descrição sem consumidor, nome de banco divergente e seed destrutivo foram resolvidos e validados.
 
 ## 32. Itens médios
 
@@ -288,12 +284,10 @@ Os antigos itens altos “nome de banco divergente” e “seed destrutivo” fo
 
 ## 34. Corrigir antes da demonstração
 
-1. Decidir o contrato real de Banners (imagem apenas versus conteúdo completo).
-2. Tornar visível ou retirar da UI a descrição de cobertura.
-3. Fazer QA manual autenticada em 360, 390, 414 e 430 px.
-4. Fixar/documentar `GNS_PHP_BASE_PATH` para desenvolvimento.
-5. Atualizar Vite/esbuild de forma controlada e repetir build/audit.
-6. Confirmar que publicação usa Apache com `.htaccess` e build limpo.
+1. Fazer QA manual autenticada em 360, 390, 414 e 430 px.
+2. Fixar/documentar `GNS_PHP_BASE_PATH` para desenvolvimento.
+3. Atualizar Vite/esbuild de forma controlada e repetir build/audit.
+4. Confirmar que publicação usa Apache com `.htaccess` e build limpo.
 
 ## 35. Deixar para depois
 
@@ -335,8 +329,12 @@ Nenhum arquivo foi adicionado ao index. `git diff --cached --name-only` deve per
 
 ## 40. Próxima fase recomendada
 
-Hardening pré-demonstração: corrigir contrato de Banners/Cobertura, executar QA móvel autenticada e atualizar a dependência vulnerável. Em seguida, implementar a logo administrável conforme plano separado.
+Hardening pré-demonstração: executar QA móvel autenticada e atualizar a dependência vulnerável. Em seguida, implementar a logo administrável conforme plano separado.
 
 ## 41. Atualização de banco seguro — 19/07/2026
 
 Os achados de banco desta auditoria foram tratados em `IMPLEMENTACAO-BANCO-MIGRATIONS-SEED-SEGURO-GNS-FIBRA-2.md`. O procedimento operacional está em `database/MIGRATIONS-README.md`. Houve backup confirmado, prova de idempotência no banco `gns-fibra-2`, ciclo completo em banco descartável com prefixo controlado e verificação das 13 tabelas, 36 settings e quatro uploads oficiais.
+
+## 42. Coerência entre Cobertura e Imagens do Hero — 19/07/2026
+
+`coverage.description` passou a aparecer nos itens públicos e participar da pesquisa normalizada. Banners foi reclassificado como módulo interno de Imagens do Hero: `title` e `subtitle` são metadados administrativos; campos de botão permanecem apenas no banco; a API entrega somente id, imagem e ordem; o frontend mantém somente id e imagem. Título, descrição e CTAs do Hero conservam suas fontes oficiais anteriores.
