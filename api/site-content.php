@@ -105,18 +105,13 @@ try {
     )->fetchAll();
 
     $banners = $pdo->query(
-        'SELECT id, title, subtitle, image_path, button_text, button_url, active, display_order
+        'SELECT id, image_path, display_order
          FROM banners WHERE active = 1 ORDER BY display_order, id'
     )->fetchAll();
 
     foreach ($banners as &$banner) {
         $banner['id'] = (int) $banner['id'];
-        $banner['title'] = (string) $banner['title'];
-        $banner['subtitle'] = (string) $banner['subtitle'];
         $banner['image_path'] = $banner['image_path'] !== null ? (string) $banner['image_path'] : null;
-        $banner['button_text'] = (string) $banner['button_text'];
-        $banner['button_url'] = (string) $banner['button_url'];
-        $banner['active'] = (bool) $banner['active'];
         $banner['display_order'] = (int) $banner['display_order'];
     }
     unset($banner);

@@ -11,7 +11,7 @@ function admin_header(string $title): void
         'diferenciais.php' => 'Diferenciais',
         'beneficios.php' => 'Benefícios',
         'tecnologias.php' => 'Tecnologias',
-        'banners.php' => 'Banners',
+        'banners.php' => 'Imagens do Hero',
         'historia-galeria.php' => 'Galeria da história',
         'cobertura.php' => 'Cobertura',
         'depoimentos.php' => 'Depoimentos',

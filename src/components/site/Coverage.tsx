@@ -5,18 +5,29 @@ import datacenterImg from "@/assets/datacenter.jpg";
 import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
 
+function normalizeCoverageSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR")
+    .trim();
+}
+
 export function Coverage() {
   const { config, coverageAreas, sectionImages } = useSiteContent();
   const coverageImage = sectionImages.coverage || datacenterImg;
   const [query, setQuery] = useState("");
 
   const filteredAreas = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase("pt-BR");
+    const normalizedQuery = normalizeCoverageSearch(query);
     if (!normalizedQuery) return coverageAreas;
 
-    return coverageAreas.filter((area) =>
-      area.region.toLocaleLowerCase("pt-BR").includes(normalizedQuery),
-    );
+    return coverageAreas.filter((area) => {
+      const searchableContent = normalizeCoverageSearch(
+        `${area.region} ${area.description}`,
+      );
+      return searchableContent.includes(normalizedQuery);
+    });
   }, [coverageAreas, query]);
 
   return (
@@ -93,15 +104,33 @@ export function Coverage() {
                   Dados centralizados
                 </span>
               </div>
-              <div className="flex max-h-44 flex-wrap gap-2 overflow-y-auto">
+              <div className="grid max-h-64 gap-2 overflow-y-auto pr-1">
                 {filteredAreas.length > 0 ? (
                   filteredAreas.map((area) => {
-                    const chipClass =
-                      "inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-2 text-xs font-medium text-foreground/85 transition-colors hover:border-primary/60 hover:text-primary";
+                    const description = area.description.trim();
+                    const itemClass =
+                      "group flex min-w-0 items-start gap-3 rounded-xl border border-border bg-background/60 p-3 text-left text-foreground transition-colors";
                     const content = (
                       <>
-                        <MapPin className="h-3.5 w-3.5 text-primary" />
-                        {area.region}
+                        <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <MapPin className="h-4 w-4" aria-hidden="true" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <strong className="block break-words text-sm font-semibold leading-snug">
+                            {area.region}
+                          </strong>
+                          {description ? (
+                            <span className="mt-1 block break-words text-xs leading-relaxed text-muted-foreground">
+                              {description}
+                            </span>
+                          ) : null}
+                        </span>
+                        {area.mapUrl ? (
+                          <ExternalLink
+                            className="mt-1 h-3.5 w-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
+                            aria-hidden="true"
+                          />
+                        ) : null}
                       </>
                     );
 
@@ -111,14 +140,14 @@ export function Coverage() {
                         href={area.mapUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`${chipClass} cursor-pointer`}
+                        className={`${itemClass} cursor-pointer hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
                       >
                         {content}
                       </a>
                     ) : (
-                      <span key={area.id} className={chipClass}>
+                      <div key={area.id} className={itemClass}>
                         {content}
-                      </span>
+                      </div>
                     );
                   })
                 ) : (

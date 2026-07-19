@@ -112,7 +112,7 @@ admin_header('Dashboard');
         <a class="button secondary" href="historia-galeria.php?action=new">Novo item de história</a>
         <a class="button secondary" href="beneficios.php?action=new">Novo benefício</a>
         <a class="button secondary" href="tecnologias.php?action=new">Nova tecnologia</a>
-        <a class="button secondary" href="banners.php?action=new">Novo banner</a>
+        <a class="button secondary" href="banners.php?action=new">Nova imagem do Hero</a>
         <a class="button secondary" href="cobertura.php?action=new">Nova cobertura</a>
         <a class="button secondary" href="faqs.php?action=new">Nova FAQ</a>
         <a class="button secondary" href="configuracoes.php">Configurações</a>

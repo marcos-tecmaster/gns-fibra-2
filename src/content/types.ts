@@ -81,12 +81,7 @@ export type SiteContent = {
   };
   banners: Array<{
     id: string;
-    title: string;
-    subtitle: string;
     image?: string;
-    buttonText: string;
-    buttonUrl?: string;
-    active: boolean;
   }>;
   sectionImages: {
     coverage?: string;

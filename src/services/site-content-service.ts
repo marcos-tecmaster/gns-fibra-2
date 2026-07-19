@@ -113,12 +113,7 @@ type ApiHistoryGalleryItem = {
 
 type ApiBanner = {
   id: number;
-  title?: string;
-  subtitle?: string;
   image_path?: string | null;
-  button_text?: string;
-  button_url?: string;
-  active?: boolean;
   display_order?: number;
 };
 
@@ -351,19 +346,10 @@ function normalizeHistoryGallery(
 
 function normalizeBanners(items: ApiBanner[]): SiteContent["banners"] {
   return items
-    .map((item) => {
-      const id = Number.isInteger(item.id) && item.id > 0 ? String(item.id) : "";
-      const buttonUrl = String(item.button_url ?? "").trim();
-      return {
-        id,
-        title: String(item.title ?? "").trim(),
-        subtitle: String(item.subtitle ?? "").trim(),
-        image: normalizePublicAssetPath(item.image_path),
-        buttonText: String(item.button_text ?? "").trim(),
-        buttonUrl: buttonUrl !== "" && isSafeBenefitHref(buttonUrl) ? buttonUrl : undefined,
-        active: item.active !== false,
-      };
-    })
+    .map((item) => ({
+      id: Number.isInteger(item.id) && item.id > 0 ? String(item.id) : "",
+      image: normalizePublicAssetPath(item.image_path),
+    }))
     .filter((item) => item.id !== "");
 }
 

@@ -32,7 +32,7 @@ function splitHeroTitle(title: string) {
 
 export function Hero() {
   const { banners, config } = useSiteContent();
-  const primaryBanner = banners.find((banner) => banner.active && banner.image);
+  const primaryBanner = banners.find((banner) => banner.image);
   const heroBackground = primaryBanner?.image || heroFiber;
   const { titleStart, highlightedTitle } = splitHeroTitle(config.company.heroTitle);
 
