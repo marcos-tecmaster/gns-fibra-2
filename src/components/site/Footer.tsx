@@ -12,7 +12,7 @@ import {
 import { useSiteContent } from "@/content/SiteContentProvider";
 
 const socialClass =
-  "grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/75 transition-colors hover:border-primary hover:text-primary";
+  "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border text-foreground/75 transition-colors hover:border-primary hover:text-primary";
 
 export function Footer() {
   const { config, navigation } = useSiteContent();
@@ -46,7 +46,7 @@ export function Footer() {
               href={config.links.linktree}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-foreground/80 transition-colors hover:border-primary hover:text-primary"
+              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-foreground/80 transition-colors hover:border-primary hover:text-primary"
             >
               <Link2 className="h-4 w-4" />
               Acessar canais oficiais
@@ -73,10 +73,13 @@ export function Footer() {
             <h2 className="mb-5 font-display text-sm font-bold uppercase tracking-wider">
               Navegação
             </h2>
-            <ul className="grid gap-3 text-sm">
+            <ul className="grid text-sm">
               {navigation.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} className="text-muted-foreground transition-colors hover:text-primary">
+                  <a
+                    href={item.href}
+                    className="inline-flex min-h-11 min-w-11 items-center rounded-lg py-2 text-muted-foreground transition-colors hover:text-primary"
+                  >
                     {item.label}
                   </a>
                 </li>
@@ -94,7 +97,7 @@ export function Footer() {
                   href={config.contact.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start gap-3 transition-colors hover:text-primary"
+                  className="flex min-h-11 items-center gap-3 transition-colors hover:text-primary"
                 >
                   <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <span>{config.contact.phone}</span>
@@ -103,7 +106,7 @@ export function Footer() {
               <li>
                 <a
                   href={`mailto:${config.contact.email}`}
-                  className="flex items-start gap-3 transition-colors hover:text-primary"
+                  className="flex min-h-11 items-center gap-3 transition-colors hover:text-primary"
                 >
                   <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <span className="break-all">{config.contact.email}</span>
@@ -124,7 +127,7 @@ export function Footer() {
           <div className="mt-4 flex flex-wrap gap-2">
             {config.contact.servicePoints.map((point) => {
               const chipClass =
-                "inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs text-foreground/80 transition-colors hover:border-primary/60 hover:text-primary";
+                "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs text-foreground/80 transition-colors hover:border-primary/60 hover:text-primary";
               const content = (
                 <>
                   <MapPin className="h-3.5 w-3.5 text-primary" />
@@ -161,7 +164,7 @@ export function Footer() {
                   href={config.developer.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-foreground transition-colors hover:text-primary"
+                  className="inline-flex min-h-11 items-center font-semibold text-foreground transition-colors hover:text-primary"
                 >
                   {config.developer.name}
                 </a>
