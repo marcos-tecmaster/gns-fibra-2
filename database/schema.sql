@@ -1,10 +1,11 @@
+-- SCHEMA PORTATIL
+--
+-- Importe este arquivo dentro de um banco previamente criado e selecionado.
+-- Este script nao cria nem escolhe o banco de dados.
+-- As tabelas usam CREATE TABLE IF NOT EXISTS e nenhum dado existente e apagado.
+-- Nenhum usuario administrativo ou senha padrao e criado por este arquivo.
+
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE DATABASE IF NOT EXISTS gns_fibra
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE gns_fibra;
 
 CREATE TABLE IF NOT EXISTS users (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

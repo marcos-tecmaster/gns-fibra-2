@@ -1,63 +1,104 @@
+-- SEED INICIAL SEGURO
+--
+-- Importe este arquivo somente depois de selecionar o banco correto.
+-- Ele nao cria nem escolhe o banco, nao apaga conteudo e nao redefine registros existentes.
+-- Pode ser reexecutado: em banco populado, preserva todas as alteracoes feitas pelo painel.
+-- Destina-se ao conteudo oficial de uma instalacao nova, nao a sincronizacao de producao.
+-- Usuarios administrativos nao sao criados com senha padrao.
+-- Execute `php database/create-admin.php usuario "Nome"` apos a instalacao.
+
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE gns_fibra;
+START TRANSACTION;
 
--- Usuários administrativos não são criados com senha padrão.
--- Execute `php database/create-admin.php usuario "Nome"` após importar este arquivo.
+-- `company_name` funciona como marcador persistente de instalacao inicializada.
+-- Depois da primeira carga, nenhuma tabela e repopulada por este arquivo, mesmo
+-- que todo o seu conteudo tenha sido removido posteriormente pelo painel.
+SET @seed_is_initial_install := NOT EXISTS (
+  SELECT 1 FROM settings WHERE setting_key = 'company_name'
+);
 
-INSERT INTO settings (setting_key, setting_value) VALUES
-('company_name', 'GNS Fibra'),
-('whatsapp', 'https://wa.me/5508008008080'),
-('email', 'atendimento@giganetsul.com.br'),
-('address', 'R. João Lourenço Schaefer, 439 - Centro, Igrejinha - RS, 95650-000, Brasil'),
-('customer_portal_url', 'https://app.giganetsul.com.br/central_assinante_web/login'),
-('linktree_url', 'https://linktr.ee/gnsfibra_'),
-('facebook_url', ''),
-('instagram_url', ''),
-('coverage_map_url', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13'),
-('coverage_image_path', ''),
-('hero_title', 'Internet que acompanha o ritmo da sua vida.'),
-('about_text', 'Há mais de 14 anos conectando famílias e empresas com fibra óptica, estabilidade e atendimento humano.'),
-('years_in_market', '14'),
-('support_enabled', '1'),
-('support_eyebrow', 'ATENDIMENTO GNS FIBRA'),
-('support_title', 'Atendimento humano para ajudar você de verdade.'),
-('support_description', 'Seja para conhecer os planos, verificar sua conexão ou acessar os serviços de cliente, nossa equipe está pronta para orientar você.'),
-('support_button_label', 'Conhecer planos pelo WhatsApp'),
-('support_whatsapp_message', 'Olá! Quero conhecer os planos da GNS Fibra.'),
-('cta_enabled', '1'),
-('cta_eyebrow', 'VAMOS CONECTAR VOCÊ'),
-('cta_title', 'Pronto para falar com a GNS Fibra?'),
-('cta_description', 'Conte onde você mora ou trabalha e nossa equipe ajuda a verificar a cobertura e encontrar a opção adequada.'),
-('cta_button_label', 'Falar pelo WhatsApp'),
-('cta_whatsapp_message', 'Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.'),
-('cta_background_image_path', ''),
-('history_enabled', '1'),
-('history_eyebrow', 'Quem somos'),
-('history_title', 'Nossa'),
-('history_title_highlight', 'História'),
-('history_description', 'Há mais de 14 anos conectando famílias e empresas com fibra óptica, estabilidade e atendimento humano.'),
-('history_secondary_text', 'Nossa trajetória é construída diariamente por uma equipe que conhece a região, investe em infraestrutura e entende que conexão de qualidade também depende de atendimento humano.'),
-('history_experience_suffix', '+ anos'),
-('history_experience_label', 'de experiência'),
-('history_team_title', 'Equipe local'),
-('history_team_description', 'próxima do cliente')
-ON DUPLICATE KEY UPDATE setting_key = VALUES(setting_key);
+INSERT INTO settings (setting_key, setting_value)
+SELECT seed.setting_key, seed.setting_value
+FROM (
+  SELECT 'company_name' AS setting_key, 'GNS Fibra' AS setting_value
+  UNION ALL SELECT 'whatsapp', 'https://wa.me/5508008008080'
+  UNION ALL SELECT 'email', 'atendimento@giganetsul.com.br'
+  UNION ALL SELECT 'address', 'R. João Lourenço Schaefer, 439 - Centro, Igrejinha - RS, 95650-000, Brasil'
+  UNION ALL SELECT 'customer_portal_url', 'https://app.giganetsul.com.br/central_assinante_web/login'
+  UNION ALL SELECT 'linktree_url', 'https://linktr.ee/gnsfibra_'
+  UNION ALL SELECT 'facebook_url', 'https://facebook.com/giganetsul.alvorada'
+  UNION ALL SELECT 'instagram_url', 'https://instagram.com/gns_fibra'
+  UNION ALL SELECT 'coverage_map_url', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13'
+  UNION ALL SELECT 'coverage_image_path', 'uploads/coverage/9d5a2f1e67396dc16b49e30550b02c52.jpg'
+  UNION ALL SELECT 'hero_title', 'Internet que acompanha o ritmo da sua vida.'
+  UNION ALL SELECT 'about_text', 'Conectando você ao Mundo🛜'
+  UNION ALL SELECT 'years_in_market', '14'
+  UNION ALL SELECT 'support_enabled', '1'
+  UNION ALL SELECT 'support_eyebrow', 'ATENDIMENTO GNS FIBRA'
+  UNION ALL SELECT 'support_title', 'Atendimento humano para ajudar você de verdade.'
+  UNION ALL SELECT 'support_description', 'Seja para conhecer os planos, verificar sua conexão ou acessar os serviços de cliente, nossa equipe está pronta para orientar você.'
+  UNION ALL SELECT 'support_button_label', 'Conhecer planos pelo WhatsApp'
+  UNION ALL SELECT 'support_whatsapp_message', 'Olá! Quero conhecer os planos da GNS Fibra.'
+  UNION ALL SELECT 'cta_enabled', '1'
+  UNION ALL SELECT 'cta_eyebrow', 'VAMOS CONECTAR VOCÊ'
+  UNION ALL SELECT 'cta_title', 'Pronto para falar com a GNS Fibra?'
+  UNION ALL SELECT 'cta_description', 'Conte onde você mora ou trabalha e nossa equipe ajuda a verificar a cobertura e encontrar a opção adequada.'
+  UNION ALL SELECT 'cta_button_label', 'Falar pelo WhatsApp'
+  UNION ALL SELECT 'cta_whatsapp_message', 'Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.'
+  UNION ALL SELECT 'cta_background_image_path', 'uploads/cta/9c0d1bd3dbaafb209599ebdf3dbfccd3.jpg'
+  UNION ALL SELECT 'history_enabled', '1'
+  UNION ALL SELECT 'history_eyebrow', 'Quem somos'
+  UNION ALL SELECT 'history_title', 'Nossa'
+  UNION ALL SELECT 'history_title_highlight', 'História'
+  UNION ALL SELECT 'history_description', 'Há mais de 14 anos conectando famílias e empresas com fibra óptica, estabilidade e atendimento humano.'
+  UNION ALL SELECT 'history_secondary_text', 'Nossa trajetória é construída diariamente por uma equipe que conhece a região, investe em infraestrutura e entende que conexão de qualidade também depende de atendimento humano.'
+  UNION ALL SELECT 'history_experience_suffix', '+ anos'
+  UNION ALL SELECT 'history_experience_label', 'de experiência'
+  UNION ALL SELECT 'history_team_title', 'Equipe local'
+  UNION ALL SELECT 'history_team_description', 'próxima do cliente'
+) AS seed
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (
+    SELECT 1 FROM settings existing_settings
+    WHERE existing_settings.setting_key = seed.setting_key
+  );
 
-DELETE FROM banners;
-DELETE FROM faqs;
-DELETE FROM testimonials;
-DELETE FROM coverage;
-DELETE FROM plans;
-
-INSERT INTO plans (name, speed, unit, price, audience, benefits, payment_method, featured, active, display_order) VALUES
-('START', '95', 'MEGA', 59.90, 'Conexão essencial para o dia a dia', JSON_ARRAY('1 ponto Wi-Fi', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX'), 'Boleto ou PIX', 0, 1, 1),
-('PREMIUM', '300', 'MEGA', 79.90, 'Mais velocidade para sua rotina', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX'), 'Boleto ou PIX', 0, 1, 2),
-('ULTRA', '600', 'MEGA', 99.90, 'Alta performance para toda a família', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX'), 'Boleto ou PIX', 1, 1, 3),
-('SECURITY', '700', 'MEGA', 119.90, 'Internet e segurança em um só plano', JSON_ARRAY('1 ponto Wi-Fi 5', '1 câmera de segurança', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX'), 'Boleto ou PIX', 0, 1, 4),
-('EVOLUTION', '800', 'MEGA', 129.90, 'Performance para uso intenso', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'), 'Cartão de crédito ou débito em conta', 0, 1, 5),
-('EXTREME', '1000', 'MEGA', 149.90, 'Velocidade máxima para sua conexão', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'), 'Cartão de crédito ou débito em conta', 0, 1, 6),
-('EXTREME COMBO', '1000', 'MEGA', 199.90, 'O combo completo da GNS Fibra', JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'), 'Cartão de crédito ou débito em conta', 0, 1, 7);
+INSERT INTO plans (name, speed, unit, price, audience, benefits, payment_method, featured, active, display_order)
+SELECT seed.name, seed.speed, seed.unit, seed.price, seed.audience, seed.benefits,
+       seed.payment_method, seed.featured, seed.active, seed.display_order
+FROM (
+  SELECT 'START' AS name, '95' AS speed, 'MEGA' AS unit, 59.90 AS price,
+         'Conexão essencial para o dia a dia' AS audience,
+         JSON_ARRAY('1 ponto Wi-Fi', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX') AS benefits,
+         'Boleto ou PIX' AS payment_method, 0 AS featured, 1 AS active, 1 AS display_order
+  UNION ALL
+  SELECT 'PREMIUM', '300', 'MEGA', 79.90, 'Mais velocidade para sua rotina',
+         JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX'),
+         'Boleto ou PIX', 0, 1, 2
+  UNION ALL
+  SELECT 'ULTRA', '600', 'MEGA', 99.90, 'Alta performance para toda a família',
+         JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX'),
+         'Boleto ou PIX', 1, 1, 3
+  UNION ALL
+  SELECT 'SECURITY', '700', 'MEGA', 119.90, 'Internet e segurança em um só plano',
+         JSON_ARRAY('1 ponto Wi-Fi 5', '1 câmera de segurança', 'Atendimento humano e digital', 'Pagamento por boleto ou PIX'),
+         'Boleto ou PIX', 0, 1, 4
+  UNION ALL
+  SELECT 'EVOLUTION', '800', 'MEGA', 129.90, 'Performance para uso intenso',
+         JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'),
+         'Cartão de crédito ou débito em conta', 0, 1, 5
+  UNION ALL
+  SELECT 'EXTREME', '1000', 'MEGA', 149.90, 'Velocidade máxima para sua conexão',
+         JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'),
+         'Cartão de crédito ou débito em conta', 0, 1, 6
+  UNION ALL
+  SELECT 'EXTREME COMBO', '1000', 'MEGA', 199.90, 'O combo completo da GNS Fibra',
+         JSON_ARRAY('1 ponto Wi-Fi 5', 'Atendimento humano e digital', 'Cartão de crédito ou débito em conta'),
+         'Cartão de crédito ou débito em conta', 0, 1, 7
+) AS seed
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM plans);
 
 INSERT INTO stats (slug, value, label, active, display_order)
 SELECT seed.slug, seed.value, seed.label, seed.active, seed.display_order
@@ -70,7 +111,8 @@ FROM (
   UNION ALL
   SELECT 'atendimento-proximo', 'Humanizado', 'Atendimento próximo', 1, 40
 ) AS seed
-WHERE NOT EXISTS (SELECT 1 FROM stats);
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM stats);
 
 INSERT INTO differentials (slug, icon, title, description, active, display_order)
 SELECT seed.slug, seed.icon, seed.title, seed.description, seed.active, seed.display_order
@@ -115,7 +157,8 @@ FROM (
     1,
     50
 ) AS seed
-WHERE NOT EXISTS (SELECT 1 FROM differentials);
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM differentials);
 
 INSERT INTO history_gallery (slug, title, description, image_path, image_alt, active, display_order)
 SELECT seed.slug, seed.title, seed.description, seed.image_path, seed.image_alt, seed.active, seed.display_order
@@ -141,13 +184,14 @@ FROM (
   SELECT
     'frota',
     'Nossa frota',
-    'Estrutura de atendimento para acompanhar nossa área de cobertura.',
+    'Espaço preparado para fotos dos veículos de atendimento.',
     NULL,
     'Nossa frota',
     1,
     30
 ) AS seed
-WHERE NOT EXISTS (SELECT 1 FROM history_gallery);
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM history_gallery);
 
 INSERT INTO benefits (slug, icon, title, description, cta_label, cta_href, active, display_order)
 SELECT seed.slug, seed.icon, seed.title, seed.description, seed.cta_label, seed.cta_href, seed.active, seed.display_order
@@ -192,7 +236,8 @@ FROM (
     1,
     40
 ) AS seed
-WHERE NOT EXISTS (SELECT 1 FROM benefits);
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM benefits);
 
 INSERT INTO technologies (slug, icon, name, description, availability, active, display_order)
 SELECT seed.slug, seed.icon, seed.name, seed.description, seed.availability, seed.active, seed.display_order
@@ -233,28 +278,78 @@ FROM (
     1,
     40
 ) AS seed
-WHERE NOT EXISTS (SELECT 1 FROM technologies);
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM technologies);
 
-INSERT INTO coverage (region, description, map_url, active, display_order) VALUES
-('Alvorada/Viamão', 'Ponto de atendimento e cobertura regional.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 1),
-('Canoas/Cachoeirinha', 'Ponto de atendimento e cobertura regional.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 2),
-('Bagé', 'Ponto de atendimento e cobertura regional.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 3),
-('Igrejinha', 'Sede e ponto de atendimento principal.', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13', 1, 4);
+INSERT INTO coverage (region, description, map_url, active, display_order)
+SELECT seed.region, seed.description, seed.map_url, seed.active, seed.display_order
+FROM (
+  SELECT 'Alvorada/Porto Alegre/Viamão' AS region,
+         'Ponto de atendimento e cobertura regional.' AS description,
+         'https://maps.app.goo.gl/pAwaHUgwf1KyETC87' AS map_url,
+         1 AS active, 1 AS display_order
+  UNION ALL
+  SELECT 'Canoas/Cachoeirinha/Gravataí', 'Ponto de atendimento e cobertura regional.',
+         'https://maps.app.goo.gl/bKhzYgLAxssgNbu4A', 1, 2
+  UNION ALL
+  SELECT 'Bagé', 'Ponto de atendimento e cobertura regional.',
+         'https://maps.app.goo.gl/soZbyam4ZMgpJVew5', 1, 3
+  UNION ALL
+  SELECT 'Igrejinha/Três Coroas/Parobé/Sapiranga/Campo Bom', 'Sede e ponto de atendimento principal.',
+         'https://maps.app.goo.gl/8StgicPHqyXtJMvr5', 1, 4
+) AS seed
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM coverage);
 
-INSERT INTO testimonials (customer_name, testimonial_text, city, active, display_order) VALUES
-('Carlos Mendes', 'Migrei minha empresa para a GNS Fibra e a diferença foi imediata. Estabilidade e suporte sempre disponíveis.', 'Igrejinha', 1, 1),
-('Juliana Ribeiro', 'Trabalho de casa há anos. Desde que assinei a GNS, minhas reuniões e entregas ficaram muito mais tranquilas.', 'Canoas', 1, 2),
-('Roberto Almeida', 'A família inteira usa a internet ao mesmo tempo e a conexão continua estável. Foi uma mudança excelente.', 'Alvorada', 1, 3),
-('Patrícia Souza', 'Atendimento humanizado de verdade. Quando preciso, falo com uma equipe que entende e resolve.', 'Bagé', 1, 4);
+INSERT INTO testimonials (customer_name, testimonial_text, city, active, display_order)
+SELECT seed.customer_name, seed.testimonial_text, seed.city, seed.active, seed.display_order
+FROM (
+  SELECT 'Carlos Mendes' AS customer_name,
+         'Migrei minha empresa para a GNS Fibra e a diferença foi imediata. Estabilidade e suporte sempre disponíveis.' AS testimonial_text,
+         'Igrejinha' AS city, 1 AS active, 1 AS display_order
+  UNION ALL
+  SELECT 'Juliana Ribeiro', 'Trabalho de casa há anos. Desde que assinei a GNS, minhas reuniões e entregas ficaram muito mais tranquilas.', 'Canoas', 1, 2
+  UNION ALL
+  SELECT 'Roberto Almeida', 'A família inteira usa a internet ao mesmo tempo e a conexão continua estável. Foi uma mudança excelente.', 'Alvorada', 1, 3
+  UNION ALL
+  SELECT 'Patrícia Souza', 'Atendimento humanizado de verdade. Quando preciso, falo com uma equipe que entende e resolve.', 'Bagé', 1, 4
+) AS seed
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM testimonials);
 
-INSERT INTO banners (title, subtitle, image_path, button_text, button_url, active, display_order) VALUES
-('Internet que acompanha o ritmo da sua vida.', 'Há mais de 14 anos conectando famílias e empresas.', NULL, 'Consultar disponibilidade', 'https://wa.me/5508008008080', 1, 1);
+INSERT INTO banners (title, subtitle, image_path, button_text, button_url, active, display_order)
+SELECT seed.title, seed.subtitle, seed.image_path, seed.button_text, seed.button_url, seed.active, seed.display_order
+FROM (
+  SELECT 'Internet que acompanha o ritmo da sua vida.' AS title,
+         'Há mais de 14 anos conectando famílias e empresas.' AS subtitle,
+         'uploads/banners/aa600cfdc6e7513743ae73286e957a93.jpg' AS image_path,
+         'Consultar disponibilidade' AS button_text,
+         'https://wa.me/5508008008080' AS button_url,
+         1 AS active, 1 AS display_order
+) AS seed
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM banners);
 
-INSERT INTO faqs (question, answer, active, display_order) VALUES
-('Como contratar um plano da GNS Fibra?', 'Entre em contato pelo WhatsApp. A equipe verifica a disponibilidade no endereço e orienta sobre os planos adequados para sua rotina.', 1, 10),
-('Como verifico a cobertura no meu endereço?', 'Use a área de cobertura do site ou envie seu endereço pelo WhatsApp para a equipe verificar a disponibilidade técnica.', 1, 20),
-('A GNS Fibra possui atendimento para empresas?', 'Sim. A GNS Fibra oferece soluções para residências e empresas. Entre em contato para avaliar a necessidade e a disponibilidade no local.', 1, 30),
-('Onde acesso a Central do Assinante?', 'A Central do Assinante pode ser acessada pelo botão disponível no menu e nas áreas de atendimento do site.', 1, 40),
-('Como solicito atendimento sendo cliente?', 'Use o WhatsApp, telefone ou Central do Assinante apresentados no site para entrar em contato com a equipe.', 1, 50),
-('A instalação depende de análise técnica?', 'Sim. A contratação e a instalação dependem da cobertura e da viabilidade técnica no endereço informado.', 1, 60),
-('Quais são as formas de pagamento?', 'As formas disponíveis podem variar conforme o plano e a condição comercial. Consulte a equipe antes da contratação.', 1, 70);
+INSERT INTO faqs (question, answer, active, display_order)
+SELECT seed.question, seed.answer, seed.active, seed.display_order
+FROM (
+  SELECT 'Como contratar um plano da GNS Fibra?' AS question,
+         'Entre em contato pelo WhatsApp. A equipe verifica a disponibilidade no endereço e orienta sobre os planos adequados para sua rotina.' AS answer,
+         1 AS active, 10 AS display_order
+  UNION ALL
+  SELECT 'Como verifico a cobertura no meu endereço?', 'Use a área de cobertura do site ou envie seu endereço pelo WhatsApp para a equipe verificar a disponibilidade técnica.', 1, 20
+  UNION ALL
+  SELECT 'A GNS Fibra possui atendimento para empresas?', 'Sim. A GNS Fibra oferece soluções para residências e empresas. Entre em contato para avaliar a necessidade e a disponibilidade no local.', 1, 30
+  UNION ALL
+  SELECT 'Onde acesso a Central do Assinante?', 'A Central do Assinante pode ser acessada pelo botão disponível no menu e nas áreas de atendimento do site.', 1, 40
+  UNION ALL
+  SELECT 'Como solicito atendimento sendo cliente?', 'Use o WhatsApp, telefone ou Central do Assinante apresentados no site para entrar em contato com a equipe.', 1, 50
+  UNION ALL
+  SELECT 'A instalação depende de análise técnica?', 'Sim. A contratação e a instalação dependem da cobertura e da viabilidade técnica no endereço informado.', 1, 60
+  UNION ALL
+  SELECT 'Quais são as formas de pagamento?', 'As formas disponíveis podem variar conforme o plano e a condição comercial. Consulte a equipe antes da contratação.', 1, 70
+) AS seed
+WHERE @seed_is_initial_install = 1
+  AND NOT EXISTS (SELECT 1 FROM faqs);
+
+COMMIT;
