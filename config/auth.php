@@ -242,16 +242,42 @@ function delete_uploaded_file_if_unused(
         return;
     }
 
-    $normalizedPath = str_replace('\\', '/', trim($path));
-    if (preg_match('#^uploads/[A-Za-z0-9_-]+/[a-f0-9]{32}\.(?:jpg|png|webp)$#', $normalizedPath) !== 1) {
-        return;
-    }
-
     $statement = $pdo->prepare(
         "SELECT COUNT(*) FROM {$table} WHERE {$field} = :path AND id <> :id"
     );
     $statement->execute(['path' => $path, 'id' => $excludedId]);
     if ((int) $statement->fetchColumn() > 0) {
+        return;
+    }
+
+    delete_managed_upload($path);
+}
+
+function delete_setting_uploaded_file_if_unused(PDO $pdo, ?string $path, string $excludedSettingKey): void
+{
+    if (!$path) {
+        return;
+    }
+
+    $statement = $pdo->prepare(
+        'SELECT COUNT(*) FROM settings WHERE setting_value = :path AND setting_key <> :setting_key'
+    );
+    $statement->execute(['path' => $path, 'setting_key' => $excludedSettingKey]);
+    if ((int) $statement->fetchColumn() > 0) {
+        return;
+    }
+
+    delete_managed_upload($path);
+}
+
+function delete_managed_upload(?string $path): void
+{
+    if (!$path) {
+        return;
+    }
+
+    $normalizedPath = str_replace('\\', '/', trim($path));
+    if (preg_match('#^uploads/[A-Za-z0-9_-]+/[a-f0-9]{32}\.(?:jpg|png|webp)$#', $normalizedPath) !== 1) {
         return;
     }
 

@@ -307,3 +307,5 @@ O CRUD da galeria passou a exibir `Remover imagem` somente em registros que poss
 Depois do commit da atualização, o helper tenta excluir fisicamente apenas arquivos gerenciados, sob `uploads/`, com nome aleatório gerado pelo uploader e sem outra referência na mesma coleção. Caminhos externos, maliciosos, compartilhados ou nomes versionados/protegidos, como `uploads/history/install.jpg`, não são apagados fisicamente. Nesses casos somente a referência do registro é limpa.
 
 A API serializa a ausência como `image_path: null`; o normalizador omite `image` e o componente `History` mantém o card e mostra o placeholder existente. Foram verificados lint, typecheck, build, integridade do diff e os cenários de configuração, ausência de imagem, preservação dos campos, referência compartilhada, caminho malicioso e arquivo protegido.
+
+O mesmo modelo de segurança foi reutilizado nas imagens únicas de Cobertura e CTA, armazenadas em settings. Banners continua usando `file_clear_action`; sua imagem agora alimenta o Hero, com fallback local quando removida.

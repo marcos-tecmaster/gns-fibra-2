@@ -79,6 +79,19 @@ export type SiteContent = {
     teamTitle: string;
     teamDescription: string;
   };
+  banners: Array<{
+    id: string;
+    title: string;
+    subtitle: string;
+    image?: string;
+    buttonText: string;
+    buttonUrl?: string;
+    active: boolean;
+  }>;
+  sectionImages: {
+    coverage?: string;
+    ctaBackground?: string;
+  };
   differentials: Array<{
     id: string;
     icon: IconName;

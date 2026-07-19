@@ -490,3 +490,9 @@ Commit sugerido:
 - limpar cache Cloudflare;
 - testar aba anonima;
 - performance e cache.
+## Fase concluída localmente — imagens de fundo administráveis
+
+- integrar `banners.image_path` ao Hero pelo primeiro ativo com imagem;
+- administrar Cobertura e CTA final por settings e diretórios específicos;
+- preservar fallbacks locais, URLs relativas e remoção segura;
+- não depender de `dist/` nem exigir build após troca de upload.

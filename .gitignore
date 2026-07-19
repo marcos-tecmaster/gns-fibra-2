@@ -46,9 +46,14 @@ uploads/*
 !uploads/.htaccess
 !uploads/banners/
 !uploads/banners/.gitkeep
+!uploads/banners/aa600cfdc6e7513743ae73286e957a93.jpg
 !uploads/galeria/
 !uploads/galeria/.gitkeep
 !uploads/history/
 !uploads/history/install.jpg
+!uploads/coverage/
+!uploads/coverage/9d5a2f1e67396dc16b49e30550b02c52.jpg
+!uploads/cta/
+!uploads/cta/9c0d1bd3dbaafb209599ebdf3dbfccd3.jpg
 !uploads/logos/
 !uploads/logos/.gitkeep

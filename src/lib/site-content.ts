@@ -114,6 +114,8 @@ export const siteContent: SiteContent = {
     teamTitle: "Equipe local",
     teamDescription: "próxima do cliente",
   },
+  banners: [],
+  sectionImages: {},
   differentials: [
     {
       id: "fibra-ponta-a-ponta",

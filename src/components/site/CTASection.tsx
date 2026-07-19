@@ -19,7 +19,8 @@ function renderCtaTitle(title: string) {
 }
 
 export function CTASection() {
-  const { config, cta } = useSiteContent();
+  const { config, cta, sectionImages } = useSiteContent();
+  const ctaBackground = sectionImages.ctaBackground || fiberBundle;
   if (!cta.enabled) {
     return null;
   }
@@ -35,13 +36,19 @@ export function CTASection() {
           {/* Background image */}
           <div className="absolute inset-0 z-0">
             <img
-              src={fiberBundle}
+              src={ctaBackground}
               alt=""
               loading="lazy"
               decoding="async"
               className="w-full h-full object-cover opacity-30"
               width={1280}
               height={1280}
+              onError={(event) => {
+                if (event.currentTarget.dataset.fallbackApplied !== "true") {
+                  event.currentTarget.dataset.fallbackApplied = "true";
+                  event.currentTarget.src = fiberBundle;
+                }
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/40" />
           </div>

@@ -15,6 +15,7 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('facebook_url', ''),
 ('instagram_url', ''),
 ('coverage_map_url', 'https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13'),
+('coverage_image_path', ''),
 ('hero_title', 'Internet que acompanha o ritmo da sua vida.'),
 ('about_text', 'Há mais de 14 anos conectando famílias e empresas com fibra óptica, estabilidade e atendimento humano.'),
 ('years_in_market', '14'),
@@ -30,6 +31,7 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('cta_description', 'Conte onde você mora ou trabalha e nossa equipe ajuda a verificar a cobertura e encontrar a opção adequada.'),
 ('cta_button_label', 'Falar pelo WhatsApp'),
 ('cta_whatsapp_message', 'Olá! Quero verificar a cobertura e conhecer os planos da GNS Fibra.'),
+('cta_background_image_path', ''),
 ('history_enabled', '1'),
 ('history_eyebrow', 'Quem somos'),
 ('history_title', 'Nossa'),
@@ -40,7 +42,7 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('history_experience_label', 'de experiência'),
 ('history_team_title', 'Equipe local'),
 ('history_team_description', 'próxima do cliente')
-ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
+ON DUPLICATE KEY UPDATE setting_key = VALUES(setting_key);
 
 DELETE FROM banners;
 DELETE FROM faqs;

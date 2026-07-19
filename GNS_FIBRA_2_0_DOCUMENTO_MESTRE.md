@@ -846,3 +846,5 @@ A meta é construir um produto:
 
 **Palavra-chave: Bora 😎**
 Atualização em 18/07/2026: os CRUDs de Galeria da História e Banners distinguem `Remover imagem` de `Excluir`. A primeira ação limpa somente o campo de arquivo, preservando o registro e todos os textos; a segunda continua removendo o registro. A exclusão física ocorre após a atualização do banco e somente para uploads gerenciados, não compartilhados e contidos no diretório permitido. Arquivos versionados/protegidos apenas perdem a referência no banco. A História recebe `image_path: null` e mostra placeholder; banners sem imagem permanecem no painel e na API, mas continuam sem consumo no frontend atual.
+
+Atualização em 18/07/2026: imagens de fundo passaram a ser administráveis de ponta a ponta. O Hero usa o primeiro banner ativo com imagem por `display_order, id`; Cobertura usa `settings.coverage_image_path`; CTA final usa `settings.cta_background_image_path`. Os assets locais anteriores permanecem como fallback, e falhas de caminho ou arquivo não geram imagem quebrada. Uploads usam nomes aleatórios em diretórios específicos e refletem no site sem novo build.

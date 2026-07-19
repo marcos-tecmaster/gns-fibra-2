@@ -24,6 +24,14 @@ $fieldGroups = [
         'about_text' => ['label' => 'Texto sobre a empresa', 'type' => 'textarea', 'required' => true, 'max' => 500],
         'years_in_market' => ['label' => 'Anos de mercado', 'type' => 'number', 'required' => true, 'max_value' => 100],
     ],
+    'Cobertura' => [
+        'coverage_image_path' => [
+            'label' => 'Imagem da seção Cobertura',
+            'type' => 'file',
+            'directory' => 'coverage',
+            'help' => 'Use JPG, PNG ou WebP até 5 MB. Recomendado: 1200 × 1200 ou 1200 × 900.',
+        ],
+    ],
     'História e conteúdo institucional' => [
         'history_enabled' => ['label' => 'Exibir seção História', 'type' => 'checkbox'],
         'history_eyebrow' => ['label' => 'Rótulo', 'type' => 'text', 'max' => 80],
@@ -51,6 +59,12 @@ $fieldGroups = [
         'cta_description' => ['label' => 'Descrição', 'type' => 'textarea', 'max' => 600],
         'cta_button_label' => ['label' => 'Texto do botão principal', 'type' => 'text', 'max' => 80],
         'cta_whatsapp_message' => ['label' => 'Mensagem do WhatsApp principal', 'type' => 'textarea', 'max' => 400],
+        'cta_background_image_path' => [
+            'label' => 'Imagem de fundo do CTA',
+            'type' => 'file',
+            'directory' => 'cta',
+            'help' => 'Use JPG, PNG ou WebP até 5 MB. Recomendado: 1600 × 900 ou 1920 × 1080.',
+        ],
     ],
 ];
 
@@ -81,7 +95,7 @@ $fields = flatten_setting_fields($fieldGroups);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
-    $allowedPostKeys = array_merge(array_keys($fields), ['csrf_token']);
+    $allowedPostKeys = array_merge(array_keys($fields), ['csrf_token', 'form_action', 'setting_key']);
     foreach (array_keys($_POST) as $postedKey) {
         if (!in_array((string) $postedKey, $allowedPostKeys, true)) {
             flash('error', 'Campo inesperado no envio das configurações.');
@@ -92,9 +106,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('configuracoes.php');
         }
     }
+    foreach (array_keys($_FILES) as $uploadedKey) {
+        if (!isset($fields[$uploadedKey]) || ($fields[$uploadedKey]['type'] ?? '') !== 'file') {
+            flash('error', 'Arquivo inesperado no envio das configurações.');
+            redirect('configuracoes.php');
+        }
+    }
+
+    $pdo = db();
+    if (post_string('form_action', 30) === 'clear_setting_file') {
+        $settingKey = post_string('setting_key', 120);
+        $field = $fields[$settingKey] ?? null;
+        if (!is_array($field) || ($field['type'] ?? '') !== 'file') {
+            flash('error', 'A ação solicitada não está disponível.');
+            redirect('configuracoes.php');
+        }
+
+        $currentStatement = $pdo->prepare('SELECT setting_value FROM settings WHERE setting_key = :setting_key');
+        $currentStatement->execute(['setting_key' => $settingKey]);
+        $currentPath = trim((string) ($currentStatement->fetchColumn() ?: ''));
+        if ($currentPath === '') {
+            flash('error', 'Esta configuração já está sem imagem.');
+            redirect('configuracoes.php');
+        }
+
+        try {
+            $pdo->beginTransaction();
+            $update = $pdo->prepare(
+                'UPDATE settings SET setting_value = :setting_value, updated_at = CURRENT_TIMESTAMP
+                 WHERE setting_key = :setting_key'
+            );
+            $update->execute(['setting_value' => '', 'setting_key' => $settingKey]);
+            $pdo->commit();
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            flash('error', 'Não foi possível remover a imagem. Tente novamente.');
+            redirect('configuracoes.php');
+        }
+
+        delete_setting_uploaded_file_if_unused($pdo, $currentPath, $settingKey);
+        flash('success', 'Imagem removida com sucesso. Os textos e demais configurações foram preservados.');
+        redirect('configuracoes.php');
+    }
 
     $values = [];
+    $uploadedFileValues = [];
     foreach ($fields as $key => $field) {
+        if ($field['type'] === 'file') {
+            $currentStatement = $pdo->prepare('SELECT setting_value FROM settings WHERE setting_key = :setting_key');
+            $currentStatement->execute(['setting_key' => $key]);
+            $values[$key] = trim((string) ($currentStatement->fetchColumn() ?: ''));
+            continue;
+        }
         if ($field['type'] === 'checkbox') {
             $values[$key] = isset($_POST[$key]) ? '1' : '0';
             continue;
@@ -169,7 +234,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $pdo = db();
+    foreach ($fields as $key => $field) {
+        if (($field['type'] ?? '') !== 'file') {
+            continue;
+        }
+        $previousValue = $values[$key];
+        try {
+            $values[$key] = upload_image($key, $field['directory'], $previousValue ?: null) ?? '';
+            if ($values[$key] !== $previousValue && $values[$key] !== '') {
+                $uploadedFileValues[$key] = ['new' => $values[$key], 'old' => $previousValue];
+            }
+        } catch (RuntimeException $exception) {
+            foreach ($uploadedFileValues as $uploadedKey => $paths) {
+                delete_setting_uploaded_file_if_unused($pdo, $paths['new'], $uploadedKey);
+            }
+            flash('error', $exception->getMessage());
+            redirect('configuracoes.php');
+        }
+    }
+
     $statement = $pdo->prepare(
         'INSERT INTO settings (setting_key, setting_value) VALUES (:setting_key, :setting_value)
          ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_at = CURRENT_TIMESTAMP'
@@ -181,8 +264,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $statement->execute(['setting_key' => $key, 'setting_value' => $value]);
         }
         $pdo->commit();
+        foreach ($uploadedFileValues as $uploadedKey => $paths) {
+            if ($paths['old'] !== '') {
+                delete_setting_uploaded_file_if_unused($pdo, $paths['old'], $uploadedKey);
+            }
+        }
     } catch (Throwable $exception) {
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        foreach ($uploadedFileValues as $uploadedKey => $paths) {
+            delete_setting_uploaded_file_if_unused($pdo, $paths['new'], $uploadedKey);
+        }
         throw $exception;
     }
 
@@ -197,8 +290,9 @@ foreach (db()->query('SELECT setting_key, setting_value FROM settings')->fetchAl
 
 admin_header('Configurações');
 ?>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
+    <input type="hidden" name="setting_key" value="">
     <?php foreach ($fieldGroups as $groupTitle => $groupFields): ?>
         <section class="panel">
             <div class="panel-header">
@@ -212,7 +306,7 @@ admin_header('Configurações');
             </div>
             <div class="form-grid">
                 <?php foreach ($groupFields as $key => $field): ?>
-                    <div class="field <?= $field['type'] === 'textarea' ? 'full' : '' ?>">
+                    <div class="field <?= in_array($field['type'], ['textarea', 'file'], true) ? 'full' : '' ?>">
                         <?php if ($field['type'] === 'checkbox'): ?>
                             <label class="check" for="<?= h($key) ?>">
                                 <input
@@ -224,6 +318,24 @@ admin_header('Configurações');
                                 >
                                 <span><?= h($field['label']) ?></span>
                             </label>
+                        <?php elseif ($field['type'] === 'file'): ?>
+                            <label for="<?= h($key) ?>"><?= h($field['label']) ?></label>
+                            <?php if (!empty($settings[$key])): ?>
+                                <img class="image-preview" src="../<?= h((string) $settings[$key]) ?>" alt="Imagem atual de <?= h($field['label']) ?>">
+                            <?php endif; ?>
+                            <input id="<?= h($key) ?>" name="<?= h($key) ?>" type="file" accept="image/jpeg,image/png,image/webp">
+                            <?php if (!empty($field['help'])): ?><p class="field-help"><?= h($field['help']) ?></p><?php endif; ?>
+                            <?php if (!empty($settings[$key])): ?>
+                                <button
+                                    class="button warning small"
+                                    type="submit"
+                                    name="form_action"
+                                    value="clear_setting_file"
+                                    formaction="configuracoes.php"
+                                    formnovalidate
+                                    onclick="this.form.setting_key.value='<?= h($key) ?>'; return confirm('Remover somente esta imagem? Os textos e demais configurações serão mantidos.')"
+                                >Remover imagem</button>
+                            <?php endif; ?>
                         <?php else: ?>
                             <label for="<?= h($key) ?>"><?= h($field['label']) ?></label>
                             <?php if ($field['type'] === 'textarea'): ?>

@@ -16,6 +16,7 @@ type ApiSettings = Partial<Record<
   | "facebook_url"
   | "instagram_url"
   | "coverage_map_url"
+  | "coverage_image_path"
   | "hero_title"
   | "about_text"
   | "years_in_market"
@@ -31,6 +32,7 @@ type ApiSettings = Partial<Record<
   | "cta_description"
   | "cta_button_label"
   | "cta_whatsapp_message"
+  | "cta_background_image_path"
   | "history_enabled"
   | "history_eyebrow"
   | "history_title"
@@ -109,6 +111,17 @@ type ApiHistoryGalleryItem = {
   display_order?: number;
 };
 
+type ApiBanner = {
+  id: number;
+  title?: string;
+  subtitle?: string;
+  image_path?: string | null;
+  button_text?: string;
+  button_url?: string;
+  active?: boolean;
+  display_order?: number;
+};
+
 type ApiBenefit = {
   id: number;
   slug: string;
@@ -138,6 +151,7 @@ type SiteContentApiResponse = {
   stats?: ApiStat[];
   differentials?: ApiDifferential[];
   history_gallery?: ApiHistoryGalleryItem[];
+  banners?: ApiBanner[];
   coverage?: ApiCoverage[];
   testimonials?: ApiTestimonial[];
   benefits?: ApiBenefit[];
@@ -279,7 +293,9 @@ function normalizePublicAssetPath(path: string | null | undefined): string | und
   const normalizedPath = String(path ?? "").trim().replace(/\\/g, "/");
   if (
     normalizedPath === "" ||
+    ["undefined", "null"].includes(normalizedPath.toLowerCase()) ||
     normalizedPath.includes("\0") ||
+    normalizedPath.startsWith("//") ||
     normalizedPath.startsWith("../") ||
     normalizedPath.includes("/../")
   ) {
@@ -292,11 +308,15 @@ function normalizePublicAssetPath(path: string | null | undefined): string | und
       ? parsedUrl.toString()
       : undefined;
   } catch {
+    const relativePath = normalizedPath.replace(/^\/+/, "");
+    if (!/^uploads\/[A-Za-z0-9_-]+\/[A-Za-z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(relativePath)) {
+      return undefined;
+    }
     const apiUrl = new URL(API_URL, document.baseURI);
     const apiBaseUrl = apiUrl.pathname.includes("/api/")
       ? new URL("../", apiUrl)
       : new URL(document.baseURI);
-    return new URL(normalizedPath.replace(/^\/+/, ""), apiBaseUrl).toString();
+    return new URL(relativePath, apiBaseUrl).toString();
   }
 }
 
@@ -327,6 +347,24 @@ function normalizeHistoryGallery(
         item.description !== "" &&
         item.imageAlt !== "",
     );
+}
+
+function normalizeBanners(items: ApiBanner[]): SiteContent["banners"] {
+  return items
+    .map((item) => {
+      const id = Number.isInteger(item.id) && item.id > 0 ? String(item.id) : "";
+      const buttonUrl = String(item.button_url ?? "").trim();
+      return {
+        id,
+        title: String(item.title ?? "").trim(),
+        subtitle: String(item.subtitle ?? "").trim(),
+        image: normalizePublicAssetPath(item.image_path),
+        buttonText: String(item.button_text ?? "").trim(),
+        buttonUrl: buttonUrl !== "" && isSafeBenefitHref(buttonUrl) ? buttonUrl : undefined,
+        active: item.active !== false,
+      };
+    })
+    .filter((item) => item.id !== "");
 }
 
 const BENEFIT_ICONS = new Set<IconName>([
@@ -458,6 +496,7 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
   const remoteHistoryGallery = Array.isArray(response.history_gallery)
     ? response.history_gallery
     : null;
+  const remoteBanners = Array.isArray(response.banners) ? response.banners : null;
   const remoteTestimonials = Array.isArray(response.testimonials)
     ? response.testimonials
     : null;
@@ -596,6 +635,11 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
         settings.history_team_description,
         siteContent.history.teamDescription,
       ),
+    },
+    banners: remoteBanners !== null ? normalizeBanners(remoteBanners) : siteContent.banners,
+    sectionImages: {
+      coverage: normalizePublicAssetPath(settings.coverage_image_path),
+      ctaBackground: normalizePublicAssetPath(settings.cta_background_image_path),
     },
     plans:
       remotePlans !== null

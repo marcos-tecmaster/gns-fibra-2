@@ -31,7 +31,9 @@ function splitHeroTitle(title: string) {
 }
 
 export function Hero() {
-  const { config } = useSiteContent();
+  const { banners, config } = useSiteContent();
+  const primaryBanner = banners.find((banner) => banner.active && banner.image);
+  const heroBackground = primaryBanner?.image || heroFiber;
   const { titleStart, highlightedTitle } = splitHeroTitle(config.company.heroTitle);
 
   return (
@@ -41,12 +43,18 @@ export function Hero() {
     >
       <div className="absolute inset-0">
         <img
-          src={heroFiber}
+          src={heroBackground}
           alt=""
           fetchPriority="high"
           className="hero-fiber-backdrop"
           width={1920}
           height={1080}
+          onError={(event) => {
+            if (event.currentTarget.dataset.fallbackApplied !== "true") {
+              event.currentTarget.dataset.fallbackApplied = "true";
+              event.currentTarget.src = heroFiber;
+            }
+          }}
         />
         <div className="hero-fiber-tone" />
         <div className="hero-fiber-readability" />

@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Conteudos de Suporte, CTA final e Historia usam chaves support_*, cta_* e history_* nesta tabela.
+-- Conteudos de Suporte, CTA final, Historia e imagens unicas de secoes usam settings.
+-- Imagens administraveis: coverage_image_path e cta_background_image_path (caminhos relativos ou vazio).
 
 CREATE TABLE IF NOT EXISTS plans (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

@@ -51,7 +51,10 @@ Status: matriz atualizada apos FAQ, Beneficios, Tecnologias, Suporte e CTA admin
 | FAQPage JSON-LD | `FAQ.tsx` | `faqs` | `faqs` | `faqs.php` | Sim | Dinamico completo |
 | CTA final textos | `siteContent.cta` | `settings.cta_*` | `settings` | Configuracoes | Sim | Dinamico completo |
 | CTA final contatos | config local/API | settings contato | `settings` | Configuracoes | Sim | Dinamico parcial |
-| Banners | Nao usado no frontend | `banners` | `banners` | `banners.php` | Nao | Dinamico parcial sem consumo publico |
+| Banners | Imagem usada no Hero; textos preservados para etapa posterior | `banners` | `banners` | `banners.php` | Sim | Dinamico parcial para textos, completo para imagem |
+| Imagem do Hero | `hero-fiber.jpg` | `banners[].image_path` | `banners` | `banners.php` | Sim | Dinamico completo |
+| Imagem da Cobertura | `datacenter.jpg` | `settings.coverage_image_path` | `settings` | Configuracoes | Sim | Dinamico completo |
+| Fundo do CTA final | `fiber-bundle.jpg` | `settings.cta_background_image_path` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Mascotes publicados | imports em componentes | Nao | Nao | Nao | Assets locais | Hardcoded no componente |
 | Stats | `siteContent.stats` | `stats` | `stats` | `estatisticas.php` | Sim | Dinamico completo |
 | Developer footer | `siteContent.config.developer` | Nao | Nao | Nao | Sim | Somente fallback local |
@@ -279,6 +282,8 @@ O TypeScript possui:
 | Historia | Sim via Configuracoes | Sim | Sim | Sim |
 | Galeria historia | Sim | Sim | Sim | Sim |
 | Banners | Sim | Sim | Sim | Nao |
+
+Atualização de 18/07/2026: o bloco `banners` passou a ser consumido para a imagem do Hero. O primeiro banner ativo com imagem válida assume; os demais campos são preservados e normalizados, mas os textos do Hero continuam nas fontes administrativas existentes para evitar conflito. Cobertura e CTA recebem imagens únicas via settings, sempre com fallback local.
 | Cobertura | Sim | Sim | Sim | Sim |
 | Depoimentos | Sim | Sim | Sim | Sim |
 | Configuracoes | Sim | Sim | Sim | Sim parcial |

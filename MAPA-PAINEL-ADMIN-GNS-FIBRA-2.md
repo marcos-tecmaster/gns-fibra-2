@@ -447,3 +447,5 @@ Fallback:
 ## Remoção isolada de imagens
 
 `admin/historia-galeria.php` e `admin/banners.php` usam a capacidade genérica `file_clear_action` do CRUD. Em registros com imagem, as ações são `Editar`, `Remover imagem` e `Excluir`. Remover imagem limpa apenas o campo `image_path`; excluir remove o registro. O caminho sempre vem do banco, e o helper só remove fisicamente uploads gerenciados, não compartilhados e seguros. Arquivos versionados ou protegidos não são apagados.
+
+Configurações também administra as imagens únicas de Cobertura (`uploads/coverage/`) e CTA final (`uploads/cta/`). A remoção limpa somente a setting correspondente e preserva os textos. Banners administra a imagem do Hero em `uploads/banners/`; o primeiro ativo com imagem é o principal.

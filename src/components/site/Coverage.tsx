@@ -6,7 +6,8 @@ import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
 
 export function Coverage() {
-  const { config, coverageAreas } = useSiteContent();
+  const { config, coverageAreas, sectionImages } = useSiteContent();
+  const coverageImage = sectionImages.coverage || datacenterImg;
   const [query, setQuery] = useState("");
 
   const filteredAreas = useMemo(() => {
@@ -29,13 +30,19 @@ export function Coverage() {
             className="card-premium relative aspect-[4/3] overflow-hidden rounded-3xl lg:aspect-square"
           >
             <img
-              src={datacenterImg}
+              src={coverageImage}
               alt="Infraestrutura de rede da GNS Fibra"
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover"
               width={1280}
               height={1280}
+              onError={(event) => {
+                if (event.currentTarget.dataset.fallbackApplied !== "true") {
+                  event.currentTarget.dataset.fallbackApplied = "true";
+                  event.currentTarget.src = datacenterImg;
+                }
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-background via-background/25 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
