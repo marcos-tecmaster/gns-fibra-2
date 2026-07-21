@@ -1,11 +1,27 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/bootstrap.php';
 require_once __DIR__ . '/includes/layout.php';
 require_auth();
 
+
 $fieldGroups = [
+    'Identidade visual' => [
+        'company_logo_path' => [
+            'label' => 'Logo principal da empresa',
+            'type' => 'file',
+            'directory' => 'branding',
+            'fallback_path' => '../logo-gns.png',
+            'custom_state_label' => 'Logo personalizada',
+            'fallback_state_label' => 'Logo oficial padrão',
+            'clear_label' => 'Remover logo personalizada',
+            'clear_confirm' => 'Remover somente a logo personalizada? A logo oficial padrão voltará a ser utilizada e nenhuma outra configuração será alterada.',
+            'clear_success' => 'Logo personalizada removida. A logo oficial padrão voltou a ser utilizada.',
+            'help' => 'Use PNG, JPG ou WebP de até 5 MB. Recomendado: fundo transparente, formato quadrado ou horizontal e boa legibilidade nos temas claro e escuro. Ao remover a imagem personalizada, a logo oficial padrão será restaurada automaticamente.',
+        ],
+    ],
     'Empresa e contato' => [
         'company_name' => ['label' => 'Nome da empresa', 'type' => 'text', 'required' => true, 'max' => 120],
         'whatsapp' => ['label' => 'WhatsApp', 'type' => 'url', 'required' => true, 'max' => 255],
@@ -95,7 +111,10 @@ $fields = flatten_setting_fields($fieldGroups);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
-    $allowedPostKeys = array_merge(array_keys($fields), ['csrf_token', 'form_action', 'setting_key']);
+    $allowedPostKeys = array_merge(
+        array_keys($fields),
+        ['csrf_token', 'form_action', 'setting_key', 'clear_setting_file']
+    );
     foreach (array_keys($_POST) as $postedKey) {
         if (!in_array((string) $postedKey, $allowedPostKeys, true)) {
             flash('error', 'Campo inesperado no envio das configurações.');
@@ -114,8 +133,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $pdo = db();
-    if (post_string('form_action', 30) === 'clear_setting_file') {
-        $settingKey = post_string('setting_key', 120);
+    $clearSettingKey = post_string('clear_setting_file', 120);
+
+    if ($clearSettingKey !== '') {
+        $settingKey = $clearSettingKey;
         $field = $fields[$settingKey] ?? null;
         if (!is_array($field) || ($field['type'] ?? '') !== 'file') {
             flash('error', 'A ação solicitada não está disponível.');
@@ -130,24 +151,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('configuracoes.php');
         }
 
-        try {
+                try {
             $pdo->beginTransaction();
-            $update = $pdo->prepare(
-                'UPDATE settings SET setting_value = :setting_value, updated_at = CURRENT_TIMESTAMP
-                 WHERE setting_key = :setting_key'
+
+            $deleteSetting = $pdo->prepare(
+                'DELETE FROM settings WHERE setting_key = :setting_key'
             );
-            $update->execute(['setting_value' => '', 'setting_key' => $settingKey]);
+
+            $deleteSetting->execute([
+                'setting_key' => $settingKey,
+            ]);
+
+            if ($deleteSetting->rowCount() !== 1) {
+                throw new RuntimeException(
+                    'A configuração da imagem não foi removida do banco.'
+                );
+            }
+
             $pdo->commit();
         } catch (Throwable $exception) {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
+
             flash('error', 'Não foi possível remover a imagem. Tente novamente.');
             redirect('configuracoes.php');
         }
 
-        delete_setting_uploaded_file_if_unused($pdo, $currentPath, $settingKey);
-        flash('success', 'Imagem removida com sucesso. Os textos e demais configurações foram preservados.');
+        delete_setting_uploaded_file_if_unused(
+            $pdo,
+            $currentPath,
+            $settingKey,
+            (string) ($field['directory'] ?? '')
+        );
+        flash(
+            'success',
+            (string) ($field['clear_success'] ?? 'Imagem removida com sucesso. Os textos e demais configurações foram preservados.')
+        );
         redirect('configuracoes.php');
     }
 
@@ -242,11 +282,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $values[$key] = upload_image($key, $field['directory'], $previousValue ?: null) ?? '';
             if ($values[$key] !== $previousValue && $values[$key] !== '') {
-                $uploadedFileValues[$key] = ['new' => $values[$key], 'old' => $previousValue];
+                $uploadedFileValues[$key] = [
+                    'new' => $values[$key],
+                    'old' => $previousValue,
+                    'directory' => (string) $field['directory'],
+                ];
             }
         } catch (RuntimeException $exception) {
             foreach ($uploadedFileValues as $uploadedKey => $paths) {
-                delete_setting_uploaded_file_if_unused($pdo, $paths['new'], $uploadedKey);
+                delete_setting_uploaded_file_if_unused($pdo, $paths['new'], $uploadedKey, $paths['directory']);
             }
             flash('error', $exception->getMessage());
             redirect('configuracoes.php');
@@ -266,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
         foreach ($uploadedFileValues as $uploadedKey => $paths) {
             if ($paths['old'] !== '') {
-                delete_setting_uploaded_file_if_unused($pdo, $paths['old'], $uploadedKey);
+                delete_setting_uploaded_file_if_unused($pdo, $paths['old'], $uploadedKey, $paths['directory']);
             }
         }
     } catch (Throwable $exception) {
@@ -274,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->rollBack();
         }
         foreach ($uploadedFileValues as $uploadedKey => $paths) {
-            delete_setting_uploaded_file_if_unused($pdo, $paths['new'], $uploadedKey);
+            delete_setting_uploaded_file_if_unused($pdo, $paths['new'], $uploadedKey, $paths['directory']);
         }
         throw $exception;
     }
@@ -292,7 +336,7 @@ admin_header('Configurações');
 ?>
 <form method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
-    <input type="hidden" name="setting_key" value="">
+
     <?php foreach ($fieldGroups as $groupTitle => $groupFields): ?>
         <section class="panel">
             <div class="panel-header">
@@ -314,27 +358,54 @@ admin_header('Configurações');
                                     name="<?= h($key) ?>"
                                     type="checkbox"
                                     value="1"
-                                    <?= ($settings[$key] ?? '1') === '1' ? 'checked' : '' ?>
-                                >
+                                    <?= ($settings[$key] ?? '1') === '1' ? 'checked' : '' ?>>
                                 <span><?= h($field['label']) ?></span>
                             </label>
                         <?php elseif ($field['type'] === 'file'): ?>
                             <label for="<?= h($key) ?>"><?= h($field['label']) ?></label>
-                            <?php if (!empty($settings[$key])): ?>
-                                <img class="image-preview" src="../<?= h((string) $settings[$key]) ?>" alt="Imagem atual de <?= h($field['label']) ?>">
+                            <?php
+                            $currentFilePath = trim((string) ($settings[$key] ?? ''));
+                            $fallbackPath = trim((string) ($field['fallback_path'] ?? ''));
+                            $previewPath = $currentFilePath !== '' ? '../' . ltrim($currentFilePath, '/') : $fallbackPath;
+                            $hasCustomFile = $currentFilePath !== '';
+                            ?>
+                            <?php if ($previewPath !== ''): ?>
+                                <div class="identity-preview">
+                                    <img
+                                        class="image-preview <?= $fallbackPath !== '' ? 'identity-logo-preview' : '' ?>"
+                                        src="<?= h($previewPath) ?>"
+                                        alt="<?= h($fallbackPath !== ''
+                                                    ? (($hasCustomFile ? 'Logo personalizada' : 'Logo oficial padrão') . ' da empresa')
+                                                    : ('Imagem atual de ' . $field['label'])) ?>"
+                                        <?php if ($fallbackPath !== ''): ?>
+                                        onerror="this.onerror=null;this.src='<?= h($fallbackPath) ?>';const state=this.parentElement.querySelector('[data-image-state]');if(state){state.textContent='<?= h((string) ($field['fallback_state_label'] ?? 'Imagem padrão')) ?> (fallback)';}"
+                                        <?php endif; ?>>
+                                    <?php if ($fallbackPath !== ''): ?>
+                                        <span class="badge" data-image-state>
+                                            <?= h((string) ($hasCustomFile
+                                                ? ($field['custom_state_label'] ?? 'Imagem personalizada')
+                                                : ($field['fallback_state_label'] ?? 'Imagem padrão'))) ?>
+                                        </span>
+                                        <p class="field-help">A logo oficial versionada nunca é apagada. Remover a personalizada restaura somente o fallback.</p>
+                                    <?php endif; ?>
+                                </div>
                             <?php endif; ?>
                             <input id="<?= h($key) ?>" name="<?= h($key) ?>" type="file" accept="image/jpeg,image/png,image/webp">
                             <?php if (!empty($field['help'])): ?><p class="field-help"><?= h($field['help']) ?></p><?php endif; ?>
-                            <?php if (!empty($settings[$key])): ?>
+                            <?php if ($hasCustomFile): ?>
                                 <button
                                     class="button warning small"
                                     type="submit"
-                                    name="form_action"
-                                    value="clear_setting_file"
-                                    formaction="configuracoes.php"
+                                    name="clear_setting_file"
+                                    value="<?= h($key) ?>"
                                     formnovalidate
-                                    onclick="this.form.setting_key.value='<?= h($key) ?>'; return confirm('Remover somente esta imagem? Os textos e demais configurações serão mantidos.')"
-                                >Remover imagem</button>
+                                    onclick="return confirm(<?= h(json_encode(
+                                                                (string) ($field['clear_confirm']
+                                                                    ?? 'Remover somente esta imagem? Os textos e demais configurações serão mantidos.'),
+                                                                JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT
+                                                            )) ?>);">
+                                    <?= h((string) ($field['clear_label'] ?? 'Remover imagem')) ?>
+                                </button>
                             <?php endif; ?>
                         <?php else: ?>
                             <label for="<?= h($key) ?>"><?= h($field['label']) ?></label>
@@ -343,8 +414,7 @@ admin_header('Configurações');
                                     id="<?= h($key) ?>"
                                     name="<?= h($key) ?>"
                                     maxlength="<?= h((string) ($field['max'] ?? '')) ?>"
-                                    <?= ($field['required'] ?? false) ? 'required' : '' ?>
-                                ><?= h($settings[$key] ?? '') ?></textarea>
+                                    <?= ($field['required'] ?? false) ? 'required' : '' ?>><?= h($settings[$key] ?? '') ?></textarea>
                             <?php else: ?>
                                 <input
                                     id="<?= h($key) ?>"
@@ -354,8 +424,7 @@ admin_header('Configurações');
                                     <?= isset($field['max']) ? 'maxlength="' . h((string) $field['max']) . '"' : '' ?>
                                     <?= isset($field['max_value']) ? 'max="' . h((string) $field['max_value']) . '"' : '' ?>
                                     <?= ($field['type'] === 'number') ? 'min="0"' : '' ?>
-                                    <?= ($field['required'] ?? false) ? 'required' : '' ?>
-                                >
+                                    <?= ($field['required'] ?? false) ? 'required' : '' ?>>
                             <?php endif; ?>
                         <?php endif; ?>
                     </div>

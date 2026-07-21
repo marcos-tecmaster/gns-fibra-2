@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ExternalLink, Menu, MessageCircle, UserRound, X } from "lucide-react";
 import { useSiteContent } from "@/content/SiteContentProvider";
 import { whatsappLink } from "@/lib/site-content";
+import { BrandLogo } from "./BrandLogo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const mobileMenuId = "site-mobile-menu";
@@ -23,7 +24,6 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeHref, setActiveHref] = useState("#inicio");
-  const logoUrl = `${import.meta.env.BASE_URL}logo-gns.png`;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -93,14 +93,16 @@ export function Header() {
         <a
           href="#inicio"
           className="group flex min-w-0 shrink items-center gap-2.5 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-          aria-label="GNS Fibra - Início"
+          aria-label={`${config.company.name} - Início`}
         >
-          <img
-            src={logoUrl}
-            alt="GNS Fibra"
+          <BrandLogo
+            src={config.company.logoUrl}
+            alt={`${config.company.name} - Logo`}
             width={60}
             height={60}
             className="h-11 w-11 shrink-0 object-contain sm:h-12 sm:w-12 lg:h-14 lg:w-14"
+            loading="eager"
+            fetchPriority="high"
           />
           <div className="hidden min-w-0 leading-tight min-[360px]:block">
             <div className="truncate font-display text-sm font-black tracking-normal text-foreground sm:text-base">

@@ -20,7 +20,7 @@ try {
 
     $settings = [];
     foreach ($pdo->query('SELECT setting_key, setting_value FROM settings')->fetchAll() as $row) {
-        $settings[$row['setting_key']] = $row['setting_value'];
+        $settings[(string) $row['setting_key']] = (string) $row['setting_value'];
     }
 
     $plans = $pdo->query(

@@ -253,9 +253,20 @@ function delete_uploaded_file_if_unused(
     delete_managed_upload($path);
 }
 
-function delete_setting_uploaded_file_if_unused(PDO $pdo, ?string $path, string $excludedSettingKey): void
+function delete_setting_uploaded_file_if_unused(
+    PDO $pdo,
+    ?string $path,
+    string $excludedSettingKey,
+    ?string $expectedDirectory = null
+): void
 {
     if (!$path) {
+        return;
+    }
+
+    $normalizedPath = str_replace('\\', '/', trim($path));
+    $directory = trim(str_replace('\\', '/', (string) $expectedDirectory), '/');
+    if ($directory !== '' && !str_starts_with($normalizedPath, "uploads/{$directory}/")) {
         return;
     }
 
@@ -315,7 +326,12 @@ function upload_image(string $field, string $directory, ?string $current = null)
         throw new RuntimeException('Formato de imagem inválido. Use JPG, PNG ou WebP.');
     }
 
-    $targetDir = dirname(__DIR__) . '/uploads/' . trim($directory, '/');
+    $directory = trim(str_replace('\\', '/', $directory), '/');
+    if (preg_match('/^[A-Za-z0-9_-]+$/', $directory) !== 1) {
+        throw new RuntimeException('Diretório de upload inválido.');
+    }
+
+    $targetDir = dirname(__DIR__) . '/uploads/' . $directory;
     if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
         throw new RuntimeException('Não foi possível preparar a pasta de uploads.');
     }
@@ -325,7 +341,7 @@ function upload_image(string $field, string $directory, ?string $current = null)
         throw new RuntimeException('Não foi possível salvar a imagem.');
     }
 
-    return 'uploads/' . trim($directory, '/') . '/' . $filename;
+    return 'uploads/' . $directory . '/' . $filename;
 }
 
 enforce_session_timeout();

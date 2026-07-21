@@ -10,13 +10,13 @@ import {
   Phone,
 } from "lucide-react";
 import { useSiteContent } from "@/content/SiteContentProvider";
+import { BrandLogo } from "./BrandLogo";
 
 const socialClass =
   "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border text-foreground/75 transition-colors hover:border-primary hover:text-primary";
 
 export function Footer() {
   const { config, navigation } = useSiteContent();
-  const logoUrl = `${import.meta.env.BASE_URL}logo-gns.png`;
   const officialSocials = [
     { label: "Instagram da GNS Fibra", href: config.links.instagram, icon: Instagram },
     { label: "Facebook da GNS Fibra", href: config.links.facebook, icon: Facebook },
@@ -29,7 +29,14 @@ export function Footer() {
         <div className="mb-12 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <a href="#inicio" className="mb-5 inline-flex items-center gap-2.5">
-              <img src={logoUrl} alt="" width={44} height={44} className="h-11 w-11 rounded-xl object-contain" />
+              <BrandLogo
+                src={config.company.logoUrl}
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-11 rounded-xl object-contain"
+                loading="lazy"
+              />
               <div className="leading-tight">
                 <div className="font-display font-black tracking-wider">
                   {config.company.name.toUpperCase()}

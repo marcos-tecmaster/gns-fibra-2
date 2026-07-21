@@ -102,7 +102,7 @@ admin_header('Dashboard');
     <div class="panel-header">
         <div>
             <h2>Acesso rápido</h2>
-            <p class="muted">Atualize o conteúdo publicado pela futura API do site.</p>
+            <p class="muted">Atualize o conteúdo publicado pela API do site.</p>
         </div>
     </div>
     <div class="actions">

@@ -1,6 +1,8 @@
 import installImage from "@/assets/install.jpg";
 import type { SiteContent } from "@/content/types";
 
+export const officialLogoUrl = `${import.meta.env.BASE_URL}logo-gns.png`;
+
 const generalCoverageMapUrl =
   "https://www.google.com/maps/d/viewer?mid=1L4SkzBboOM7GZyEKCoVC-qvy9J7QU1g&ll=-29.579942443027925%2C-50.71552340517935&z=13";
 
@@ -39,6 +41,7 @@ export const siteContent: SiteContent = {
   config: {
     company: {
       name: "GNS Fibra",
+      logoUrl: officialLogoUrl,
       yearsActive: 14,
       tagline: "Conectando você ao que realmente importa",
       heroTitle: "Internet que acompanha o ritmo da sua vida.",

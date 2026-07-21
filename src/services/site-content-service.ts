@@ -8,6 +8,7 @@ import type {
 
 type ApiSettings = Partial<Record<
   | "company_name"
+  | "company_logo_path"
   | "whatsapp"
   | "email"
   | "address"
@@ -284,7 +285,15 @@ function normalizeDifferentials(
     );
 }
 
-function normalizePublicAssetPath(path: string | null | undefined): string | undefined {
+type PublicAssetPathOptions = {
+  allowRemote?: boolean;
+  allowedDirectories?: readonly string[];
+};
+
+function normalizePublicAssetPath(
+  path: string | null | undefined,
+  options: PublicAssetPathOptions = {},
+): string | undefined {
   const normalizedPath = String(path ?? "").trim().replace(/\\/g, "/");
   if (
     normalizedPath === "" ||
@@ -299,12 +308,17 @@ function normalizePublicAssetPath(path: string | null | undefined): string | und
 
   try {
     const parsedUrl = new URL(normalizedPath);
-    return ["http:", "https:"].includes(parsedUrl.protocol)
+    return options.allowRemote !== false && ["http:", "https:"].includes(parsedUrl.protocol)
       ? parsedUrl.toString()
       : undefined;
   } catch {
     const relativePath = normalizedPath.replace(/^\/+/, "");
-    if (!/^uploads\/[A-Za-z0-9_-]+\/[A-Za-z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(relativePath)) {
+    const pathMatch = /^uploads\/([A-Za-z0-9_-]+)\/[A-Za-z0-9._-]+\.(?:jpe?g|png|webp)$/i.exec(relativePath);
+    if (
+      pathMatch === null ||
+      (options.allowedDirectories !== undefined &&
+        !options.allowedDirectories.includes(pathMatch[1]))
+    ) {
       return undefined;
     }
     const apiUrl = new URL(API_URL, document.baseURI);
@@ -502,6 +516,11 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
       company: {
         ...siteContent.config.company,
         name: settings.company_name || siteContent.config.company.name,
+        logoUrl:
+          normalizePublicAssetPath(settings.company_logo_path, {
+            allowRemote: false,
+            allowedDirectories: ["branding"],
+          }) ?? siteContent.config.company.logoUrl,
         yearsActive:
           Number.parseInt(settings.years_in_market ?? "", 10) ||
           siteContent.config.company.yearsActive,

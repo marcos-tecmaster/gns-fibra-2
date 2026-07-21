@@ -21,6 +21,7 @@ export type SiteContent = {
   config: {
     company: {
       name: string;
+      logoUrl: string;
       yearsActive: number;
       tagline: string;
       heroTitle: string;
