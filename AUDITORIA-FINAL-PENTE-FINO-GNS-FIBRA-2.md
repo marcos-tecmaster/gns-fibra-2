@@ -89,11 +89,11 @@ Segurança: MIME real por `finfo`, JPG/PNG/WebP, limite 5 MB, nome aleatório de
 
 - Logo oficial: `public/logo-gns.png`, 1080×1080, 2.156.795 bytes, SHA256 `317274AA99C55E13BC47EDA12DFF7BE76D34693B3D92CDF53B03EA03A3910E5D`.
 - Consumidores: Header, Footer, login e layout do painel.
-- Header e Footer usam exatamente a mesma origem visual via `BASE_URL`.
+- Header e Footer usam `config.company.logoUrl` pelo componente compartilhado `BrandLogo`.
 - Painel usa o mesmo arquivo por caminho relativo.
 - Favicon: SVG de 1.541.628 bytes com PNG base64 1024×1024; não é hash idêntico à logo e deve continuar sendo tratado separadamente.
 - OG: `public/og-image.jpg`, 1920×1080, idêntica ao fallback do Hero e ao banner atual.
-- Logo ainda não é administrável. Plano separado em `PLANO-LOGO-E-IDENTIDADE-ADMINISTRAVEIS-GNS-FIBRA-2.md`.
+- Logo pública administrável por `settings.company_logo_path`, com upload em `uploads/branding/` e fallback permanente para o arquivo oficial.
 
 ## 9. Conteúdo administrável
 
@@ -118,7 +118,7 @@ Legenda: A funciona; B salva mas não é consumido; C fixo corretamente; D fixo 
 | FAQ | A | tabela/CRUD/API/FAQ |
 | Suporte e CTA | A | settings/Configurações/API/componentes |
 | Navegação | C | mapa estrutural fixo e coerente com IDs |
-| Logo | D | identidade do cliente, com fallback obrigatório |
+| Logo | A | Configurações → settings/API → normalizador → BrandLogo/Header/Footer, com fallback oficial |
 | Crédito Marcos TecMaster | C | autoria/propriedade, não conteúdo comercial cotidiano |
 
 ## 10. Conteúdo ainda fixo
@@ -268,7 +268,7 @@ Nenhum item alto permanece nos contratos de Banners/Cobertura. Os antigos achado
 
 - QA móvel autenticada completa ainda manual.
 - Proxy Vite default aponta para `/gns-fibra`, não `/gns-fibra-2`.
-- Logo ainda fixa e pesada.
+- Logo oficial continua pesada, embora a origem pública agora seja administrável com fallback seguro.
 - Copies de seções e módulo Empresarial permanecem fixos.
 - Documentação histórica misturada na raiz e alguns relatórios conflitam com o estado atual.
 - Ausência de trilha de auditoria administrativa.
@@ -291,7 +291,7 @@ Nenhum item alto permanece nos contratos de Banners/Cobertura. Os antigos achado
 
 ## 35. Deixar para depois
 
-- Logo administrável e ecossistema completo de identidade.
+- Otimização da logo oficial e eventual ecossistema ampliado de identidade.
 - Organização física dos Markdown.
 - Administração seletiva das copies de seção/Empresarial.
 - Otimização de logo/favicon/OG.
@@ -300,7 +300,7 @@ Nenhum item alto permanece nos contratos de Banners/Cobertura. Os antigos achado
 
 ## 36. Plano específico da logo
 
-Documento: `PLANO-LOGO-E-IDENTIDADE-ADMINISTRAVEIS-GNS-FIBRA-2.md`. Resumo: setting `site_logo_path`, fallback oficial obrigatório, PNG/WebP até 2 MB, MIME real, preview, substituir/restaurar, mesmo resolvedor em Header/Footer/painel, sem acoplar favicon e OG.
+Implementado em 19/07/2026 conforme `IMPLEMENTACAO-LOGO-IDENTIDADE-ADMINISTRAVEL-GNS-FIBRA-2.md`: setting opcional `company_logo_path`, PNG/JPG/WebP até 5 MB, fallback oficial, preview, substituição e remoção isolada, além de resolvedor compartilhado em Header/Footer. Favicon, OG, login e sidebar permaneceram desacoplados.
 
 ## 37. Arquivos criados ou alterados
 
@@ -329,7 +329,7 @@ Nenhum arquivo foi adicionado ao index. `git diff --cached --name-only` deve per
 
 ## 40. Próxima fase recomendada
 
-Hardening pré-demonstração: executar QA móvel autenticada e atualizar a dependência vulnerável. Em seguida, implementar a logo administrável conforme plano separado.
+Hardening pré-demonstração: concluir QA móvel autenticada, repetir manualmente o seletor de upload após habilitar acesso a arquivos na extensão do navegador e atualizar a dependência vulnerável de forma controlada.
 
 ## 41. Atualização de banco seguro — 19/07/2026
 
@@ -338,3 +338,7 @@ Os achados de banco desta auditoria foram tratados em `IMPLEMENTACAO-BANCO-MIGRA
 ## 42. Coerência entre Cobertura e Imagens do Hero — 19/07/2026
 
 `coverage.description` passou a aparecer nos itens públicos e participar da pesquisa normalizada. Banners foi reclassificado como módulo interno de Imagens do Hero: `title` e `subtitle` são metadados administrativos; campos de botão permanecem apenas no banco; a API entrega somente id, imagem e ordem; o frontend mantém somente id e imagem. Título, descrição e CTAs do Hero conservam suas fontes oficiais anteriores.
+
+## 43. Logo e identidade visual administráveis — 19/07/2026
+
+A logo pública passou a usar `settings.company_logo_path`, com upload seguro em `uploads/branding/`, preview e remoção isolada no grupo Identidade visual. Header e Footer compartilham `BrandLogo`; vazio, ausência, URL externa, arquivo ausente ou erro de carregamento retornam para `public/logo-gns.png` sem loop. PNG, JPG e WebP foram aceitos pelo Apache; MIME inválido e arquivo acima de 5 MB foram rejeitados. Substituição e remoção preservaram o hash das outras 36 settings, e todos os temporários foram eliminados. Não houve schema, seed, migration ou alteração de favicon/OG.

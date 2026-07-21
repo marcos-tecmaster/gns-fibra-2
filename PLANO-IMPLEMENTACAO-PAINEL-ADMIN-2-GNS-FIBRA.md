@@ -499,3 +499,14 @@ Commit sugerido:
 - não depender de `dist/` nem exigir build após troca de upload.
 
 Atualização em 19/07/2026: Banners foi consolidado como Imagens do Hero. A API e os tipos públicos não transportam mais título, subtítulo ou botões legados. A descrição da Cobertura passou a ser renderizada e pesquisável por texto normalizado.
+
+## Fase concluída localmente — logo e identidade visual administráveis
+
+- administrar a logo pública por `settings.company_logo_path` no grupo Identidade visual;
+- aceitar PNG, JPG e WebP de até 5 MB somente em `uploads/branding/`;
+- preservar `public/logo-gns.png` como fallback obrigatório no painel e no frontend;
+- compartilhar a resolução da imagem entre Header e Footer pelo componente `BrandLogo`;
+- remover ou substituir somente uploads gerenciados, não compartilhados e pertencentes ao diretório esperado;
+- manter login, sidebar administrativa, favicon e Open Graph fora desta fase.
+
+Atualização em 19/07/2026: o fluxo foi implementado sem migration, schema ou seed porque a tabela `settings` já suporta a chave opcional. Foram validados upload real pelo Apache, substituição, remoção, rejeição de MIME inválido e limite superior a 5 MB; a base e os arquivos temporários foram restaurados ao estado inicial.

@@ -2,7 +2,7 @@
 
 Data: 16/07/2026
 Ambiente: local
-Status: matriz atualizada em 19/07/2026 após coerência de Cobertura e Imagens do Hero
+Status: matriz atualizada em 19/07/2026 após coerência de Cobertura, Imagens do Hero e logo pública
 
 ## Avisos
 
@@ -29,6 +29,7 @@ Status: matriz atualizada em 19/07/2026 após coerência de Cobertura e Imagens 
 | E-mail | local + API | `settings.email` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Endereco | local + API | `settings.address` | `settings` | Configuracoes | Sim | Dinamico completo |
 | Central do Assinante | local + API | `settings.customer_portal_url` | `settings` | Configuracoes | Sim | Dinamico completo |
+| Logo principal | `officialLogoUrl` | `settings.company_logo_path` | `settings` opcional | Configuracoes | Sim, `public/logo-gns.png` | Dinamico completo |
 | Linktree/Facebook/Instagram | local + API | settings | `settings` | Configuracoes | Sim | Dinamico parcial |
 | Hero title | local + API | `settings.hero_title` | `settings` | Configuracoes | Sim | Dinamico completo |
 | About text | local + API | `settings.about_text` | `settings` | Configuracoes | Sim | Dinamico completo |
@@ -287,6 +288,7 @@ Atualização de 19/07/2026: o bloco `banners` passou a publicar somente `id`, `
 | Cobertura | Sim | Sim | Sim | Sim |
 | Depoimentos | Sim | Sim | Sim | Sim |
 | Configuracoes | Sim | Sim | Sim | Sim parcial |
+| Logo principal | Sim via Configuracoes | Sim, setting opcional | Sim | Sim, Header/Footer |
 | Usuarios | Sim | Sim | Nao | Nao |
 | Login/logout | Sim | `users`, `login_attempts` | Nao | Nao |
 | FAQ | Sim | Sim | Sim | Sim |
@@ -331,5 +333,10 @@ Nao tentar tornar todo o conteudo dinamico de uma vez. A ordem mais segura e:
 |---|---|---|---|
 | Galeria da História | `Remover imagem` limpa somente `history_gallery.image_path`; `Excluir` remove o registro | Entrega `image_path: null` | Mantém o card e mostra o placeholder existente |
 | Imagens do Hero | `Remover imagem` limpa somente `banners.image_path`; `Excluir` remove o registro | Entrega id, caminho nullable e ordem | Ignora registros sem imagem válida e usa o fallback local do Hero |
+| Logo principal | `Remover logo personalizada` limpa somente `company_logo_path` | Entrega a setting quando preenchida | `BrandLogo` usa a imagem de `uploads/branding/` ou a logo oficial; erro de carga também restaura o fallback sem loop |
 
 A remoção preserva identificação, observação, campos legados, ordem e status. A exclusão física posterior é limitada a uploads gerenciados e não compartilhados; referências versionadas/protegidas são apenas limpas no banco.
+
+## Identidade visual pública
+
+Header e Footer resolvem a mesma `config.company.logoUrl`. O normalizador aceita somente imagens relativas PNG/JPG/WebP em `uploads/branding/`; caminho vazio, externo, inválido ou ausente mantém `public/logo-gns.png`. Login, sidebar administrativa, favicon e imagem Open Graph continuam independentes desta setting.

@@ -35,7 +35,7 @@ Pastas principais:
 | Cobertura | `admin/cobertura.php` | `coverage` | CRUD generico com Google Maps |
 | Depoimentos | `admin/depoimentos.php` | `testimonials` | CRUD generico |
 | FAQ | `admin/faqs.php` | `faqs` | CRUD generico com perguntas ativas e ordenacao |
-| Configuracoes | `admin/configuracoes.php` | `settings` | Dados institucionais, links, hero, Suporte e CTA final |
+| Configuracoes | `admin/configuracoes.php` | `settings` | Identidade visual, dados institucionais, links, hero, Suporte e CTA final |
 | Usuarios | `admin/usuarios.php` | `users` | CRUD de admins |
 | Troca de senha | `admin/trocar-senha.php` | `users` | Exige senha forte |
 
@@ -451,3 +451,9 @@ Fallback:
 `admin/historia-galeria.php` e `admin/banners.php` usam a capacidade genérica `file_clear_action` do CRUD. Em registros com imagem, as ações são `Editar`, `Remover imagem` e `Excluir`. Em Imagens do Hero, remover a imagem preserva identificação interna, observação, ordem, status e campos legados. O caminho sempre vem do banco, e o helper só remove fisicamente uploads gerenciados, não compartilhados e seguros. Arquivos versionados ou protegidos não são apagados.
 
 Configurações também administra as imagens únicas de Cobertura (`uploads/coverage/`) e CTA final (`uploads/cta/`). A remoção limpa somente a setting correspondente e preserva os textos. Imagens do Hero administra `uploads/banners/`; o primeiro registro ativo com imagem válida é o principal, sem publicar seus metadados internos.
+
+## Logo pública administrável
+
+O grupo Identidade visual de `admin/configuracoes.php` administra a setting opcional `company_logo_path`. O upload aceita PNG, JPG e WebP de até 5 MB em `uploads/branding/`, com nome aleatório, MIME real e remoção física limitada ao diretório esperado. A substituição só elimina o arquivo anterior depois de salvar a nova referência; a remoção restaura `public/logo-gns.png` sem alterar outras settings.
+
+A API publica a setting pelo mapa normal de configurações. No frontend, o normalizador restringe a origem a `uploads/branding/`, e `BrandLogo` protege Header e Footer contra erro de carregamento e repetição de fallback. Login, sidebar, favicon e Open Graph permanecem fora deste fluxo.
