@@ -23,6 +23,8 @@ $counts = [
     'active_faqs' => 0,
     'campaigns' => 0,
     'current_campaigns' => 0,
+    'referrals' => 0,
+    'new_referrals' => 0,
 ];
 $databaseError = null;
 
@@ -44,6 +46,8 @@ try {
     $counts['active_faqs'] = (int) db()->query('SELECT COUNT(*) FROM faqs WHERE active = 1')->fetchColumn();
     $counts['campaigns'] = (int) db()->query('SELECT COUNT(*) FROM campaigns')->fetchColumn();
     $counts['current_campaigns'] = (int) db()->query('SELECT COUNT(*) FROM campaigns WHERE active = 1 AND starts_on <= CURRENT_DATE AND ends_on >= CURRENT_DATE')->fetchColumn();
+    $counts['referrals'] = (int) db()->query('SELECT COUNT(*) FROM referrals')->fetchColumn();
+    $counts['new_referrals'] = (int) db()->query("SELECT COUNT(*) FROM referrals WHERE status = 'new'")->fetchColumn();
 } catch (PDOException) {
     $databaseError = 'Não foi possível consultar os indicadores do banco.';
 }
@@ -105,6 +109,11 @@ admin_header('Dashboard');
         <strong><?= $counts['current_campaigns'] ?>/<?= $counts['campaigns'] ?></strong>
         <a class="muted" href="campanhas.php">Gerenciar campanhas →</a>
     </article>
+    <article class="card">
+        <span>Indicações novas / total</span>
+        <strong><?= $counts['new_referrals'] ?>/<?= $counts['referrals'] ?></strong>
+        <a class="muted" href="indicacoes.php">Acompanhar indicações →</a>
+    </article>
 </section>
 
 <section class="panel">
@@ -125,6 +134,7 @@ admin_header('Dashboard');
         <a class="button secondary" href="cobertura.php?action=new">Nova cobertura</a>
         <a class="button secondary" href="faqs.php?action=new">Nova FAQ</a>
         <a class="button secondary" href="campanhas.php?action=new">Nova campanha</a>
+        <a class="button secondary" href="indicacoes.php">Ver indicações</a>
         <a class="button secondary" href="configuracoes.php">Configurações</a>
         <a class="button secondary" href="../api/site-content.php" target="_blank" rel="noopener">Ver API</a>
     </div>

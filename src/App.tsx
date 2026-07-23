@@ -10,6 +10,7 @@ import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { History } from "@/components/site/History";
 import { Plans } from "@/components/site/Plans";
+import { ReferralSection } from "@/components/site/ReferralSection";
 import { Stats } from "@/components/site/Stats";
 import { Support } from "@/components/site/Support";
 import { Technologies } from "@/components/site/Technologies";
@@ -36,6 +37,7 @@ export default function App() {
           <Support />
           <Testimonials />
           <FAQ />
+          <ReferralSection />
           <CTASection />
         </main>
         <Footer />
