@@ -165,6 +165,35 @@ try {
     }
     unset($faq);
 
+    $campaigns = $pdo->query(
+        'SELECT id, slug, eyebrow, headline, description, terms, image_path, image_alt,
+                cta_label, cta_url, starts_on, ends_on
+         FROM campaigns
+         WHERE active = 1
+           AND starts_on <= CURRENT_DATE
+           AND ends_on >= CURRENT_DATE
+         ORDER BY display_order, id'
+    )->fetchAll();
+    foreach ($campaigns as &$campaign) {
+        $campaign['id'] = (int) $campaign['id'];
+        $campaign['slug'] = (string) $campaign['slug'];
+        $campaign['eyebrow'] = (string) $campaign['eyebrow'];
+        $campaign['headline'] = (string) $campaign['headline'];
+        $campaign['description'] = (string) $campaign['description'];
+        $campaign['terms'] = $campaign['terms'] !== null
+            ? (string) $campaign['terms']
+            : null;
+        $campaign['image_path'] = $campaign['image_path'] !== null
+            ? (string) $campaign['image_path']
+            : null;
+        $campaign['image_alt'] = (string) $campaign['image_alt'];
+        $campaign['cta_label'] = (string) $campaign['cta_label'];
+        $campaign['cta_url'] = (string) $campaign['cta_url'];
+        $campaign['starts_on'] = (string) $campaign['starts_on'];
+        $campaign['ends_on'] = (string) $campaign['ends_on'];
+    }
+    unset($campaign);
+
     echo json_encode([
         'settings' => $settings,
         'plans' => $plans,
@@ -177,6 +206,7 @@ try {
         'benefits' => $benefits,
         'technologies' => $technologies,
         'faqs' => $faqs,
+        'campaigns' => $campaigns,
         'generated_at' => gmdate(DATE_ATOM),
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 } catch (Throwable) {

@@ -21,6 +21,8 @@ $counts = [
     'active_technologies' => 0,
     'faqs' => 0,
     'active_faqs' => 0,
+    'campaigns' => 0,
+    'current_campaigns' => 0,
 ];
 $databaseError = null;
 
@@ -40,6 +42,8 @@ try {
     $counts['active_technologies'] = (int) db()->query('SELECT COUNT(*) FROM technologies WHERE active = 1')->fetchColumn();
     $counts['faqs'] = (int) db()->query('SELECT COUNT(*) FROM faqs')->fetchColumn();
     $counts['active_faqs'] = (int) db()->query('SELECT COUNT(*) FROM faqs WHERE active = 1')->fetchColumn();
+    $counts['campaigns'] = (int) db()->query('SELECT COUNT(*) FROM campaigns')->fetchColumn();
+    $counts['current_campaigns'] = (int) db()->query('SELECT COUNT(*) FROM campaigns WHERE active = 1 AND starts_on <= CURRENT_DATE AND ends_on >= CURRENT_DATE')->fetchColumn();
 } catch (PDOException) {
     $databaseError = 'Não foi possível consultar os indicadores do banco.';
 }
@@ -96,6 +100,11 @@ admin_header('Dashboard');
         <strong><?= $counts['active_faqs'] ?>/<?= $counts['faqs'] ?></strong>
         <a class="muted" href="faqs.php">Gerenciar FAQ →</a>
     </article>
+    <article class="card">
+        <span>Campanhas vigentes / total</span>
+        <strong><?= $counts['current_campaigns'] ?>/<?= $counts['campaigns'] ?></strong>
+        <a class="muted" href="campanhas.php">Gerenciar campanhas →</a>
+    </article>
 </section>
 
 <section class="panel">
@@ -115,6 +124,7 @@ admin_header('Dashboard');
         <a class="button secondary" href="banners.php?action=new">Nova imagem do Hero</a>
         <a class="button secondary" href="cobertura.php?action=new">Nova cobertura</a>
         <a class="button secondary" href="faqs.php?action=new">Nova FAQ</a>
+        <a class="button secondary" href="campanhas.php?action=new">Nova campanha</a>
         <a class="button secondary" href="configuracoes.php">Configurações</a>
         <a class="button secondary" href="../api/site-content.php" target="_blank" rel="noopener">Ver API</a>
     </div>

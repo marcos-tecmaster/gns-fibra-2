@@ -84,6 +84,19 @@ export type SiteContent = {
     id: string;
     image?: string;
   }>;
+  campaigns: Array<{
+    id: string;
+    eyebrow: string;
+    headline: string;
+    description: string;
+    terms?: string;
+    image?: string;
+    imageAlt?: string;
+    ctaLabel: string;
+    ctaUrl: string;
+    startsOn: string;
+    endsOn: string;
+  }>;
   sectionImages: {
     coverage?: string;
     ctaBackground?: string;

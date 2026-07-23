@@ -118,6 +118,7 @@ export const siteContent: SiteContent = {
     teamDescription: "próxima do cliente",
   },
   banners: [],
+  campaigns: [],
   sectionImages: {},
   differentials: [
     {

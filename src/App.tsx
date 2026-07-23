@@ -1,3 +1,4 @@
+import { Campaigns } from "@/components/site/Campaigns";
 import { Coverage } from "@/components/site/Coverage";
 import { CTASection } from "@/components/site/CTASection";
 import { Differentials } from "@/components/site/Differentials";
@@ -23,6 +24,7 @@ export default function App() {
         <Header />
         <main>
           <Hero />
+          <Campaigns />
           <Stats />
           <Differentials />
           <Plans />

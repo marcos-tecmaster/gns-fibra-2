@@ -118,6 +118,21 @@ type ApiBanner = {
   display_order?: number;
 };
 
+type ApiCampaign = {
+  id: number;
+  slug: string;
+  eyebrow: string;
+  headline: string;
+  description: string;
+  terms?: string | null;
+  image_path?: string | null;
+  image_alt: string;
+  cta_label: string;
+  cta_url: string;
+  starts_on: string;
+  ends_on: string;
+};
+
 type ApiBenefit = {
   id: number;
   slug: string;
@@ -148,6 +163,7 @@ type SiteContentApiResponse = {
   differentials?: ApiDifferential[];
   history_gallery?: ApiHistoryGalleryItem[];
   banners?: ApiBanner[];
+  campaigns?: ApiCampaign[];
   coverage?: ApiCoverage[];
   testimonials?: ApiTestimonial[];
   benefits?: ApiBenefit[];
@@ -367,6 +383,58 @@ function normalizeBanners(items: ApiBanner[]): SiteContent["banners"] {
     .filter((item) => item.id !== "");
 }
 
+function normalizeCampaigns(
+  items: ApiCampaign[],
+): SiteContent["campaigns"] {
+  const campaigns: SiteContent["campaigns"] = [];
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  for (const item of items) {
+    const id = String(item.slug ?? "").trim();
+    const eyebrow = String(item.eyebrow ?? "").trim();
+    const headline = String(item.headline ?? "").trim();
+    const description = String(item.description ?? "").trim();
+    const terms = String(item.terms ?? "").trim();
+    const image = normalizePublicAssetPath(item.image_path, {
+      allowRemote: false,
+      allowedDirectories: ["campaigns"],
+    });
+    const imageAlt = String(item.image_alt ?? "").trim();
+    const ctaLabel = String(item.cta_label ?? "").trim();
+    const ctaUrl = String(item.cta_url ?? "").trim();
+    const startsOn = String(item.starts_on ?? "").trim();
+    const endsOn = String(item.ends_on ?? "").trim();
+    const hasValidPeriod =
+      datePattern.test(startsOn) &&
+      datePattern.test(endsOn) &&
+      endsOn >= startsOn;
+    if (
+      id === "" ||
+      headline === "" ||
+      description === "" ||
+      ctaLabel === "" ||
+      !isSafeBenefitHref(ctaUrl) ||
+      !hasValidPeriod ||
+      (image !== undefined && imageAlt === "")
+    ) {
+      continue;
+    }
+    campaigns.push({
+      id,
+      eyebrow,
+      headline,
+      description,
+      terms: terms !== "" ? terms : undefined,
+      image,
+      imageAlt: image !== undefined ? imageAlt : undefined,
+      ctaLabel,
+      ctaUrl,
+      startsOn,
+      endsOn,
+    });
+  }
+  return campaigns;
+}
+
 const BENEFIT_ICONS = new Set<IconName>([
   "wifi",
   "headset",
@@ -497,6 +565,9 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
     ? response.history_gallery
     : null;
   const remoteBanners = Array.isArray(response.banners) ? response.banners : null;
+  const remoteCampaigns = Array.isArray(response.campaigns)
+    ? response.campaigns
+    : null;
   const remoteTestimonials = Array.isArray(response.testimonials)
     ? response.testimonials
     : null;
@@ -642,6 +713,10 @@ function normalizeContent(response: SiteContentApiResponse): SiteContent {
       ),
     },
     banners: remoteBanners !== null ? normalizeBanners(remoteBanners) : siteContent.banners,
+    campaigns:
+      remoteCampaigns !== null
+        ? normalizeCampaigns(remoteCampaigns)
+        : siteContent.campaigns,
     sectionImages: {
       coverage: normalizePublicAssetPath(settings.coverage_image_path),
       ctaBackground: normalizePublicAssetPath(settings.cta_background_image_path),
