@@ -34,7 +34,9 @@
     <meta name="twitter:image" content="https://gnsfibra.com.br/og-image.jpg" />
 
     <link rel="canonical" href="https://gnsfibra.com.br/" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="./favicon-48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -43,6 +45,56 @@
     />
     <script src="./theme-init.js"></script>
     <title>GNS Fibra | Internet de fibra óptica para sua casa e empresa</title>
+    <script id="gns-structured-data" type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://gnsfibra.com.br/#organization",
+            "name": "GNS Fibra",
+            "url": "https://gnsfibra.com.br/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://gnsfibra.com.br/logo-gns.png"
+            },
+            "image": "https://gnsfibra.com.br/og-image.jpg",
+            "description": "Provedor de internet por fibra óptica para residências e empresas, com atendimento humanizado há mais de 14 anos.",
+            "email": "atendimento@giganetsul.com.br",
+            "telephone": "0800 800 8080",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "R. João Lourenço Schaefer, 439 - Centro",
+              "addressLocality": "Igrejinha",
+              "addressRegion": "RS",
+              "postalCode": "95650-000",
+              "addressCountry": "BR"
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "0800 800 8080",
+              "contactType": "customer service",
+              "email": "atendimento@giganetsul.com.br",
+              "availableLanguage": "Portuguese"
+            },
+            "sameAs": [
+              "https://facebook.com/giganetsul.alvorada",
+              "https://instagram.com/gns_fibra"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://gnsfibra.com.br/#website",
+            "url": "https://gnsfibra.com.br/",
+            "name": "GNS Fibra",
+            "inLanguage": "pt-BR",
+            "publisher": {
+              "@id": "https://gnsfibra.com.br/#organization"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

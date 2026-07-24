@@ -1,3 +1,6 @@
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+</IfModule>
 Options -Indexes
 RewriteEngine On
 
@@ -14,7 +17,7 @@ RewriteRule ^(?:src|docs|node_modules)/ - [F,L,NC]
 
 # Serve o build Vite sem interferir no admin, API, uploads e configurações PHP.
 RewriteRule ^$ dist/index.html [L]
-RewriteRule ^(assets/.*|favicon\.svg|logo-gns\.png|og-image\.jpg|robots\.txt|sitemap\.xml)$ dist/$1 [L]
+RewriteRule ^(assets/.*|favicon-48\.png|apple-touch-icon\.png|icon-192\.png|icon-512\.png|site\.webmanifest|favicon\.svg|logo-gns\.png|og-image\.jpg|robots\.txt|sitemap\.xml)$ dist/$1 [L]
 
 <IfModule mod_headers.c>
   Header always unset X-Powered-By
